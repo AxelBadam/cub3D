@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/07/27 18:10:53 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/07/28 17:38:12 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,25 @@ typedef struct s_menu
 	mlx_image_t *img;
 }			t_menu;
 
-typedef struct s_cube
+
+typedef struct s_player
+{
+	int x;
+	int y;
+	int color;
+	int start_x;
+	int start_y;
+}			t_player;
+
+typedef struct s_cubed
 {
 	void	*mlx;
 	void 	*win;
-	t_mouse *mouse;
+	//t_mouse *mouse;
 	mlx_image_t *img;
 	t_menu *menu;
-}			t_cube;
+	t_player *player;
+}			t_cubed;
 
 typedef struct s_mouse
 {

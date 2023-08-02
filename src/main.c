@@ -6,71 +6,79 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/01 17:52:56 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/02 16:39:41 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void	error_exit(t_cubed *cubed, char *error_msg)
+char	**append_2d(char **twod, char *str_to_add)
 {
-	(void)cubed;
-	perror(error_msg);
-	exit(1);
-}
+	char	**new;
+	int		i;
 
-int	get_row_size(char *filename)
-{
-	int		counter;
-	int		fd;
-	char	*row;
-
-	counter = 0;
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
-		error_exit(NULL, "OPEN FAILED\n");
-	while (1)
+	new = (char **)malloc(sizeof(char *) * (get_2d_array_size(twod) + 2));
+	if (!new)
+		return (NULL);
+	i = 0;
+	if (twod)
 	{
-		row = get_next_line(fd);
-		if (!row)
-			break;
-		free(row);
-		counter++;
+		while (twod[i])
+		{
+			new[i] = ft_strdup(twod[i]);
+			if (!new[i])
+				return (NULL);
+			i++;
+		}
 	}
-	close(fd);
-	return (counter);
+	new[i] = ft_strdup(str_to_add);
+	if (!new[i])
+		return (NULL);
+	new[++i] = 0;
+	free_string_array(twod);
+	return (new);
 }
 
-void	fill_array_with_contents(t_cubed *cubed, char *filename, char **array)
+void	free_string_array(char **array)
 {
-	int	fd;
 	int	ctr;
 
 	ctr = 0;
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
-		error_exit(cubed, "OPEN FAILED\n");
-	while (1)
+	if (array)
 	{
-		array[ctr++] = get_next_line(fd);
-		if (!array[ctr - 1])
-			break ;
+		while (array[ctr])
+			free(array[ctr++]);
+		free(array);
+		array = NULL;
 	}
-	close(fd);
+}
+
+void	error_exit(t_cubed *cubed, char *error_msg)
+{
+	(void)cubed;
+	ft_putstr_fd(error_msg, 2);
+	exit(1);
 }
 
 char	**get_file_contents(t_cubed *cubed, char *filename)
 {
 	char	**array;
-	int		rows;
+	int		fd;
+	char	*row;
 
-	rows = get_row_size(filename);
-	if (rows < 9)
-		error_exit(cubed, "INVALID MAP\n");
-	array = (char **)malloc(sizeof(char *) * (rows + 1));
-	if (!array)
-		error_exit(cubed, "MALLOC ERROR\n");
-	fill_array_with_contents(cubed, filename, array);
+	fd = open(filename, O_RDONLY);
+	array = NULL;
+	while (1)
+	{
+		row = get_next_line(fd);
+		if (!row)
+			break ;
+		array = append_2d(array, row);
+		free(row);
+		if (!array)
+			error_exit(cubed, "MALLOC ERROR\n");
+	}
+	close(fd);
 	return (array);
 }
 
@@ -146,8 +154,12 @@ long int	get_color(char *row)
 		index++;
 	array = ft_split(&row[index], ',');
 	if (get_2d_array_size(array) != 3)
+	{
+		free_string_array(array);
 		return (-1);
+	}
 	color = ft_atoi(array[0]) * pow(256, 2) + ft_atoi(array[1]) * 256 + ft_atoi(array[2]);
+	free_string_array(array);
 	return (color);
 }
 
@@ -254,7 +266,7 @@ void	get_map(t_cubed *cubed, char **file)
 	row = iterate_to_map_start(file);
 	size = get_map_size(file);
 	if (size < 3)
-		exit (100);
+		error_exit(cubed, "INVALID MAP\n");
 	map_row = 0;
 	cubed->map.map = (char **)malloc(sizeof(char *) * size + 1);
 	if (!cubed->map.map)
@@ -298,39 +310,40 @@ int	check_direction(char index)
 	return (0);
 }
 
-void	check_row(t_cubed *cubed, char *row)
+void	check_row(t_cubed *cubed, char *row, int *spawn)
 {
 	int	index;
-	int	spawn;
 
-	spawn = 0;
 	index = 0;
-	if (row[0] != '1' || row[ft_strlen(row) - 1] != '1')
+	if (row[0] != '1' && row[ft_strlen(row) - 1] != '1')
+	{
+		printf("MORO\n");
 		error_exit(cubed, "INVALID MAP\n");
+	}
 	while (row[index])
 	{
 		check_index_spot(cubed, row[index]);
-		spawn += check_direction(row[index++]);
+		*spawn += check_direction(row[index++]);
 	}
-	if (spawn == 0 || spawn > 1)
-		error_exit(cubed, "INVALID SPAWN\n");
 }
 
 void check_map(t_cubed *cubed)
 {
-	int	direction;
 	int	row;
+	int	spawn;
 
+	spawn = 0;
 	row = 0;
-	direction = 0;
 	while (cubed->map.map[row])
 	{
 		if (row == 0 || cubed->map.map[row + 1] == NULL)
 			check_top_and_bottom(cubed, cubed->map.map[row]);
 		else
-			check_row(cubed, cubed->map.map[row]);
+			check_row(cubed, cubed->map.map[row], &spawn);
 		row++;
 	}
+	if (spawn == 0 || spawn > 1)
+		error_exit(cubed, "INVALID SPAWN\n");
 }
 
 void	check_for_invalid_attributes(t_cubed *cubed)
@@ -394,6 +407,46 @@ void	map_parsing(t_cubed *cubed, char *filename)
 		error_exit(cubed, "INVALID FILENAME\n");
 	file = get_file_contents(cubed, filename);
 	get_map_attributes(cubed, file);
+	free_string_array(file);
+}
+
+int get_rgba(int r, int g, int b, int a)
+{
+    return (r << 24 | g << 16 | b << 8 | a);
+}
+
+void	cub3d(t_cubed *cubed)
+{
+	cubed->mlx.mlx = mlx_init(800, 600, "cub3d", false);
+	if (!(cubed->mlx.mlx))
+	{
+		puts(mlx_strerror(mlx_errno));
+		exit(69);
+	}
+	cubed->mlx.image = mlx_new_image(cubed->mlx.mlx, 800, 600);
+	if (!(cubed->mlx.image))
+	{
+		mlx_close_window(cubed->mlx.mlx);
+		puts(mlx_strerror(mlx_errno));
+		exit(69);
+	}
+	ft_memset(cubed->mlx.image->pixels, 255, cubed->mlx.image->width * cubed->mlx.image->height * sizeof(int));
+	int x = 0;
+	int y = 0;
+	while (++x < 30)
+	{
+		while (++y < 30)
+			mlx_put_pixel(cubed->mlx.image, x, y, 16711680);
+		y = 0;
+	}
+	if (mlx_image_to_window(cubed->mlx.mlx, cubed->mlx.image, 0, 0) == -1)
+	{
+		mlx_close_window(cubed->mlx.mlx);
+		puts(mlx_strerror(mlx_errno));
+		exit(69);
+	}
+	mlx_loop(cubed->mlx.mlx);
+	mlx_terminate(cubed->mlx.mlx);
 }
 
 int main(int argc, char **argv)
@@ -403,5 +456,6 @@ int main(int argc, char **argv)
 	if (argc != 2)
 		return (1);
 	map_parsing(&cubed, argv[1]);
+	cub3d(&cubed);
 	return (0);
 }

@@ -18,7 +18,8 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 
 $(NAME): $(OBJECT)
 	@make -s -C $(LIBFT)
-	$(CC) $(OBJECT) -framework Cocoa -framework OpenGL -framework IOKit $(LIBFT)/libft.a -o $(NAME)
+	$(CC) $(OBJECT) -framework Cocoa -framework OpenGL -framework IOKit \
+	MLX42/build/libmlx42.a -Iinclude -lglfw -L"/Users/$(USER)/.brew/opt/glfw/lib/" $(LIBFT)/libft.a -o $(NAME)
 
 clean:
 	rm -rf $(OBJDIR)

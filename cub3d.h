@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/01 16:24:18 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/03 16:43:15 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@ typedef struct s_player
 	int color;
 	int start_x;
 	int start_y;
+	int pdx;
+	int pdy;
+	int pa;
 }			t_player;
 
 typedef struct s_point

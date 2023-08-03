@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/03 16:42:21 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/03 16:56:54 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,6 @@ void	error_handling(char *str)
 {
 	ft_printf("%s", str);
 }
-/*
-void	load_png(t_cubed *cubed, int i, char *path)
-{
-	mlx_texture_t	*txt;
-
-	txt = mlx_load_png(path);
-	cubed->mlx[i] = mlx_texture_to_image(cubed->mlx, txt);
-	mlx_delete_texture(txt);
-}*/
 
 void	drawplayer(void *param)
 {
@@ -111,31 +102,6 @@ void draw_line(int begin_x, int begin_y, int end_x, int end_y, int color, t_cube
 	mlx_image_to_window(cubed->mlx, cubed->map_img, 0, 0);
 }
 
-void draw_map2d(t_cubed *cubed)
-{
-	int x;
-	int y;
-	int xo;
-	int yo;
-
-	x = 0;
-	y = 0;
-	xo = 0;
-	yo = 0;
-	
-	for (y= 0; y < cubed->map->y; y++)
-	{
-		for (x = 0; x < cubed->map->x; x++)
-		{
-			if (cubed->map->map[y * cubed->map->x + x == 1])
-				cubed->map->color = 0xFFFFFF;
-			else
-				cubed->map->color = 0xFFFFFF;
-			draw_line(x, y, xo, yo, cubed->map->color, cubed);
-		}
-	}
-}
-
 int render_rect(t_cubed *cubed, t_rect rect)
 {
     int	i;
@@ -166,12 +132,6 @@ void update_change(void *param)
 		drawplayer(cubed);
 	}
 	cubed->changes = 0;
-}
-
-
-int	create_trgb(int t, int r, int g, int b)
-{
-	return (t << 24 | r << 16 | g << 8 | b);
 }
 
 t_cubed	*init(t_cubed *cubed)
@@ -238,17 +198,49 @@ int	main(void)
 
 	cubed = NULL;
 	cubed = init(cubed);
-	//draw_map2d(cubed);
-	//draw_line(0, 0, 100, 100, 0xFFFFFF, cubed);
 	draw_map(cubed);
-	//render_rect(cubed, (t_rect){100 + 1, 0, 100, 100, 0xFFFFFF});
 	drawplayer(cubed);
 	mlx_key_hook(cubed->mlx, &keyhook, cubed);
 	mlx_loop_hook(cubed->mlx, &update_change, cubed);
-	//mlx_cursor_hook(cubed->mlx, mouse, NULL);
 	mlx_loop(cubed->mlx);
 	return (0);
 }
 
-	//load_png(cubed, 0, "./image.png");
-	//load_png(cubed, 1, "./playbutton.png");
+//load_png(cubed, 0, "./image.png");
+//load_png(cubed, 1, "./playbutton.png");
+//mlx_cursor_hook(cubed->mlx, mouse, NULL);
+/*
+void draw_map2d(t_cubed *cubed)
+{
+	int x;
+	int y;
+	int xo;
+	int yo;
+
+	x = 0;
+	y = 0;
+	xo = 0;
+	yo = 0;
+	
+	for (y= 0; y < cubed->map->y; y++)
+	{
+		for (x = 0; x < cubed->map->x; x++)
+		{
+			if (cubed->map->map[y * cubed->map->x + x == 1])
+				cubed->map->color = 0xFFFFFF;
+			else
+				cubed->map->color = 0xFFFFFF;
+			draw_line(x, y, xo, yo, cubed->map->color, cubed);
+		}
+	}
+}*/
+
+/*
+void	load_png(t_cubed *cubed, int i, char *path)
+{
+	mlx_texture_t	*txt;
+
+	txt = mlx_load_png(path);
+	cubed->mlx[i] = mlx_texture_to_image(cubed->mlx, txt);
+	mlx_delete_texture(txt);
+}*/

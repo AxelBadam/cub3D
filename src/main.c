@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/03 16:56:54 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/03 16:58:15 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,26 +82,6 @@ void keyhook(mlx_key_data_t keydata, void *param)
 		exit (0);
 }
 
-void draw_line(int begin_x, int begin_y, int end_x, int end_y, int color, t_cubed *cubed)
-{
-	double deltaX = end_x - begin_x;
-	double deltaY = end_y - begin_y;
-	double pixelX = begin_x;
-	double pixelY = begin_y;
-	int pixels = sqrt((deltaX * deltaX) + (deltaY * deltaY));
-	deltaX /= pixels;
-	deltaY /= pixels;
-	
-	while (pixels)
-	{
-    	mlx_put_pixel(cubed->map_img, pixelX, pixelY, color);
-   		pixelX += deltaX;
-  	 	pixelY += deltaY;
-   		--pixels;
-	}
-	mlx_image_to_window(cubed->mlx, cubed->map_img, 0, 0);
-}
-
 int render_rect(t_cubed *cubed, t_rect rect)
 {
     int	i;
@@ -174,7 +154,6 @@ void draw_map(t_cubed *cubed)
 				1,0,0,0,1,0,0,1,
 				1,0,0,0,1,0,0,1,
 				1,1,1,1,1,1,1,1,};
-	
 	while (y < HEIGHT)
 	{
 		while (x < WIDTH)
@@ -243,4 +222,25 @@ void	load_png(t_cubed *cubed, int i, char *path)
 	txt = mlx_load_png(path);
 	cubed->mlx[i] = mlx_texture_to_image(cubed->mlx, txt);
 	mlx_delete_texture(txt);
+}*/
+
+/*
+void draw_line(int begin_x, int begin_y, int end_x, int end_y, int color, t_cubed *cubed)
+{
+	double deltaX = end_x - begin_x;
+	double deltaY = end_y - begin_y;
+	double pixelX = begin_x;
+	double pixelY = begin_y;
+	int pixels = sqrt((deltaX * deltaX) + (deltaY * deltaY));
+	deltaX /= pixels;
+	deltaY /= pixels;
+	
+	while (pixels)
+	{
+    	mlx_put_pixel(cubed->map_img, pixelX, pixelY, color);
+   		pixelX += deltaX;
+  	 	pixelY += deltaY;
+   		--pixels;
+	}
+	mlx_image_to_window(cubed->mlx, cubed->map_img, 0, 0);
 }*/

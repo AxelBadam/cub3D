@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/03 16:58:15 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/03 17:24:37 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,26 @@
 void	error_handling(char *str)
 {
 	ft_printf("%s", str);
+}
+
+void draw_line(int begin_x, int begin_y, int end_x, int end_y, int color, t_cubed *cubed)
+{
+	double deltaX = end_x - begin_x;
+	double deltaY = end_y - begin_y;
+	double pixelX = begin_x;
+	double pixelY = begin_y;
+	int pixels = sqrt((deltaX * deltaX) + (deltaY * deltaY));
+	deltaX /= pixels;
+	deltaY /= pixels;
+	
+	while (pixels)
+	{
+    	mlx_put_pixel(cubed->img, pixelX, pixelY, color);
+   		pixelX += deltaX;
+  	 	pixelY += deltaY;
+   		--pixels;
+	}
+	//mlx_image_to_window(cubed->mlx, cubed->img, 0, 0);
 }
 
 void	drawplayer(void *param)
@@ -47,6 +67,7 @@ void	drawplayer(void *param)
 	}
 	cubed->player->x = start_x;
 	cubed->player->y = start_y;
+	draw_line(cubed->player->x + 5, cubed->player->y + 5, cubed->player->x + cubed->player->pdx * 5, cubed->player->y + cubed->player->pdy * 5, 0xFFFF00FF, cubed);
 	mlx_image_to_window(cubed->mlx, cubed->img, 0, 0);
 }
 
@@ -58,22 +79,32 @@ void keyhook(mlx_key_data_t keydata, void *param)
 
 	if (keydata.key == MLX_KEY_A && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
 		{
-			cubed->player->x -= 10;
+			cubed->player->pa -= 0.1;
+			if (cubed->player->pa < 0)
+				cubed->player->pa += 2 * PI;
+			cubed->player->pdx = cos(cubed->player->pa) * 5;
+			cubed->player->pdy = sin(cubed->player->pa) * 5;
 			cubed->changes = 1;
 		}
 	if (keydata.key == MLX_KEY_D && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
 		{
-			cubed->player->x += 10;
+			cubed->player->pa += 0.1;
+			if (cubed->player->pa > 2 * PI)
+				cubed->player->pa -= 2 * PI;
+			cubed->player->pdx = cos(cubed->player->pa) * 5;
+			cubed->player->pdy = sin(cubed->player->pa) * 5;
 			cubed->changes = 1;
 		}
 	if (keydata.key == MLX_KEY_W && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
 		{
-			cubed->player->y -= 10;
+			cubed->player->x += cubed->player->pdx;
+			cubed->player->y += cubed->player->pdy;
 			cubed->changes = 1;
 		}
 	if (keydata.key == MLX_KEY_S && (keydata.action == MLX_REPEAT ||keydata.action == MLX_RELEASE))
 		{
-			cubed->player->y += 10;
+			cubed->player->x -= cubed->player->pdx;
+			cubed->player->y -= cubed->player->pdy;
 			cubed->changes = 1;
 		}
 	if (keydata.key == MLX_KEY_C && keydata.action == MLX_RELEASE)
@@ -135,6 +166,9 @@ t_cubed	*init(t_cubed *cubed)
 	cubed->rect->width = 64;
 	cubed->player->x = 290;
 	cubed->player->y = 290;
+	cubed->player->pdx = 0;
+	cubed->player->pdy = 0;
+	cubed->player->pa = 0;
 	cubed->changes = 0;
 	cubed->player->color = 0xFF00FFFF;
 	return (cubed);
@@ -222,25 +256,4 @@ void	load_png(t_cubed *cubed, int i, char *path)
 	txt = mlx_load_png(path);
 	cubed->mlx[i] = mlx_texture_to_image(cubed->mlx, txt);
 	mlx_delete_texture(txt);
-}*/
-
-/*
-void draw_line(int begin_x, int begin_y, int end_x, int end_y, int color, t_cubed *cubed)
-{
-	double deltaX = end_x - begin_x;
-	double deltaY = end_y - begin_y;
-	double pixelX = begin_x;
-	double pixelY = begin_y;
-	int pixels = sqrt((deltaX * deltaX) + (deltaY * deltaY));
-	deltaX /= pixels;
-	deltaY /= pixels;
-	
-	while (pixels)
-	{
-    	mlx_put_pixel(cubed->map_img, pixelX, pixelY, color);
-   		pixelX += deltaX;
-  	 	pixelY += deltaY;
-   		--pixels;
-	}
-	mlx_image_to_window(cubed->mlx, cubed->map_img, 0, 0);
 }*/

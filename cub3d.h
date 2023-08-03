@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/03 16:43:15 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/03 17:01:38 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@ typedef struct s_menu
 
 typedef struct s_player
 {
-	int x;
-	int y;
+	float x;
+	float y;
 	int color;
 	int start_x;
 	int start_y;
-	int pdx;
-	int pdy;
-	int pa;
+	float pdx;
+	float pdy;
+	float pa;
 }			t_player;
 
 typedef struct s_point

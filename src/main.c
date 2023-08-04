@@ -6,11 +6,13 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/04 13:46:43 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/04 17:22:32 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#define WIDTH 800
+#define HEIGHT 600
 
 char	**append_2d(char **twod, char *str_to_add)
 {
@@ -415,36 +417,129 @@ int get_rgba(int r, int g, int b, int a)
     return (r << 24 | g << 16 | b << 8 | a);
 }
 
-void	cub3d(t_cubed *cubed)
+void	draw_player(t_cubed *cubed)
 {
-	cubed->mlx.mlx = mlx_init(800, 600, "cub3d", false);
-	if (!(cubed->mlx.mlx))
+	int	x;
+	int	y;
+
+	x = cubed->player.px;
+	y = cubed->player.py;
+	while(x < (cubed->player.px + 8))
 	{
-		puts(mlx_strerror(mlx_errno));
-		exit(69);
+		while (y < (cubed->player.py + 8))
+		{
+			mlx_put_pixel(cubed->mlx.image, x, y, 0xFF00FFFF);
+			y++;
+		}
+		y = cubed->player.py;
+		x++;
 	}
-	cubed->mlx.image = mlx_new_image(cubed->mlx.mlx, 800, 600);
-	if (!(cubed->mlx.image))
+}
+
+void	draw(t_cubed *cubed)
+{
+	if (cubed->mlx.image)
 	{
-		mlx_close_window(cubed->mlx.mlx);
-		puts(mlx_strerror(mlx_errno));
-		exit(69);
+		mlx_delete_image(cubed->mlx.mlx, cubed->mlx.image);
+		cubed->mlx.image = NULL;
 	}
-	ft_memset(cubed->mlx.image->pixels, 255, cubed->mlx.image->width * cubed->mlx.image->height * sizeof(int));
-	int x = 0;
-	int y = 0;
-	while (++x < 30)
-	{
-		while (++y < 30)
-			mlx_put_pixel(cubed->mlx.image, x, y, 16711680);
-		y = 0;
-	}
+	cubed->mlx.image = mlx_new_image(cubed->mlx.mlx, WIDTH, HEIGHT);
+	draw_map(cubed);
+	draw_player(cubed);
 	if (mlx_image_to_window(cubed->mlx.mlx, cubed->mlx.image, 0, 0) == -1)
 	{
 		mlx_close_window(cubed->mlx.mlx);
 		puts(mlx_strerror(mlx_errno));
 		exit(69);
 	}
+}
+
+void my_keyhook(mlx_key_data_t keydata, void *param)
+{
+	t_cubed *cubed;
+
+	cubed = (t_cubed *)param;
+	if (keydata.key == MLX_KEY_W && keydata.action == MLX_PRESS)
+		cubed->player.py -= 10;
+	else if (keydata.key == MLX_KEY_S && keydata.action == MLX_PRESS)
+		cubed->player.py += 10;
+	else if (keydata.key == MLX_KEY_D && keydata.action == MLX_PRESS)
+		cubed->player.px += 10;
+	else if (keydata.key == MLX_KEY_A && keydata.action == MLX_PRESS)
+		cubed->player.px -= 10;
+	draw(cubed);
+}
+
+int	map[] =
+{
+	1,1,1,1,1,1,1,1,
+	1,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,1,
+	1,0,1,0,0,0,0,1,
+	1,0,1,0,0,0,0,1,
+	1,0,1,0,0,0,0,1,
+	1,1,1,1,1,1,1,1,
+};
+
+void	draw_rectangle(t_cubed *cubed, int ry, int rx, int color)
+{
+	int	x = 0;
+	int y = ry;
+
+	while (y < ry + HEIGHT / 8 - 1)
+	{
+		x = rx;
+		while (x < rx + WIDTH / 8 - 1)
+			mlx_put_pixel(cubed->mlx.image, x++, y, color);
+		y++;
+	}
+}
+
+void	draw_map(t_cubed *cubed)
+{
+	int	i = 0;
+	int	x = 1;
+	int y = 1;
+	int color;
+	
+	while (y < HEIGHT)
+	{
+		while (x < WIDTH)
+		{
+			if (map[i] && map[i] == 1)
+				color = 0xFFFFFFFF;
+			else
+				color = 0x000000FF;
+			draw_rectangle(cubed, y, x, color);
+			x += WIDTH / 8;
+			i++;
+		}
+		x = 1;
+		y += HEIGHT / 8;
+	}
+}
+
+void	cub3d(t_cubed *cubed)
+{
+	cubed->player.px = 10;
+	cubed->player.py = 10;
+	cubed->mlx.image = NULL;
+	cubed->mlx.mlx = mlx_init(WIDTH, HEIGHT, "cub3d", false);
+	if (!(cubed->mlx.mlx))
+	{
+		puts(mlx_strerror(mlx_errno));
+		exit(69);
+	}
+	cubed->mlx.image = mlx_new_image(cubed->mlx.mlx, WIDTH, HEIGHT);
+	if (!(cubed->mlx.image))
+	{
+		mlx_close_window(cubed->mlx.mlx);
+		puts(mlx_strerror(mlx_errno));
+		exit(69);
+	}
+	draw(cubed);
+	mlx_key_hook(cubed->mlx.mlx, &my_keyhook, cubed);
 	mlx_loop(cubed->mlx.mlx);
 	mlx_terminate(cubed->mlx.mlx);
 }

@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/04 17:22:32 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/09 15:26:55 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -454,19 +454,54 @@ void	draw(t_cubed *cubed)
 	}
 }
 
+void	rotate_player(t_cubed *cubed, int key)
+{
+	if (key == 'D')
+		cubed->player.pa += 0.1;
+	else
+		cubed->player.pa -= 0.1;
+	if (cubed->player.pa < 0)
+	{
+		cubed->player.pa += 2 * PI;
+		cubed->player.dx = cos(cubed->player.pa) * 5;
+		cubed->player.dy = sin(cubed->player.pa) * 5;
+	}
+	else if (cubed->player.pa > (2 * PI))
+	{
+		cubed->player.pa -= 2 * PI;
+		cubed->player.dx = cos(cubed->player.pa) * 5;
+		cubed->player.dy = sin(cubed->player.pa) * 5;
+	}
+	printf("PLAYER ANGLE == %f\n", cubed->player.pa);
+}
+
+void	move_player(t_cubed *cubed, int key)
+{
+	if (key == 'W')
+	{
+		cubed->player.px += cubed->player.dx;
+		cubed->player.py += cubed->player.dy;
+	}
+	else
+	{
+		cubed->player.px -= cubed->player.dx;
+		cubed->player.py -= cubed->player.dy;
+	}
+}
+
 void my_keyhook(mlx_key_data_t keydata, void *param)
 {
 	t_cubed *cubed;
 
 	cubed = (t_cubed *)param;
-	if (keydata.key == MLX_KEY_W && keydata.action == MLX_PRESS)
-		cubed->player.py -= 10;
-	else if (keydata.key == MLX_KEY_S && keydata.action == MLX_PRESS)
-		cubed->player.py += 10;
-	else if (keydata.key == MLX_KEY_D && keydata.action == MLX_PRESS)
-		cubed->player.px += 10;
-	else if (keydata.key == MLX_KEY_A && keydata.action == MLX_PRESS)
-		cubed->player.px -= 10;
+	if (keydata.key == MLX_KEY_W && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
+		move_player(cubed, 'W');
+	if (keydata.key == MLX_KEY_S && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
+		move_player(cubed, 'S');
+	if (keydata.key == MLX_KEY_D && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
+		rotate_player(cubed, 'D');
+	if (keydata.key == MLX_KEY_A && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
+		rotate_player(cubed, 'A');
 	draw(cubed);
 }
 
@@ -524,6 +559,9 @@ void	cub3d(t_cubed *cubed)
 {
 	cubed->player.px = 10;
 	cubed->player.py = 10;
+	cubed->player.pa = 0;
+	cubed->player.dx = cos(cubed->player.pa) * 5;
+	cubed->player.dy = sin(cubed->player.pa) * 5;
 	cubed->mlx.image = NULL;
 	cubed->mlx.mlx = mlx_init(WIDTH, HEIGHT, "cub3d", false);
 	if (!(cubed->mlx.mlx))

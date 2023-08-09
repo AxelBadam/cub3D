@@ -6,15 +6,16 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/04 16:23:10 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/09 14:56:23 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "MLX42/include/MLX42/MLX42.h"
+#include "../MLX42/include/MLX42/MLX42.h"
 #include "libft/libft.h"
 #include <stdio.h>
 #include <fcntl.h>
 #include <math.h>
+#define PI 3.141592
 
 typedef struct s_map
 {
@@ -29,8 +30,11 @@ typedef struct s_map
 
 typedef struct s_player
 {
-	int	py;
-	int	px;
+	float	py;
+	float	px;
+	float	dx;
+	float	dy;
+	float	pa;
 }	t_player;
 
 typedef struct s_mlx

@@ -45,10 +45,26 @@ typedef struct s_map
 {
 	int		x;
 	int		y;
+	int		map_x;
+	int		map_y;	
 	int		size;
 	int		*map;
 	int 	color;
 }						t_map;
+
+typedef struct s_ray
+{
+	int r;
+	int mx;
+	int my;
+	int mp;
+	int dof;
+	float rx;
+	float ry;
+	float ra;
+	float xo;
+	float yo;
+}			t_ray;
 
 typedef struct s_rect
 {
@@ -59,19 +75,21 @@ typedef struct s_rect
     int color;
 }	t_rect;
 
-typedef struct s_cubed
+typedef struct s_cbd
 {
 	void		*mlx;
 	void 		*win;
 	//t_mouse 	*mouse;
 	mlx_image_t *map_img;	
 	mlx_image_t *img;
+	t_ray		*ray;	
 	t_menu 		*menu;
 	t_player 	*player;
 	t_map		*map;
 	t_rect		*rect;
+	mlx_image_t *ray_img;
 	int			changes;
-}			t_cubed;
+}			t_cbd;
 
 typedef struct s_mouse
 {

@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/03 17:24:37 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/14 13:59:17 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	error_handling(char *str)
 	ft_printf("%s", str);
 }
 
-void draw_line(int begin_x, int begin_y, int end_x, int end_y, int color, t_cbd *cbd)
+void draw_line(int begin_x, int begin_y, int end_x, int end_y, int color, mlx_image_t *img)
 {
 	double deltaX = end_x - begin_x;
 	double deltaY = end_y - begin_y;
@@ -34,7 +34,7 @@ void draw_line(int begin_x, int begin_y, int end_x, int end_y, int color, t_cbd 
 	
 	while (pixels)
 	{
-    	mlx_put_pixel(cbd->img, pixelX, pixelY, color);
+    	mlx_put_pixel(img, pixelX, pixelY, color);
    		pixelX += deltaX;
   	 	pixelY += deltaY;
    		--pixels;
@@ -44,11 +44,12 @@ void draw_line(int begin_x, int begin_y, int end_x, int end_y, int color, t_cbd 
 void	drawplayer(void *param)
 {
 	t_cbd *cbd = param;
+	
 	int start_x;
 	int start_y;
 	int x_pixels = 10;
 	int y_pixels = 10;
-	
+
 	start_x = cbd->player->x;
 	start_y = cbd->player->y;
 	mlx_delete_image(cbd->mlx, cbd->img);
@@ -68,7 +69,7 @@ void	drawplayer(void *param)
 	}
 	cbd->player->x = start_x;
 	cbd->player->y = start_y;
-	draw_line(cbd->player->x + 5, cbd->player->y + 5, cbd->player->x + cbd->player->pdx * 5, cbd->player->y + cbd->player->pdy * 5, 0xFFFF00FF, cbd);
+	draw_line(cbd->player->x + 5, cbd->player->y + 5, cbd->player->x + cbd->player->pdx * 5, cbd->player->y + cbd->player->pdy * 5, 0xFFFF00FF, cbd->img);
 	mlx_image_to_window(cbd->mlx, cbd->img, 0, 0);
 }
 
@@ -154,10 +155,10 @@ t_cbd	*init(t_cbd *cbd)
 	cbd->rect =  malloc(sizeof(t_rect));
 	cbd->map = malloc(sizeof(t_map));
 	cbd->ray = malloc(sizeof(t_ray));
-
 	cbd->mlx = mlx_init(WIDTH, HEIGHT, "cub3d", true);
 	cbd->img = mlx_new_image(cbd->mlx, WIDTH, HEIGHT);
 	cbd->map_img = mlx_new_image(cbd->mlx, WIDTH, HEIGHT);
+	cbd->ray_img = mlx_new_image(cbd->mlx, WIDTH, HEIGHT);
 	cbd->rect->height = 100;
 	cbd->rect->width = 100;
 	cbd->map->x = 8;
@@ -258,9 +259,10 @@ void drawrays(t_cbd *cbd)
 				ray->dof += 1;
 			}
 		}
-	
-	draw_line(cbd->player->x + 5, cbd->player->y + 5, ray->rx, ray->ry, 0xFF0000FF, cbd);
-	mlx_image_to_window(cbd->mlx, cbd->img, 0, 0);
+	mlx_delete_image(cbd->mlx, cbd->ray_img);
+	cbd->ray_img = mlx_new_image(cbd->mlx, WIDTH, HEIGHT);
+	draw_line(cbd->player->x + 5, cbd->player->y + 5, ray->rx, ray->ry, 0xFF0000FF, cbd->ray_img);
+	mlx_image_to_window(cbd->mlx, cbd->ray_img, 0, 0);
 	ray->r += 1;
 	}
 }

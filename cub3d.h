@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/03 17:01:38 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/14 13:47:57 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,13 @@ typedef struct s_cbd
 	//t_mouse 	*mouse;
 	mlx_image_t *map_img;	
 	mlx_image_t *img;
+	mlx_image_t *ray_img;
 	t_ray		*ray;	
 	t_menu 		*menu;
 	t_player 	*player;
 	t_map		*map;
 	t_rect		*rect;
-	mlx_image_t *ray_img;
+
 	int			changes;
 }			t_cbd;
 

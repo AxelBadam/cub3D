@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/14 13:59:17 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/15 18:51:40 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,9 +220,10 @@ void drawrays(t_cbd *cbd)
 
 	ray = cbd->ray;
 	ray->ra = cbd->player->pa;
-	ray->r = 0;
+
 	while (ray->r < 1)
 	{
+		ray->r = 0;
 		ray->dof = 0;
 		a_tan = -1/tan(ray->ra);
 		if (ray->ra > PI)
@@ -261,9 +262,33 @@ void drawrays(t_cbd *cbd)
 		}
 	mlx_delete_image(cbd->mlx, cbd->ray_img);
 	cbd->ray_img = mlx_new_image(cbd->mlx, WIDTH, HEIGHT);
-	draw_line(cbd->player->x + 5, cbd->player->y + 5, ray->rx, ray->ry, 0xFF0000FF, cbd->ray_img);
+	draw_line(cbd->player->x + 5, cbd->player->y + 5, ray->rx, ray->ry, 0xFF00FFFF, cbd->ray_img);
 	mlx_image_to_window(cbd->mlx, cbd->ray_img, 0, 0);
 	ray->r += 1;
+	}
+}
+
+void	draw_background(t_cbd *cbd, mlx_image_t *img)
+{
+	int	x;
+	int	y;
+
+	x = 0;
+	y = 0;
+	(void)cbd;
+	
+	while (y < HEIGHT)
+	{
+		while (x < WIDTH)
+		{
+			if (y < HEIGHT / 2)
+				mlx_put_pixel(img, x, y, 0xFF0000FF);
+			else
+				mlx_put_pixel(img, x, y, 0xFF00FFFF);
+			x++;
+		}
+		x = 0;
+		y++;
 	}
 }
 
@@ -276,6 +301,8 @@ int	main(void)
 	draw_map(cbd);
 	drawplayer(cbd);
 	drawrays(cbd);
+	//draw_background(cbd, cbd->img);
+	mlx_image_to_window(cbd->mlx, cbd->img, 0, 0);
 	mlx_key_hook(cbd->mlx, &keyhook, cbd);
 	mlx_loop_hook(cbd->mlx, &update_change, cbd);
 	mlx_loop(cbd->mlx);

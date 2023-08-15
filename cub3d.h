@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/09 14:56:23 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/15 15:23:25 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,29 @@ typedef struct s_mlx
 	mlx_image_t	*image;
 }	t_mlx;
 
+typedef struct s_vec
+{
+	int	x;
+	int	y;
+	int	z;
+	int	color;
+}	t_vec;
+
+typedef struct s_bres
+{
+	int	dx;
+	int	dy;
+	int	sx;
+	int	sy;
+	int	error[2];
+}	t_bres;
+
 typedef struct s_cubed
 {
 	struct s_map map;
 	struct s_mlx mlx;
 	struct s_player player;
+	struct s_bres bres;
 }	t_cubed;
 
 char	**append_2d(char **twod, char *str_to_add);

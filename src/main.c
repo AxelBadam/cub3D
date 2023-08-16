@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/15 19:07:38 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/16 14:22:07 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#define WIDTH 1024
-#define HEIGHT 512
 
 int mapX = 8;
 int mapY = 8;
@@ -21,7 +19,7 @@ int	map[] =
 {
 	1,1,1,1,1,1,1,1,
 	1,0,0,0,0,0,0,1,
-	1,0,0,0,0,0,0,1,
+	1,0,0,0,1,0,0,1,
 	1,0,0,0,0,0,0,1,
 	1,0,1,0,0,0,0,1,
 	1,0,1,0,0,0,0,1,
@@ -467,13 +465,24 @@ void	plotline(t_cubed *cubed, t_vec v1, t_vec v2)
 	my_pixel_put(cubed->mlx.image, v1.x, v1.y, v1.color);
 }
 
+float dist(float ax, float ay, float bx, float by, float ang)
+{
+	(void)ang;
+	return(sqrt((bx-ay) * (bx-ax) + (by - ay) * (by - ay)));
+}
+
 void	draw_rays(t_cubed *cubed)
 {
 	int r, mx, my, mp, dof; float rx, ry, ra, xo, yo;
-	ra = cubed->player.pa;
-	for (r = 0; r < 1; r++)
+	ra = cubed->player.pa - DR * 30;
+	if (ra < 0)
+		ra += 2 * PI;
+	if (ra > 2 * PI)
+		ra -= 2* PI;
+	for (r = 0; r < 60; r++)
 	{
 		dof = 0;
+		float disH = 1000000, hx = cubed->player.px, hy = cubed->player.py;
 		float aTan = -1 / tan(ra);
 		if (ra > PI)
 		{
@@ -489,6 +498,49 @@ void	draw_rays(t_cubed *cubed)
 			yo = 64;
 			xo = -yo * aTan;
 		}
+		if (ra == 0 || ra == PI)
+		{
+			rx = cubed->player.px;
+			ry = cubed->player.py;
+			dof = 8;
+		}
+		while (dof < 8)
+		{
+			mx = (int)(rx) >> 6;
+			my = (int)(ry) >> 6;
+			mp = my * mapX + mx;
+			if (mp > 0 && mp < mapX * mapY && map[mp] == 1)
+			{
+				hx = rx;
+				hy = ry;
+				disH = dist(cubed->player.px, cubed->player.py, hx, hy, ra);
+				dof = 8;
+			}
+			else
+			{
+				rx += xo;
+				ry += yo;
+				dof += 1;
+			}
+		}
+		// check vertical
+		dof = 0;
+		float disV = 1000000, vx = cubed->player.px, vy = cubed->player.py;
+		float nTan = -tan(ra);
+		if (ra > P2 && ra < P3)
+		{
+			rx = (((int)cubed->player.px >> 6) << 6) -0.0001;
+			ry = (cubed->player.px - rx) * nTan + cubed->player.py;
+			xo = -64;
+			yo = -xo * nTan;
+		}
+		if (ra < P2 || ra > P3)
+		{
+			rx = (((int)cubed->player.px >> 6) << 6) + 64;
+			ry = (cubed->player.px - rx) * nTan + cubed->player.py;
+			xo = 64;
+			yo = -xo * nTan;
+		}
 		if (ra ==0 || ra == PI)
 		{
 			rx = cubed->player.px;
@@ -500,8 +552,13 @@ void	draw_rays(t_cubed *cubed)
 			mx = (int)(rx) >> 6;
 			my = (int)(ry) >> 6;
 			mp = my * mapX + mx;
-			if (mp < mapX * mapY && map[mp] == 1)
+			if (mp > 0 && mp < mapX * mapY && map[mp] == 1)
+			{
+				vx = rx;
+				vy = ry;
+				disV = dist(cubed->player.px, cubed->player.py, vx, vy, ra);
 				dof = 8;
+			}
 			else
 			{
 				rx += xo;
@@ -509,8 +566,23 @@ void	draw_rays(t_cubed *cubed)
 				dof += 1;
 			}
 		}
-		plotline(cubed, (t_vec){cubed->player.px + 2, cubed->player.py + 2, 0, 0xFF00FFFF}, (t_vec){rx, ry, 0, 0xFF00FFFF});
-	}
+		if (disV < disH)
+		{
+			rx = vx;
+			ry = vy;
+		}
+		if (disH < disV)
+		{
+			rx = hx;
+			ry = hy;
+		}
+		plotline(cubed, (t_vec){cubed->player.px + 2, cubed->player.py + 2, 0, 0xFF0000FF}, (t_vec){rx, ry, 0, 0xFF0000FF});
+		ra += DR;
+		if (ra < 0)
+			ra += 2 * PI;
+		if (ra > 2 * PI)
+			ra -= 2 * PI;
+	}	
 }
 
 void	draw_player(t_cubed *cubed)

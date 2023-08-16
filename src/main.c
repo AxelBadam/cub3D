@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/16 14:22:07 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/16 16:10:08 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -465,20 +465,72 @@ void	plotline(t_cubed *cubed, t_vec v1, t_vec v2)
 	my_pixel_put(cubed->mlx.image, v1.x, v1.y, v1.color);
 }
 
-float dist(float ax, float ay, float bx, float by, float ang)
+/*float dist(float ax, float ay, float bx, float by, float ang)
 {
 	(void)ang;
 	return(sqrt((bx-ay) * (bx-ax) + (by - ay) * (by - ay)));
+}*/
+
+float degToRad(int a) { return a*M_PI/180.0;}
+int FixAng(int a){ if(a>359){ a-=360;} if(a<0){ a+=360;} return a;}
+float distance(ax,ay,bx,by,ang){ return cos(degToRad(ang))*(bx-ax)-sin(degToRad(ang))*(by-ay);}
+
+
+void drawRays2D(t_cubed *cubed)
+{
+ int r,mx,my,mp,dof,side; float vx,vy,rx,ry,ra,xo,yo,disV,disH; 
+ 
+ ra=FixAng(cubed->player.pa+30);                                                              //ray set back 30 degrees
+ 
+ for(r=0;r<60;r++)
+ {
+  //---Vertical--- 
+  dof=0; side=0; disV=100000;
+  float Tan=tan(degToRad(ra));
+       if(cos(degToRad(ra))> 0.001){ rx=(((int)cubed->player.px>>6)<<6)+64;      ry=(cubed->player.px-rx)*Tan+cubed->player.py; xo= 64; yo=-xo*Tan;}//looking left
+  else if(cos(degToRad(ra))<-0.001){ rx=(((int)cubed->player.px>>6)<<6) -0.0001; ry=(cubed->player.px-rx)*Tan+cubed->player.py; xo=-64; yo=-xo*Tan;}//looking right
+  else { rx=cubed->player.px; ry=cubed->player.py; dof=8;}                                                  //looking up or down. no hit  
+
+  while(dof<8) 
+  { 
+   mx=(int)(rx)>>6; my=(int)(ry)>>6; mp=my*mapX+mx;                     
+   if(mp>0 && mp<mapX*mapY && map[mp]==1){ dof=8; disV=cos(degToRad(ra))*(rx-cubed->player.px)-sin(degToRad(ra))*(ry-cubed->player.py);}//hit         
+   else{ rx+=xo; ry+=yo; dof+=1;}                                               //check next horizontal
+  } 
+  vx=rx; vy=ry;
+
+  //---Horizontal---
+  dof=0; disH=100000;
+  Tan=1.0/Tan; 
+       if(sin(degToRad(ra))> 0.001){ ry=(((int)cubed->player.py>>6)<<6) -0.0001; rx=(cubed->player.py-ry)*Tan+cubed->player.px; yo=-64; xo=-yo*Tan;}//looking up 
+  else if(sin(degToRad(ra))<-0.001){ ry=(((int)cubed->player.py>>6)<<6)+64;      rx=(cubed->player.py-ry)*Tan+cubed->player.px; yo= 64; xo=-yo*Tan;}//looking down
+  else{ rx=cubed->player.px; ry=cubed->player.py; dof=8;}                                                   //looking straight left or right
+ 
+  while(dof<8) 
+  { 
+   mx=(int)(rx)>>6; my=(int)(ry)>>6; mp=my*mapX+mx;                          
+   if(mp>0 && mp<mapX*mapY && map[mp]==1){ dof=8; disH=cos(degToRad(ra))*(rx-cubed->player.px)-sin(degToRad(ra))*(ry-cubed->player.py);}//hit         
+   else{ rx+=xo; ry+=yo; dof+=1;}                                               //check next horizontal
+  } 
+  
+  if(disV<disH){ rx=vx; ry=vy; disH=disV;}                  //horizontal hit first
+  plotline(cubed, (t_vec){cubed->player.px + 2, cubed->player.py + 2, 0, 0xFF0000FF}, (t_vec){rx, ry, 0, 0xFF0000FF});
+  int ca=FixAng(cubed->player.pa-ra); disH=disH*cos(degToRad(ca));                            //fix fisheye 
+  int lineH = (mapS*320)/(disH); if(lineH>320){ lineH=320;}                     //line height and limit
+  int lineOff = 160 - (lineH>>1);                                               //line offset
+  plotline(cubed, (t_vec){r*8+530, lineOff, 0, 0xFF0000FF}, (t_vec){r*8+530, lineOff+lineH, 0, 0xFF0000FF});
+  ra=FixAng(ra-1);                                                              //go to next ray
+ }
 }
 
-void	draw_rays(t_cubed *cubed)
+/*void	draw_rays(t_cubed *cubed)
 {
 	int r, mx, my, mp, dof; float rx, ry, ra, xo, yo;
 	ra = cubed->player.pa - DR * 30;
 	if (ra < 0)
-		ra += 2 * PI;
-	if (ra > 2 * PI)
-		ra -= 2* PI;
+		ra += 2 * (float)M_PI;
+	if (ra > 2 * (float)M_PI)
+		ra -= 2* (float)M_PI;
 	for (r = 0; r < 60; r++)
 	{
 		dof = 0;
@@ -491,14 +543,14 @@ void	draw_rays(t_cubed *cubed)
 			yo = -64;
 			xo = -yo * aTan;
 		}
-		if (ra < PI)
+		if (ra < (float)M_PI)
 		{
 			ry = (((int)cubed->player.py >> 6) << 6) + 64;
 			rx = (cubed->player.py - ry) * aTan + cubed->player.px;
 			yo = 64;
 			xo = -yo * aTan;
 		}
-		if (ra == 0 || ra == PI)
+		if (ra == 0 || ra == (float)M_PI)
 		{
 			rx = cubed->player.px;
 			ry = cubed->player.py;
@@ -513,7 +565,7 @@ void	draw_rays(t_cubed *cubed)
 			{
 				hx = rx;
 				hy = ry;
-				disH = dist(cubed->player.px, cubed->player.py, hx, hy, ra);
+				disH = (float)dist(cubed->player.px, cubed->player.py, hx, hy, ra);
 				dof = 8;
 			}
 			else
@@ -541,7 +593,7 @@ void	draw_rays(t_cubed *cubed)
 			xo = 64;
 			yo = -xo * nTan;
 		}
-		if (ra ==0 || ra == PI)
+		if (ra ==0 || ra == (float)M_PI)
 		{
 			rx = cubed->player.px;
 			ry = cubed->player.py;
@@ -556,7 +608,7 @@ void	draw_rays(t_cubed *cubed)
 			{
 				vx = rx;
 				vy = ry;
-				disV = dist(cubed->player.px, cubed->player.py, vx, vy, ra);
+				disV = (float)dist(cubed->player.px, cubed->player.py, vx, vy, ra);
 				dof = 8;
 			}
 			else
@@ -576,14 +628,15 @@ void	draw_rays(t_cubed *cubed)
 			rx = hx;
 			ry = hy;
 		}
+		printf("DISV == %f -- DISH %f\n", disV, disH);
 		plotline(cubed, (t_vec){cubed->player.px + 2, cubed->player.py + 2, 0, 0xFF0000FF}, (t_vec){rx, ry, 0, 0xFF0000FF});
 		ra += DR;
 		if (ra < 0)
-			ra += 2 * PI;
-		if (ra > 2 * PI)
-			ra -= 2 * PI;
+			ra += 2 * (float)M_PI;
+		if (ra > 2 * (float)M_PI)
+			ra -= 2 * (float)M_PI;
 	}	
-}
+}*/
 
 void	draw_player(t_cubed *cubed)
 {
@@ -613,7 +666,7 @@ void	draw(t_cubed *cubed)
 	}
 	cubed->mlx.image = mlx_new_image(cubed->mlx.mlx, WIDTH, HEIGHT);
 	draw_map(cubed);
-	draw_rays(cubed);
+	drawRays2D(cubed);
 	draw_player(cubed);
 	if (mlx_image_to_window(cubed->mlx.mlx, cubed->mlx.image, 0, 0) == -1)
 	{
@@ -626,29 +679,25 @@ void	draw(t_cubed *cubed)
 void	rotate_player(t_cubed *cubed, int key)
 {
 	if (key == 'D')
-		cubed->player.pa += 0.1;
+		cubed->player.pa -= 5;
 	else
-		cubed->player.pa -= 0.1;
-	if (cubed->player.pa < 0)
-		cubed->player.pa += 2 * PI;
-	else if (cubed->player.pa > (2 * PI))
-		cubed->player.pa -= 2 * PI;
-	cubed->player.dx = cos(cubed->player.pa) * 5;
-	cubed->player.dy = sin(cubed->player.pa) * 5;
-	printf("PLAYER ANGLE == %f\n", cubed->player.pa);
+		cubed->player.pa += 5;
+	cubed->player.pa=FixAng(cubed->player.pa);
+	cubed->player.dx=cos(degToRad(cubed->player.pa));
+	cubed->player.dy=-sin(degToRad(cubed->player.pa));
 }
 
 void	move_player(t_cubed *cubed, int key)
 {
 	if (key == 'W')
 	{
-		cubed->player.px += cubed->player.dx;
-		cubed->player.py += cubed->player.dy;
+		cubed->player.px += cubed->player.dx * 5;
+		cubed->player.py += cubed->player.dy * 5;
 	}
 	else
 	{
-		cubed->player.px -= cubed->player.dx;
-		cubed->player.py -= cubed->player.dy;
+		cubed->player.px -= cubed->player.dx * 5;
+		cubed->player.py -= cubed->player.dy * 5;
 	}
 }
 

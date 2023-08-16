@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/16 14:20:48 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/16 16:29:51 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,26 @@ typedef struct s_player
 	float	dy;
 	float	pa;
 }	t_player;
+
+typedef struct s_ray
+{
+	int		r;
+	int		mx;
+	int		my;
+	int		mp;
+	int		dof;
+	int		side;
+	float	vx;
+	float	vy;
+	float	rx;
+	float	ry;
+	float	ra;
+	float	xo;
+	float	yo;
+	float	disV;
+	float	disH;
+	float	Tan;
+}	t_ray;
 
 typedef struct s_mlx
 {

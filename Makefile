@@ -3,13 +3,10 @@ SRC = main.c
 LIBFT = libft
 OBJECT = $(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I. -g
+CFLAGS = -Wall -Wextra -Werror -I.
 RM = rm -f
 OBJDIR = obj
 SRCDIR = src
-
-
-
 
 all: obj $(OBJDIR) $(NAME)
 

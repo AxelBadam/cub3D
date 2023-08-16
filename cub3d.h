@@ -6,97 +6,69 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/14 13:47:57 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/15 19:00:53 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "MLX42/include/MLX42/MLX42.h"
 #include "libft/libft.h"
 #include <stdio.h>
+#include <fcntl.h>
 #include <math.h>
-
-typedef struct s_menu
-{
-	mlx_image_t *img;
-}			t_menu;
-
-
-typedef struct s_player
-{
-	float x;
-	float y;
-	int color;
-	int start_x;
-	int start_y;
-	float pdx;
-	float pdy;
-	float pa;
-}			t_player;
-
-typedef struct s_point
-{
-	int					x;
-	int					y;
-	int					z;
-	int					color;
-}						t_point;
+#define PI 3.141592
 
 typedef struct s_map
 {
-	int		x;
-	int		y;
-	int		map_x;
-	int		map_y;	
-	int		size;
-	int		*map;
-	int 	color;
-}						t_map;
+	char		**map;
+	char		*path_to_north;
+	char		*path_to_south;
+	char		*path_to_west;
+	char		*path_to_east;
+	long int	floor_color;
+	long int	cealing_color;
+} t_map;
 
-typedef struct s_ray
+typedef struct s_player
 {
-	int r;
-	int mx;
-	int my;
-	int mp;
-	int dof;
-	float rx;
-	float ry;
-	float ra;
-	float xo;
-	float yo;
-}			t_ray;
+	float	py;
+	float	px;
+	float	dx;
+	float	dy;
+	float	pa;
+}	t_player;
 
-typedef struct s_rect
+typedef struct s_mlx
 {
-    int	x;
-    int	y;
-    int width;
-    int height;
-    int color;
-}	t_rect;
+	mlx_t	*mlx;
+	mlx_image_t	*image;
+}	t_mlx;
 
-typedef struct s_cbd
+typedef struct s_vec
 {
-	void		*mlx;
-	void 		*win;
-	//t_mouse 	*mouse;
-	mlx_image_t *map_img;	
-	mlx_image_t *img;
-	mlx_image_t *ray_img;
-	t_ray		*ray;	
-	t_menu 		*menu;
-	t_player 	*player;
-	t_map		*map;
-	t_rect		*rect;
+	int	x;
+	int	y;
+	int	z;
+	int	color;
+}	t_vec;
 
-	int			changes;
-}			t_cbd;
-
-typedef struct s_mouse
+typedef struct s_bres
 {
-	char				is_pressed;
-	int					x;
-	int					y;
-	int					previous_x;
-	int					previous_y;
-}						t_mouse;
+	int	dx;
+	int	dy;
+	int	sx;
+	int	sy;
+	int	error[2];
+}	t_bres;
+
+typedef struct s_cubed
+{
+	struct s_map map;
+	struct s_mlx mlx;
+	struct s_player player;
+	struct s_bres bres;
+}	t_cubed;
+
+char	**append_2d(char **twod, char *str_to_add);
+void	free_string_array(char **array);
+int		get_2d_array_size(char **array);
+void	draw_map(t_cubed *cubed);

@@ -1,9 +1,9 @@
 NAME = cub3d
-SRC = main.c draw.c
+SRC = main.c
 LIBFT = libft
 OBJECT = $(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I.
+CFLAGS = -Wall -Wextra -Werror -I. -ffast-math
 RM = rm -f
 OBJDIR = obj
 SRCDIR = src

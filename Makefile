@@ -1,5 +1,5 @@
 NAME = cub3d
-SRC = main.c
+SRC = main.c draw.c
 LIBFT = libft
 OBJECT = $(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 CC = cc

@@ -105,15 +105,6 @@ void	draw_horizontal(t_cubed *cubed)
 				dof += 1;
 			}
 		}
-		plotline(cubed, (t_vec){cubed->player.px + 2, cubed->player.py + 2, 0, 0xFF00FFFF}, (t_vec){rx, ry, 0, 0xFF00FFFF});
-	}
-}
-void	draw_vertical(t_cubed *cubed)
-{
-	int r, mx, my, mp, dof; float rx, ry, ra, xo, yo;
-	ra = cubed->player.pa;
-	for (r = 0; r < 1; r++)
-	{
 		dof = 0;
 		float disV = 1000000, vx = cubed->player.px, vy = cubed->player.py;
 		float nTan = -tan(ra);
@@ -149,7 +140,6 @@ void	draw_vertical(t_cubed *cubed)
 				disV = dist(cubed->player.px, cubed->player.py, vx, vy, ra);
 				dof = 8;
 			}
-				
 			else
 			{
 				rx += xo;
@@ -157,8 +147,18 @@ void	draw_vertical(t_cubed *cubed)
 				dof += 1;
 			}
 		}
+		if (disH < disV)
+		{
+			rx = vx;
+			ry = vy;
+		}
+		if (disH < disV)
+		{
+			rx = hx;
+			ry = hy;
+		}
 		plotline(cubed, (t_vec){cubed->player.px + 2, cubed->player.py + 2, 0, 0xFF0000FF}, (t_vec){rx, ry, 0, 0xFF0000FF});
-	}	
+	}		
 }
 
 void	draw_player(t_cubed *cubed)
@@ -191,7 +191,6 @@ void	draw(t_cubed *cubed)
 	draw_map(cubed);
 
 	draw_horizontal(cubed);
-	draw_vertical(cubed);
 	draw_player(cubed);
 	if (mlx_image_to_window(cubed->mlx.mlx, cubed->mlx.image, 0, 0) == -1)
 	{

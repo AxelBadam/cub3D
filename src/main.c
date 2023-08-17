@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/16 16:43:38 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/17 19:22:14 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	free_string_array(char **array)
 void	error_exit(t_cubed *cubed, char *error_msg)
 {
 	(void)cubed;
+	ft_putstr_fd("Error\n", 2);
 	ft_putstr_fd(error_msg, 2);
 	exit(1);
 }
@@ -278,26 +279,84 @@ int	iterate_to_newline(char *row)
 	return (ctr);
 }
 
-void	get_map(t_cubed *cubed, char **file)
+void	get_int_map_size(t_cubed *cubed, char **map)
+{
+	int	size;
+	int	row;
+
+	size = 0;
+	row = 0;
+	while (map[row])
+	{
+		if (size < ft_strlen(map[row]))
+			size = ft_strlen(map[row]);
+		row++;
+	}
+	cubed->map.mapS = size * row;
+	cubed->map.mapY = row;
+	cubed->map.mapX = size;
+}
+
+void	fill_int_array(int *map, char *row)
+{
+	static int	index;
+	int			column;
+
+	column = 0;
+	while (row[column])
+	{
+		if (ft_is_white_space(row[column]))
+			map[index] = 2;
+		else if (row[column] == 'W' || row[column] == 'S' ||row[column] == 'E' || row[column] == 'S')
+			map[index] = 0;
+		else
+			map[index] = row[column] - 48;
+		index++;
+		column++;
+	}
+}
+
+void	convert_map_to_int(t_cubed *cubed, char **map)
 {
 	int	row;
-	int	map_row;
-	int	size;
+	int	index;
+	int	column;
+
+	column = 0;
+	row = 0;
+	index = 0;
+	get_int_map_size(cubed, map);
+	cubed->map.map = (int *)malloc(sizeof(int) * cubed->map.mapS);
+	if (!cubed->map.map)
+		error_exit(cubed, "MALLOC ERROR\n");
+	while (map[row])
+		fill_int_array(cubed->map.map, map[row++]);
+}
+
+char	**get_map(t_cubed *cubed, char **file)
+{
+	int		row;
+	char	**map;
+	int		map_row;
+	int		size;
 
 	row = iterate_to_map_start(file);
 	size = get_map_size(file);
 	if (size < 3)
 		error_exit(cubed, "INVALID MAP\n");
 	map_row = 0;
-	cubed->map.map = (char **)malloc(sizeof(char *) * size + 1);
-	if (!cubed->map.map)
+	map = (char **)malloc(sizeof(char *) * size + 1);
+	if (!map)
 		error_exit(cubed, "MALLOC ERROR\n");
 	while (file[row] && !check_for_empty_row(file[row]))
 	{
-		cubed->map.map[map_row++] = ft_substr(file[row], 0, iterate_to_newline(file[row]));
+		map[map_row++] = ft_substr(file[row], 0, iterate_to_newline(file[row]));
+		if (!map[map_row - 1])
+			error_exit(cubed, "MALLOC ERROR\n");
 		row++;
 	}
-	cubed->map.map[map_row] = 0;
+	map[map_row] = 0;
+	return (map);
 }
 
 void	check_top_and_bottom(t_cubed *cubed, char *row)
@@ -315,7 +374,6 @@ void	check_top_and_bottom(t_cubed *cubed, char *row)
 
 void	check_index_spot(t_cubed *cubed, char index)
 {
-	(void)cubed;
 	if (index != '1' && index != '0'
 		&& index != 'W' && index != 'E'
 		&& index != 'S' && index != 'N'
@@ -331,16 +389,51 @@ int	check_direction(char index)
 	return (0);
 }
 
+int	check_wall(char *row, char *next_row, int *wall)
+{
+	int	ctr;
+
+	ctr = 0;
+	while (row[ctr] && (row[ctr] == '1' || ft_is_white_space(row[ctr]) || check_direction(row[ctr])))
+	{
+		if (next_row[ctr] && row[ctr] == '1' && next_row[ctr] == '1')
+			*wall = 1;
+		if (next_row[ctr] == '0')
+			break ;
+		ctr++;
+	}
+	return (ctr);
+}
+
+int	check_if_walls_connect(char *row, char *next_row)
+{
+	int	ctr;
+	int	first_wall;
+	int	second_wall;
+
+	ctr = 0;
+	first_wall = 0;
+	second_wall = 0;
+	ctr = check_wall(row, next_row, &first_wall);
+	while ((row[ctr] && (row[ctr] == '0' || row[ctr] == '1' || ft_is_white_space(row[ctr]) || check_direction(row[ctr]))))
+	{
+		if (row[ctr] == '1' && !ft_strchr(&row[ctr], '0') && !ft_strchr(&next_row[ctr], '0'))
+		{
+			check_wall(&row[ctr], &next_row[ctr], &second_wall);
+			break ;
+		}
+		ctr++;
+	}
+	if (second_wall && first_wall)
+		return (1);
+	return (0);
+}
+
 void	check_row(t_cubed *cubed, char *row, int *spawn)
 {
 	int	index;
 
 	index = 0;
-	if (row[0] != '1' && row[ft_strlen(row) - 1] != '1')
-	{
-		printf("MORO\n");
-		error_exit(cubed, "INVALID MAP\n");
-	}
 	while (row[index])
 	{
 		check_index_spot(cubed, row[index]);
@@ -348,33 +441,37 @@ void	check_row(t_cubed *cubed, char *row, int *spawn)
 	}
 }
 
-void check_map(t_cubed *cubed)
+void check_map(t_cubed *cubed, char **map)
 {
 	int	row;
 	int	spawn;
 
 	spawn = 0;
 	row = 0;
-	while (cubed->map.map[row])
+	while (map[row])
 	{
-		if (row == 0 || cubed->map.map[row + 1] == NULL)
-			check_top_and_bottom(cubed, cubed->map.map[row]);
-		else
-			check_row(cubed, cubed->map.map[row], &spawn);
+		if (row == 0 || map[row + 1] == NULL)
+			check_top_and_bottom(cubed, map[row]);
+		check_row(cubed, map[row], &spawn);
+		if (map[row + 1])
+		{
+			if (!check_if_walls_connect(map[row], map[row + 1]))
+				error_exit(cubed, "INVALID MAP\n");
+		}
 		row++;
 	}
 	if (spawn == 0 || spawn > 1)
 		error_exit(cubed, "INVALID SPAWN\n");
 }
 
-void	check_for_invalid_attributes(t_cubed *cubed)
+void	check_for_invalid_attributes(t_cubed *cubed, char **map)
 {
 	if (!cubed->map.path_to_east || !cubed->map.path_to_west
 		|| !cubed->map.path_to_north || !cubed->map.path_to_south)
 		error_exit(cubed, "PATH ERROR\n");
 	if (cubed->map.cealing_color == -1 || cubed->map.floor_color == -1)
 		error_exit(cubed, "COLOR ERROR\n");
-	check_map(cubed);
+	check_map(cubed, map);
 }
 
 void	nullify_map(t_cubed *cubed)
@@ -390,11 +487,12 @@ void	nullify_map(t_cubed *cubed)
 
 void	get_map_attributes(t_cubed *cubed, char **file)
 {
-	int	row;
+	int		row;
+	char	**map;
 
 	row = 0;
 	nullify_map(cubed);
-	get_map(cubed, file);
+	map = get_map(cubed, file);
 	while (file[row])
 	{
 		if (check_if_map_started(file[row]))
@@ -402,10 +500,12 @@ void	get_map_attributes(t_cubed *cubed, char **file)
 		get_attribute(cubed, file[row++]);
 	}
 	row = 0;
-	while (cubed->map.map[row])
-		printf("%s\n", cubed->map.map[row++]);
+	while (map[row])
+		printf("%s\n", map[row++]);
 	printf("cealing %li\nfloor %li\n", cubed->map.cealing_color, cubed->map.floor_color);
-	check_for_invalid_attributes(cubed);
+	check_for_invalid_attributes(cubed, map);
+	convert_map_to_int(cubed, map);
+	free_string_array(map);
 }
 
 int	check_file_name(char *filename)
@@ -485,16 +585,16 @@ void drawRays2D(t_cubed *cubed)
 		ray.Tan = tan(degToRad(ray.ra));
 		if(cos(degToRad(ray.ra)) > 0.001)
 		{
-			ray.rx = (((int)cubed->player.px>>6)<<6)+64;
+			ray.rx = (((int)cubed->player.px / cubed->map.mapS) * cubed->map.mapS) + cubed->map.mapS;
 			ray.ry = (cubed->player.px-ray.rx) * ray.Tan + cubed->player.py;
-			ray.xo = 64;
+			ray.xo = cubed->map.mapS;
 			ray.yo = -ray.xo * ray.Tan;
 		}//looking left
 		else if (cos(degToRad(ray.ra)) < -0.001)
 		{
-			ray.rx = (((int)cubed->player.px>>6)<<6) -0.0001;
+			ray.rx = (((int)cubed->player.px / cubed->map.mapS) * cubed->map.mapS) -0.0001;
 			ray.ry = (cubed->player.px-ray.rx) * ray.Tan+cubed->player.py;
-			ray.xo = -64;
+			ray.xo = -cubed->map.mapS;
 			ray.yo = -ray.xo * ray.Tan;
 		}//looking right
 		else
@@ -504,12 +604,12 @@ void drawRays2D(t_cubed *cubed)
 			ray.dof=8;
 		}                                                  //looking up or down. no hit  
 
-	while(ray.dof<8) 
+	while(ray.dof < 8) 
 	{ 
-		ray.mx = (int)(ray.rx) >> 6;
-		ray.my = (int)(ray.ry) >> 6;
-		ray.mp = ray.my * mapX + ray.mx;
-		if(ray.mp>0 && ray.mp<mapX*mapY && map[ray.mp] == 1)
+		ray.mx = (int)(ray.rx) / cubed->map.mapS;
+		ray.my = (int)(ray.ry) / cubed->map.mapS;
+		ray.mp = ray.my * cubed->map.mapX + ray.mx;
+		if(ray.mp > 0 && ray.mp < cubed->map.mapX * cubed->map.mapY && cubed->map.map[ray.mp] == 1)
 		{
 			ray.dof = 8;
 			ray.disV = cos(degToRad(ray.ra)) * (ray.rx-cubed->player.px) - sin(degToRad(ray.ra)) * (ray.ry-cubed->player.py);
@@ -528,17 +628,17 @@ void drawRays2D(t_cubed *cubed)
 	ray.Tan = 1.0 / ray.Tan; 
 	if (sin(degToRad(ray.ra)) > 0.001)
 	{
-		ray.ry = (((int)cubed->player.py >> 6) << 6) - 0.0001;
+		ray.ry = (((int)cubed->player.py / cubed->map.mapS) * cubed->map.mapS) - 0.0001; //testi
 		ray.rx = (cubed->player.py-ray.ry) * ray.Tan + cubed->player.px;
-		ray.yo = -64;
+		ray.yo = -cubed->map.mapS;
 		ray.xo = -ray.yo * ray.Tan;
 	}//looking up 
 	else if (sin(degToRad(ray.ra)) < -0.001)
 	{
-		ray.ry = (((int)cubed->player.py >> 6) << 6) + 64;
+		ray.ry = (((int)cubed->player.py / cubed->map.mapS) * cubed->map.mapS) + cubed->map.mapS;
 		ray.rx = (cubed->player.py-ray.ry) * ray.Tan+cubed->player.px;
-		ray.yo = 64;
-		ray.xo =- ray.yo * ray.Tan;
+		ray.yo = cubed->map.mapS;
+		ray.xo = -ray.yo * ray.Tan;
 	}//looking down
 	else
 	{
@@ -548,10 +648,10 @@ void drawRays2D(t_cubed *cubed)
 	}                                                   //looking straight left or right
 	while (ray.dof < 8) 
 	{ 
-		ray.mx = (int)(ray.rx) >> 6;
-		ray.my = (int)(ray.ry) >> 6;
-		ray.mp = ray.my * mapX + ray.mx;
-		if(ray.mp > 0 && ray.mp < mapX * mapY && map[ray.mp] == 1)
+		ray.mx = (int)(ray.rx) / cubed->map.mapS;
+		ray.my = (int)(ray.ry) / cubed->map.mapS;
+		ray.mp = ray.my * cubed->map.mapX + ray.mx;
+		if(ray.mp > 0 && ray.mp < cubed->map.mapX * cubed->map.mapY && cubed->map.map[ray.mp] == 1)
 		{
 			ray.dof = 8;
 			ray.disH = cos(degToRad(ray.ra)) * (ray.rx - cubed->player.px) - sin(degToRad(ray.ra)) * (ray.ry-cubed->player.py);
@@ -572,7 +672,7 @@ void drawRays2D(t_cubed *cubed)
 	plotline(cubed, (t_vec){cubed->player.px + 2, cubed->player.py + 2, 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
 	int ca = FixAng(cubed->player.pa-ray.ra);
 	ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
-	int lineH = (mapS * 320) / (ray.disH);
+	int lineH = (cubed->map.mapS * 320) / (ray.disH);
 	if (lineH > 320)
 		lineH = 320;                     //line height and limit
 	int lineOff = 160 - (lineH>>1);                                               //line offset
@@ -665,10 +765,10 @@ void	draw_rectangle(t_cubed *cubed, int ry, int rx, int color)
 	int	x = 0;
 	int y = ry;
 
-	while (y < ry + mapS - 1)
+	while (y < ry + cubed->map.mapS - 1)
 	{
 		x = rx;
-		while (x < rx + mapS - 1)
+		while (x < rx + cubed->map.mapS - 1)
 			my_pixel_put(cubed->mlx.image, x++, y, color);
 		y++;
 	}
@@ -682,16 +782,17 @@ void	draw_map(t_cubed *cubed)
 	int yo = 0;
 	int color;
 	
-	while (y < mapY)
+	printf("mapY = %i\nmapX = %i\n", cubed->map.mapY, cubed->map.mapX);
+	while (y < cubed->map.mapY)
 	{
-		while (x < mapX)
+		while (x < cubed->map.mapX)
 		{
-			if (map[y * mapX + x] == 1)
+			if (cubed->map.map[y * cubed->map.mapX + x] == 1)
 				color = 0xFFFFFFFF;
 			else
 				color = 0x000000FF;
-			xo = x * mapS;
-			yo = y * mapS;
+			xo = x * cubed->map.mapS;
+			yo = y * cubed->map.mapS;
 			draw_rectangle(cubed, yo, xo, color);
 			x++;
 			i++;
@@ -703,6 +804,7 @@ void	draw_map(t_cubed *cubed)
 
 void	cub3d(t_cubed *cubed)
 {
+	cubed->map.mapS = cubed->map.mapS / 2;
 	cubed->player.px = 10;
 	cubed->player.py = 10;
 	cubed->player.pa = 0;

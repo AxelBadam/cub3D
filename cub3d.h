@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/16 16:29:51 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/17 17:03:04 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@
 
 typedef struct s_map
 {
-	char		**map;
+	int			mapS;
+	int			mapX;
+	int			mapY;
+	int			*map;
 	char		*path_to_north;
 	char		*path_to_south;
 	char		*path_to_west;

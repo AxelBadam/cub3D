@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/16 16:29:51 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/18 16:54:15 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <math.h>
 #define PI 3.141592653
 #define WIDTH 1024
-#define HEIGHT 512
+#define HEIGHT 510
 #define P2 PI/2
 #define P3 3*PI/2
 #define DR 0.0174533
@@ -31,6 +31,7 @@ typedef struct s_map
 	char		*path_to_east;
 	long int	floor_color;
 	long int	cealing_color;
+	mlx_image_t *wall;
 } t_map;
 
 typedef struct s_player
@@ -85,12 +86,18 @@ typedef struct s_bres
 	int	error[2];
 }	t_bres;
 
+typedef struct s_text
+{
+	mlx_texture_t	*wall;
+} t_text;
+
 typedef struct s_cubed
 {
 	struct s_map map;
 	struct s_mlx mlx;
 	struct s_player player;
 	struct s_bres bres;
+	struct s_text text;
 }	t_cubed;
 
 char	**append_2d(char **twod, char *str_to_add);

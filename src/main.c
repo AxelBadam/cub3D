@@ -6,26 +6,11 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/17 19:22:14 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/18 17:21:38 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-int mapX = 8;
-int mapY = 8;
-int	mapS = 64;
-int	map[] =
-{
-	1,1,1,1,1,1,1,1,
-	1,0,0,0,0,0,0,1,
-	1,0,0,0,1,0,0,1,
-	1,0,0,0,0,0,0,1,
-	1,0,1,0,0,0,0,1,
-	1,0,1,0,0,0,0,1,
-	1,0,1,0,0,0,0,1,
-	1,1,1,1,1,1,1,1,
-};
 
 void	my_pixel_put(mlx_image_t *image, int x, int y, int color)
 {
@@ -125,7 +110,17 @@ char	*texture_path(t_cubed *cubed, char *row)
 	return (path);
 }
 
-void	get_textures(t_cubed *cubed, char *row)
+int	iterate_over_white_spaces(char *row)
+{
+	int	ctr;
+
+	ctr = 0;
+	while (row[ctr] && ft_is_white_space(row[ctr]))
+		ctr++;
+	return (ctr);
+}
+
+void	check_if_east_or_west(t_cubed *cubed, char *row)
 {
 	if (row[0] == 'W' && row[1] == 'E' && ft_is_white_space(row[2]))
 	{
@@ -139,13 +134,21 @@ void	get_textures(t_cubed *cubed, char *row)
 			error_exit(cubed, "TOO MANY PATHS\n");
 		cubed->map.path_to_east = texture_path(cubed, row);
 	}
-	else if (row[0] == 'S' && row[1] == 'O' && ft_is_white_space(row[2]))
+}
+
+void	get_textures(t_cubed *cubed, char *row)
+{
+	int	ctr;
+
+	ctr = iterate_over_white_spaces(row);
+	check_if_east_or_west(cubed, &row[ctr]);
+	if (row[ctr] == 'S' && row[ctr + 1] == 'O' && ft_is_white_space(row[ctr + 2]))
 	{
 		if (cubed->map.path_to_south)
 			error_exit(cubed, "TOO MANY PATHS\n");
 		cubed->map.path_to_south = texture_path(cubed, row);
 	}
-	else if (row[0] == 'N' && row[1] == 'O' && ft_is_white_space(row[2]))
+	else if (row[ctr] == 'N' && row[ctr + 1] == 'O' && ft_is_white_space(row[ctr + 2]))
 	{
 		if (cubed->map.path_to_north)
 			error_exit(cubed, "TOO MANY PATHS\n");
@@ -187,13 +190,16 @@ long int	get_color(char *row)
 
 void	get_colors(t_cubed *cubed, char *row)
 {
-	if (row[0] == 'F' && ft_is_white_space(row[1]))
+	int	ctr;
+
+	ctr = iterate_over_white_spaces(row);
+	if (row[ctr] == 'F' && ft_is_white_space(row[ctr + 1]))
 	{
 		if (cubed->map.floor_color != -1)
 			error_exit(cubed, "TOO MANY COLORS\n");
 		cubed->map.floor_color = get_color(row);
 	}
-	else if (row[0] == 'C' && ft_is_white_space(row[1]))
+	else if (row[ctr] == 'C' && ft_is_white_space(row[ctr + 1]))
 	{
 		if (cubed->map.cealing_color != -1)
 			error_exit(cubed, "TOO MANY COLORS\n");
@@ -297,22 +303,33 @@ void	get_int_map_size(t_cubed *cubed, char **map)
 	cubed->map.mapX = size;
 }
 
-void	fill_int_array(int *map, char *row)
+void	fill_int_array(t_cubed *cubed, char *row)
 {
 	static int	index;
 	int			column;
+	int			tmp;
 
+	tmp = 0;
 	column = 0;
 	while (row[column])
 	{
 		if (ft_is_white_space(row[column]))
-			map[index] = 2;
-		else if (row[column] == 'W' || row[column] == 'S' ||row[column] == 'E' || row[column] == 'S')
-			map[index] = 0;
+			cubed->map.map[index] = 2;
+		else if (row[column] == 'W' || row[column] == 'S' || row[column] == 'E' || row[column] == 'N')
+			cubed->map.map[index] = 3;
 		else
-			map[index] = row[column] - 48;
+			cubed->map.map[index] = row[column] - 48;
 		index++;
 		column++;
+		if (!row[column] && cubed->map.mapX > column)
+		{
+			tmp = column;
+			while (tmp < cubed->map.mapX)
+			{
+				cubed->map.map[index++] = 2;
+				tmp++;
+			}
+		}
 	}
 }
 
@@ -330,7 +347,10 @@ void	convert_map_to_int(t_cubed *cubed, char **map)
 	if (!cubed->map.map)
 		error_exit(cubed, "MALLOC ERROR\n");
 	while (map[row])
-		fill_int_array(cubed->map.map, map[row++]);
+		fill_int_array(cubed, map[row++]);
+	for (int i = 0; i < cubed->map.mapS; i++)
+		printf("%i", cubed->map.map[i]);
+	find_player_position(cubed);   //mieti viela paikkaa
 }
 
 char	**get_map(t_cubed *cubed, char **file)
@@ -500,8 +520,6 @@ void	get_map_attributes(t_cubed *cubed, char **file)
 		get_attribute(cubed, file[row++]);
 	}
 	row = 0;
-	while (map[row])
-		printf("%s\n", map[row++]);
 	printf("cealing %li\nfloor %li\n", cubed->map.cealing_color, cubed->map.floor_color);
 	check_for_invalid_attributes(cubed, map);
 	convert_map_to_int(cubed, map);
@@ -601,17 +619,17 @@ void drawRays2D(t_cubed *cubed)
 		{
 			ray.rx = cubed->player.px;
 			ray.ry = cubed->player.py;
-			ray.dof=8;
+			ray.dof = cubed->map.mapX;
 		}                                                  //looking up or down. no hit  
 
-	while(ray.dof < 8) 
+	while(ray.dof < cubed->map.mapX) 
 	{ 
 		ray.mx = (int)(ray.rx) / cubed->map.mapS;
 		ray.my = (int)(ray.ry) / cubed->map.mapS;
 		ray.mp = ray.my * cubed->map.mapX + ray.mx;
 		if(ray.mp > 0 && ray.mp < cubed->map.mapX * cubed->map.mapY && cubed->map.map[ray.mp] == 1)
 		{
-			ray.dof = 8;
+			ray.dof = cubed->map.mapX;
 			ray.disV = cos(degToRad(ray.ra)) * (ray.rx-cubed->player.px) - sin(degToRad(ray.ra)) * (ray.ry-cubed->player.py);
 		}//hit         
 		else
@@ -644,16 +662,16 @@ void drawRays2D(t_cubed *cubed)
 	{
 		ray.rx = cubed->player.px;
 		ray.ry = cubed->player.py;
-		ray.dof = 8;
+		ray.dof = cubed->map.mapY;
 	}                                                   //looking straight left or right
-	while (ray.dof < 8) 
+	while (ray.dof < cubed->map.mapY) 
 	{ 
 		ray.mx = (int)(ray.rx) / cubed->map.mapS;
 		ray.my = (int)(ray.ry) / cubed->map.mapS;
 		ray.mp = ray.my * cubed->map.mapX + ray.mx;
 		if(ray.mp > 0 && ray.mp < cubed->map.mapX * cubed->map.mapY && cubed->map.map[ray.mp] == 1)
 		{
-			ray.dof = 8;
+			ray.dof = cubed->map.mapY;
 			ray.disH = cos(degToRad(ray.ra)) * (ray.rx - cubed->player.px) - sin(degToRad(ray.ra)) * (ray.ry-cubed->player.py);
 		}//hit         
 		else
@@ -669,15 +687,15 @@ void drawRays2D(t_cubed *cubed)
 		ray.ry = ray.vy; 
 		ray.disH = ray.disV;
 	}                  //horizontal hit first
-	plotline(cubed, (t_vec){cubed->player.px + 2, cubed->player.py + 2, 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
-	int ca = FixAng(cubed->player.pa-ray.ra);
+	plotline(cubed, (t_vec){cubed->player.px + 3, cubed->player.py + 3, 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
+	int ca = FixAng(cubed->player.pa - ray.ra);
 	ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
 	int lineH = (cubed->map.mapS * 320) / (ray.disH);
 	if (lineH > 320)
 		lineH = 320;                     //line height and limit
 	int lineOff = 160 - (lineH>>1);                                               //line offset
 	plotline(cubed, (t_vec){ray.r*8+530, lineOff, 0, 0xFF0000FF}, (t_vec){ray.r*8+530, lineOff+lineH, 0, 0xFF0000FF});
-	ray.ra=FixAng(ray.ra-1);                                                              //go to next ray
+	ray.ra = FixAng(ray.ra - 1);                                                              //go to next ray
  }
 }
 
@@ -697,6 +715,33 @@ void	draw_player(t_cubed *cubed)
 		}
 		y = cubed->player.py;
 		x++;
+	}
+}
+
+void	find_player_position(t_cubed *cubed)
+{
+	int	i = 0;
+	int	x = 0;
+	int y = 0;
+	int xo = 0;
+	int yo = 0;
+	
+	while (y < cubed->map.mapY)
+	{
+		while (x < cubed->map.mapX)
+		{
+			xo = x * cubed->map.mapS;
+			yo = y * cubed->map.mapS;
+			if (cubed->map.map[y * cubed->map.mapX + x] == 3)
+			{
+				cubed->player.px = xo + cubed->map.mapS / 2;
+				cubed->player.py = yo + cubed->map.mapS / 2;
+			}
+			x++;
+			i++;
+		}
+		x = 0;
+		y++;
 	}
 }
 
@@ -782,7 +827,6 @@ void	draw_map(t_cubed *cubed)
 	int yo = 0;
 	int color;
 	
-	printf("mapY = %i\nmapX = %i\n", cubed->map.mapY, cubed->map.mapX);
 	while (y < cubed->map.mapY)
 	{
 		while (x < cubed->map.mapX)
@@ -804,9 +848,9 @@ void	draw_map(t_cubed *cubed)
 
 void	cub3d(t_cubed *cubed)
 {
-	cubed->map.mapS = cubed->map.mapS / 2;
-	cubed->player.px = 10;
-	cubed->player.py = 10;
+	cubed->map.mapS = cubed->map.mapS;
+	//cubed->player.px = 10;
+	//cubed->player.py = 10;
 	cubed->player.pa = 0;
 	cubed->player.dx = cos(cubed->player.pa) * 5;
 	cubed->player.dy = sin(cubed->player.pa) * 5;

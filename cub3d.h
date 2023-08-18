@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/17 17:03:04 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/18 16:57:02 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,3 +100,4 @@ char	**append_2d(char **twod, char *str_to_add);
 void	free_string_array(char **array);
 int		get_2d_array_size(char **array);
 void	draw_map(t_cubed *cubed);
+void	find_player_position(t_cubed *cubed);

@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/21 16:56:32 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/21 17:08:24 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -640,10 +640,10 @@ unsigned long createRGB(int r, int g, int b)
 
 int	mapW[] =
 {
-	1,3,3,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,
 	1,0,0,0,0,0,0,1,
-	4,0,0,0,2,0,0,1,
-	4,0,0,0,0,0,0,1,
+	1,0,0,0,1,0,0,1,
+	1,0,0,0,0,0,0,1,
 	1,0,1,0,0,0,0,1,
 	1,0,1,0,0,0,0,1,
 	1,0,1,0,0,0,0,1,
@@ -826,36 +826,33 @@ void drawRays2D(t_cubed *cubed)
 	
 	int y;
 	int x;
-	unsigned int color;
+	u_int32_t *col = get_text_color(cubed->wall);
 	for (y = 0; y < lineH; y++)
 	{
-		color = 0x000000FF;
 		for (x=0; x <= 8; x++)
 		{
-			float c = All_Textures[(int)ty * 32 + (int)(tx)];
-			if (c == 1)
-				color = 0xFFFFFFFF;
+			int pixel = (int)ty * 32 + (int)tx;
 			//color = color_arr[y];
-			mlx_put_pixel(cubed->mlx.image, ray.r*8+530+x, lineOff+y, color);
+			mlx_put_pixel(cubed->mlx.image, ray.r*8+530+x, lineOff+y, col[pixel]);
 		}
 		ty+=ty_step;
 	}
-	u_int32_t *col = get_text_color(cubed->wall);
+/*
 	for (y=0; y < 32; y++)
 	{
 		{
 			for(x=0; x<32; x++)
 			{
-				int pixel = (y*32+x);
-				/*int red = (int)col[pixel + 0];
+
+				int red = (int)col[pixel + 0];
 				int green = (int)col[pixel + 1];
-				int blue = (int)col[pixel + 2];*/
+				int blue = (int)col[pixel + 2];
 
 				if (y < HEIGHT && x < WIDTH)
 					mlx_put_pixel(cubed->mlx.image, x, y, col[pixel]);
 			}
 		}
-	}
+	}*/
 /*
 	//---draw floors---
  	for(y=lineOff+lineH;y<320;y++)

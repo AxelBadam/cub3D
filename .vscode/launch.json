@@ -9,7 +9,7 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/cub3d",
-			"args": [],
+			"args": ["test.cub"],
 			"stopAtEntry": false,
 			"cwd": "${fileDirname}",
 			"environment": [],

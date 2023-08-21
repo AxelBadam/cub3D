@@ -1,0 +1,2 @@
+- A and D to move
+- 4 different textures for walls

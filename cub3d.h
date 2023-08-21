@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/21 11:40:28 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/21 16:52:03 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 #define P3 3*PI/2
 #define DR 0.0174533
 
+struct t_text;
+
 typedef struct s_map
 {
 	char		**map;
@@ -31,7 +33,6 @@ typedef struct s_map
 	char		*path_to_east;
 	long int	floor_color;
 	long int	cealing_color;
-	mlx_image_t *wall;
 } t_map;
 
 typedef struct s_player
@@ -90,7 +91,9 @@ typedef struct s_bres
 
 typedef struct s_text
 {
-	mlx_texture_t	*wall;
+	int	*array;
+	int	width;
+	int	height;
 } t_text;
 
 typedef struct s_cubed
@@ -99,7 +102,10 @@ typedef struct s_cubed
 	struct s_mlx mlx;
 	struct s_player player;
 	struct s_bres bres;
-	struct s_text text;
+	struct s_text north;
+	struct s_text south;
+	xpm_t	*xpm;
+	mlx_texture_t *wall;
 }	t_cubed;
 
 char	**append_2d(char **twod, char *str_to_add);

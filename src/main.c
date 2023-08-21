@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/21 11:41:39 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/21 16:56:32 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -607,7 +607,7 @@ float degToRad(int a) { return a*M_PI/180.0;}
 int FixAng(int a){ if(a>359){ a-=360;} if(a<0){ a+=360;} return a;}
 float distance(ax,ay,bx,by,ang){ return cos(degToRad(ang))*(bx-ax)-sin(degToRad(ang))*(by-ay);}
 
-/*static uint32_t	*get_text_color(mlx_texture_t *texture)
+static uint32_t	*get_text_color(mlx_texture_t *texture)
 {
 	int				i;
 	unsigned int	pos;
@@ -631,7 +631,7 @@ float distance(ax,ay,bx,by,ang){ return cos(degToRad(ang))*(bx-ax)-sin(degToRad(
 		i++;
 	}
 	return (colors);
-}*/
+}
 
 unsigned long createRGB(int r, int g, int b)
 {   
@@ -839,6 +839,22 @@ void drawRays2D(t_cubed *cubed)
 			mlx_put_pixel(cubed->mlx.image, ray.r*8+530+x, lineOff+y, color);
 		}
 		ty+=ty_step;
+	}
+	u_int32_t *col = get_text_color(cubed->wall);
+	for (y=0; y < 32; y++)
+	{
+		{
+			for(x=0; x<32; x++)
+			{
+				int pixel = (y*32+x);
+				/*int red = (int)col[pixel + 0];
+				int green = (int)col[pixel + 1];
+				int blue = (int)col[pixel + 2];*/
+
+				if (y < HEIGHT && x < WIDTH)
+					mlx_put_pixel(cubed->mlx.image, x, y, col[pixel]);
+			}
+		}
 	}
 /*
 	//---draw floors---
@@ -1063,12 +1079,45 @@ void	draw_map(t_cubed *cubed)
 }
 
 
-void load_texture(t_cubed *cubed)
+xpm_t	*load_image(t_cubed *cubed)
 {
-	cubed->text.wall = mlx_load_png("./textures/wall.png");
+	int			y;
+	int			x;
+	xpm_t	*xpm;
+	mlx_image_t *img;
+	t_text	text;
+
 	
-	//cubed->map.wall = mlx_texture_to_image(cubed->mlx.mlx, text);
-	//mlx_delete_texture(text);
+	y = 0;
+	x = 0;
+	cubed->map.path_to_north = "textures/stone.xpm42";
+	xpm = mlx_load_xpm42(cubed->map.path_to_north);
+	img = mlx_texture_to_image(cubed->mlx.mlx, &xpm->texture);
+	mlx_image_to_window(cubed->mlx.mlx, img, 0, 0);
+	
+	text.array = malloc(sizeof(int *) * (img->height * img->width));
+
+	while (y < (int)img->height)
+	{
+		x = 0;
+		while (x < (int)img->width)
+		{
+			text.array[img->width * y + x] = img->pixels[img->width * y + x];
+			x++;
+		}
+		y++;
+	}
+	text.width = img->width;
+	text.height = img->height;
+	mlx_delete_image(cubed->mlx.mlx, img);
+	return (xpm);
+}
+
+
+void init_map(t_cubed *cubed)
+{
+	cubed->map.path_to_north = "textures/stone.xpm";
+	cubed->map.path_to_south = "textures/satan.xpm";
 }
 
 void	cub3d(t_cubed *cubed)
@@ -1080,6 +1129,8 @@ void	cub3d(t_cubed *cubed)
 	cubed->player.dy = sin(cubed->player.pa) * 5;
 	cubed->mlx.image = NULL;
 	cubed->mlx.mlx = mlx_init(WIDTH, HEIGHT, "cub3d", false);
+
+	//init_map(cubed);
 	if (!(cubed->mlx.mlx))
 	{
 		puts(mlx_strerror(mlx_errno));
@@ -1092,15 +1143,8 @@ void	cub3d(t_cubed *cubed)
 		puts(mlx_strerror(mlx_errno));
 		exit(69);
 	}
-	load_texture(cubed);
-	/*int i = 0;
-	while (cubed->text.wall->pixels[i])
-	{
-
-		printf("%d\n", cubed->text.wall->pixels[i]);
-		i++;
-	}
-	printf("bytes per pixel = %d\n", cubed->text.wall->bytes_per_pixel);*/ 
+	cubed->xpm = load_image(cubed);
+	cubed->wall = mlx_load_png("textures/wall.png");
 	draw(cubed);
 	mlx_key_hook(cubed->mlx.mlx, &my_keyhook, cubed);
 	mlx_loop(cubed->mlx.mlx);

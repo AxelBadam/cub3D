@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/18 16:54:06 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/21 11:41:39 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,7 @@
 int mapX = 8;
 int mapY = 8;
 int	mapS = 64;
-int	map[] =
-{
-	1,1,1,1,1,1,1,1,
-	1,0,0,0,0,0,0,1,
-	1,0,0,0,1,0,0,1,
-	1,0,0,0,0,0,0,1,
-	1,0,1,0,0,0,0,1,
-	1,0,1,0,0,0,0,1,
-	1,0,1,0,0,0,0,1,
-	1,1,1,1,1,1,1,1,
-};
+
 
 int All_Textures[]=               //all 32x32 textures
 {
@@ -648,6 +638,42 @@ unsigned long createRGB(int r, int g, int b)
     return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
 
+int	mapW[] =
+{
+	1,3,3,1,1,1,1,1,
+	1,0,0,0,0,0,0,1,
+	4,0,0,0,2,0,0,1,
+	4,0,0,0,0,0,0,1,
+	1,0,1,0,0,0,0,1,
+	1,0,1,0,0,0,0,1,
+	1,0,1,0,0,0,0,1,
+	1,1,1,1,1,1,1,1,
+};
+
+int	mapC[] =
+{
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+};
+
+int	mapF[] =
+{
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+};
+
 void drawRays2D(t_cubed *cubed)
 {
 	t_ray ray;
@@ -656,11 +682,15 @@ void drawRays2D(t_cubed *cubed)
 	ray.r = -1;
 	while(++ray.r < 60)
 	{
-		//---Vertical--- 
+
+		ray.vmt = 0; //vert. text num
+		ray.hmt = 0; //hori. text num
+				//---Vertical--- 
 		ray.dof = 0;
 		ray.side = 0;
 		ray.disV = 100000;
 		ray.Tan = tan(degToRad(ray.ra));
+		
 		if(cos(degToRad(ray.ra)) > 0.001)
 		{
 			ray.rx = (((int)cubed->player.px>>6)<<6)+64;
@@ -687,8 +717,9 @@ void drawRays2D(t_cubed *cubed)
 		ray.mx = (int)(ray.rx) >> 6;
 		ray.my = (int)(ray.ry) >> 6;
 		ray.mp = ray.my * mapX + ray.mx;
-		if(ray.mp>0 && ray.mp<mapX*mapY && map[ray.mp] == 1)
+		if(ray.mp>0 && ray.mp<mapX*mapY && mapW[ray.mp] > 0)
 		{
+			ray.vmt = mapW[ray.mp] - 1;
 			ray.dof = 8;
 			ray.disV = cos(degToRad(ray.ra)) * (ray.rx-cubed->player.px) - sin(degToRad(ray.ra)) * (ray.ry-cubed->player.py);
 		}//hit         
@@ -699,7 +730,8 @@ void drawRays2D(t_cubed *cubed)
 			ray.dof += 1;
 		}                                               //check next horizontal
 	} 
-	ray.vx=ray.rx; ray.vy=ray.ry;
+	ray.vx=ray.rx; 
+	ray.vy=ray.ry;
 	//---Horizontal---
 	ray.dof = 0;
 	ray.disH = 100000;
@@ -729,8 +761,9 @@ void drawRays2D(t_cubed *cubed)
 		ray.mx = (int)(ray.rx) >> 6;
 		ray.my = (int)(ray.ry) >> 6;
 		ray.mp = ray.my * mapX + ray.mx;
-		if(ray.mp > 0 && ray.mp < mapX * mapY && map[ray.mp] == 1)
+		if(ray.mp > 0 && ray.mp < mapX * mapY && mapW[ray.mp] > 0)
 		{
+			ray.hmt = mapW[ray.mp] - 1;
 			ray.dof = 8;
 			ray.disH = cos(degToRad(ray.ra)) * (ray.rx - cubed->player.px) - sin(degToRad(ray.ra)) * (ray.ry-cubed->player.py);
 		}//hit         
@@ -746,6 +779,7 @@ void drawRays2D(t_cubed *cubed)
 
 	if(ray.disV < ray.disH)  //horizontal hit first
 	{ 
+		ray.hmt = ray.vmt;
 		shade = 0.5;
 		ray.rx = ray.vx; 
 		ray.ry = ray.vy; 
@@ -753,11 +787,13 @@ void drawRays2D(t_cubed *cubed)
 	}
 	plotline(cubed, (t_vec){cubed->player.px + 2, cubed->player.py + 2, 0, 0xFF00FFFF}, (t_vec){ray.rx, ray.ry, 0, 0xFF00FFFF}); // draw 2d ray
 	
+
+	
 	int ca = FixAng(cubed->player.pa-ray.ra);
 	ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
 	int lineH = (mapS * 320) / (ray.disH);
 	float ty_step = 32.0/(float)lineH;
-	float ty_off=0;
+	float ty_off = 0;
 	if (lineH > 320)
 	{
 		ty_off = (lineH - 320)/ 2.0;
@@ -769,10 +805,9 @@ void drawRays2D(t_cubed *cubed)
 	
 	//uint32_t *color_arr;
 	//color_arr = get_text_color(cubed->text.wall);
-
-
-
-	float ty = ty_off * ty_step; 	
+	
+	         //DRAW WALLS
+	float ty=ty_off*ty_step+ray.hmt * 32;	
 	float tx;
 	
 	if (shade == 1) // flip textures in walls
@@ -787,11 +822,8 @@ void drawRays2D(t_cubed *cubed)
 		if ( (ray.ra > 90 && ray.ra < 270))
 			tx = 31 - tx;
 	}
-	ty +=32;
-	
-	//draw walls 
 
-		
+	
 	int y;
 	int x;
 	unsigned int color;
@@ -808,9 +840,57 @@ void drawRays2D(t_cubed *cubed)
 		}
 		ty+=ty_step;
 	}
-	ray.ra=FixAng(ray.ra-1);                                                              //go to next ray
+/*
+	//---draw floors---
+ 	for(y=lineOff+lineH;y<320;y++)
+ 	{
+  		float dy= y - (320/2.0), deg = degToRad(ray.ra), raFix=cos(degToRad(FixAng(cubed->player.pa - ray.ra)));
+  		tx=cubed->player.px / 2 + cos(deg) * 158 * 32/dy/raFix;
+  		ty=cubed->player.py/2 - sin(deg)*158*32/dy/raFix;
+  		int mp=mapF[(int)(ty/32.0)*mapX+(int)(tx/32.0)]*32*32;
+  		float c=All_Textures[((int)(ty)&31)*32 + ((int)(tx)&31)+mp]*0.7;
+	
+
+		unsigned int color;
+		color = 0x000000FF;
+		for (x=0; x <= 8; x++)
+		{
+			c = All_Textures[(int)ty * 32 + (int)(tx)];
+			if (c == 1)
+				color = 0xFFFFFFFF;
+			//color = color_arr[y];
+			mlx_put_pixel(cubed->mlx.image, ray.r*8+530 + y, y, color);
+		}
+		ty+=ty_step;
+	}
+	*/
+	/*
+ //---draw ceiling---
+  	ray.mp=mapC[(int)(ty/32.0)*mapX+(int)(tx/32.0)]*32*32;
+	c=All_Textures[((int)(ty)&31)*32 + ((int)(tx)&31)+mp]*0.7;
+	int yc;
+	int xc;
+	unsigned int color;
+	for (yc = 0; yc < lineH; yc++)
+	{
+		color = 0x000000FF;
+		for (xc=0; xc <= 8; xc++)
+		{
+			float c = All_Textures[(int)ty * 32 + (int)(tx)];
+			if (c == 1)
+				color = 0xFFFFFFFF;
+			//color = color_arr[y];
+			mlx_put_pixel(cubed->mlx.image, ray.r*8+530+y, y, color);
+		}
+		ty+=ty_step;
+	}
+  
+  glColor3f(c/2.0,c/1.2,c/2.0);glPointSize(8);glBegin(GL_POINTS);glVertex2i(r*8+530,320-y);glEnd();
+ }*/
+ 
+ray.ra=FixAng(ray.ra-1);                                                            //go to next ray, 60 total
  }
-}
+}//-----------------------------------------------------------------------------                                                          //go to next ray
 
 void	draw_player(t_cubed *cubed)
 {
@@ -875,7 +955,7 @@ void	draw(t_cubed *cubed)
 
 void	rotate_player(t_cubed *cubed, int key)
 {
-	if (key == 'D')
+	if (key == MLX_KEY_RIGHT)
 		cubed->player.pa -= 5;
 	else
 		cubed->player.pa += 5;
@@ -903,7 +983,7 @@ void my_keyhook(mlx_key_data_t keydata, void *param)
 	t_cubed *cubed;
 
 	cubed = (t_cubed *)param;
-	
+	/*
  	int xo=0; if(cubed->player.dx<0){ xo=-100;} else{ xo=100;}                                    //x offset to check map
  	int yo=0; if(cubed->player.dy<0){ yo=-100;} else{ yo=100;}                           //y offset to check map
  	int ipx= cubed->player.px/64.0;
@@ -911,28 +991,31 @@ void my_keyhook(mlx_key_data_t keydata, void *param)
 	int ipx_sub_xo = (cubed->player.px-xo)/64.0;             //x position and offset
  	int ipy=cubed->player.py/64.0;
 	int ipy_add_yo= (cubed->player.py+yo)/64.0;
-	int ipy_sub_yo= (cubed->player.py-yo)/64.0;            //y position and offset
+	int ipy_sub_yo= (cubed->player.py-yo)/64.0;  */          //y position and offset
 
 
 	if (keydata.key == MLX_KEY_W && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
 		{
+			move_player(cubed, 'W');
+			/*
 			if(map[ipy*mapX        + ipx_add_xo]==0)
 				move_player(cubed, 'W');
 			if(map[ipy_add_yo*mapX + ipx]==0)
-				move_player(cubed, 'W');
+				move_player(cubed, 'W');*/
 		}
 	if (keydata.key == MLX_KEY_S && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
 	{
-		if(map[ipy*mapX        + ipx_sub_xo]==0)
+		move_player(cubed, 'S');
+		/*if(map[ipy*mapX        + ipx_sub_xo]==0)
 			{ move_player(cubed, 'S');}
   		if(map[ipy_sub_yo*mapX + ipx       ]==0)
-				{ move_player(cubed, 'S');}
+				{ move_player(cubed, 'S');}*/
 	}
 		
-	if (keydata.key == MLX_KEY_D && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		rotate_player(cubed, 'D');
-	if (keydata.key == MLX_KEY_A && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		rotate_player(cubed, 'A');
+	if (keydata.key ==  MLX_KEY_RIGHT && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
+		rotate_player(cubed, MLX_KEY_RIGHT);
+	if (keydata.key == MLX_KEY_LEFT && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
+		rotate_player(cubed, MLX_KEY_LEFT);
 	if (keydata.key == MLX_KEY_ESCAPE && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
 		exit (0);
 	draw(cubed);
@@ -964,7 +1047,7 @@ void	draw_map(t_cubed *cubed)
 	{
 		while (x < mapX)
 		{
-			if (map[y * mapX + x] == 1)
+			if (mapW[y * mapX + x] > 0)
 				color = 0xFFFFFFFF;
 			else
 				color = 0x000000FF;
@@ -983,6 +1066,7 @@ void	draw_map(t_cubed *cubed)
 void load_texture(t_cubed *cubed)
 {
 	cubed->text.wall = mlx_load_png("./textures/wall.png");
+	
 	//cubed->map.wall = mlx_texture_to_image(cubed->mlx.mlx, text);
 	//mlx_delete_texture(text);
 }

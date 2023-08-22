@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/22 18:05:34 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/22 18:11:04 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -517,8 +517,6 @@ void	nullify_map(t_cubed *cubed)
 	cubed->map.map = NULL;
 	cubed->map.cealing_color = -1;
 	cubed->map.floor_color = -1;
-	cubed->map.map_postionX = 0;
-	cubed->map.map_postionY = 0;
 }
 
 void	get_map_attributes(t_cubed *cubed, char **file)
@@ -764,8 +762,6 @@ void	find_player_position(t_cubed *cubed)
 			{
 				cubed->player.px = xo + cubed->map.mapS / 2;
 				cubed->player.py = yo + cubed->map.mapS / 2;
-				cubed->player.og_x = xo + cubed->map.mapS / 2;
-				cubed->player.og_y = yo + cubed->map.mapS / 2;
 				cubed->map.map[y * cubed->map.mapX + x] = 0;
 			}
 			x++;

@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/22 18:09:19 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/22 18:15:29 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ typedef struct s_map
 
 typedef struct s_player
 {
+	int		og_y;
+	int		og_x;
 	float	py;
 	float	px;
 	float	dx;

@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/21 17:08:24 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/22 12:30:20 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -677,7 +677,8 @@ int	mapF[] =
 void drawRays2D(t_cubed *cubed)
 {
 	t_ray ray;
- 
+	
+	
 	ray.ra=FixAng(cubed->player.pa+30);                                                        //ray set back 30 degrees
 	ray.r = -1;
 	while(++ray.r < 60)
@@ -777,6 +778,8 @@ void drawRays2D(t_cubed *cubed)
 	
 	float shade = 1;
 
+	mlx_texture_t *text = cubed->north;
+	
 	if(ray.disV < ray.disH)  //horizontal hit first
 	{ 
 		ray.hmt = ray.vmt;
@@ -784,10 +787,20 @@ void drawRays2D(t_cubed *cubed)
 		ray.rx = ray.vx; 
 		ray.ry = ray.vy; 
 		ray.disH = ray.disV;
+		if (ray.ra < 270 && ray.ra > 90)
+			text = cubed->east;
+		else
+			text = cubed->west;
+	}
+	if(ray.disV > ray.disH)
+	{
+		if (ray.ra < 360 && ray.ra > 180)
+			text = cubed->north;
+		else
+			text = cubed->south;
+		
 	}
 	plotline(cubed, (t_vec){cubed->player.px + 2, cubed->player.py + 2, 0, 0xFF00FFFF}, (t_vec){ray.rx, ray.ry, 0, 0xFF00FFFF}); // draw 2d ray
-	
-
 	
 	int ca = FixAng(cubed->player.pa-ray.ra);
 	ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
@@ -799,14 +812,9 @@ void drawRays2D(t_cubed *cubed)
 		ty_off = (lineH - 320)/ 2.0;
 		lineH = 320;                    								 //line height and limit
 	}
-	int lineOff = 160 - (lineH>>1);  
-	
-	   							 //line offset
-	
-	//uint32_t *color_arr;
-	//color_arr = get_text_color(cubed->text.wall);
-	
-	         //DRAW WALLS
+	int lineOff = 160 - (lineH>>1);  //line offset
+	       
+		     //DRAW WALLS
 	float ty=ty_off*ty_step+ray.hmt * 32;	
 	float tx;
 	
@@ -823,87 +831,52 @@ void drawRays2D(t_cubed *cubed)
 			tx = 31 - tx;
 	}
 
+	ray.len = 0;
+/*
+	if (ray.disH < ray.disV)
+	{
+		ray.side = 0;
+		ray.len = ray.disH;
+		ray.ry = (int)dda->ray_y_h;
+		ray.rx = (int)dda->ray_x_h;
+		ray.og_ray_x = dda->ray_x_h;
+		ray->og_ray_y = dda->ray_y_h;
+	}
+	else
+	{
+		if (cubed->player.px < ray.rx)
+			text = cubed->east;
+		else
+			text = cubed->west;
+	}
 	
+	ray.side = 1;
+	ray->ray_len = dda->ray_len_vert;
+	ray->ray_y = (int)dda->ray_y_v;
+	ray->ray_x = (int)dda->ray_x_v;
+	ray->og_ray_x = dda->ray_x_v;
+	ray->og_ray_y = dda->ray_y_v;*/
+
+
+
+
 	int y;
 	int x;
-	u_int32_t *col = get_text_color(cubed->wall);
+	u_int32_t *col = get_text_color(text);
+	int pixel = (int)ty * 32 + (int)tx;
+
 	for (y = 0; y < lineH; y++)
 	{
 		for (x=0; x <= 8; x++)
 		{
-			int pixel = (int)ty * 32 + (int)tx;
-			//color = color_arr[y];
+			pixel = (int)ty * 32 + (int)tx;
 			mlx_put_pixel(cubed->mlx.image, ray.r*8+530+x, lineOff+y, col[pixel]);
 		}
 		ty+=ty_step;
 	}
-/*
-	for (y=0; y < 32; y++)
-	{
-		{
-			for(x=0; x<32; x++)
-			{
-
-				int red = (int)col[pixel + 0];
-				int green = (int)col[pixel + 1];
-				int blue = (int)col[pixel + 2];
-
-				if (y < HEIGHT && x < WIDTH)
-					mlx_put_pixel(cubed->mlx.image, x, y, col[pixel]);
-			}
-		}
-	}*/
-/*
-	//---draw floors---
- 	for(y=lineOff+lineH;y<320;y++)
- 	{
-  		float dy= y - (320/2.0), deg = degToRad(ray.ra), raFix=cos(degToRad(FixAng(cubed->player.pa - ray.ra)));
-  		tx=cubed->player.px / 2 + cos(deg) * 158 * 32/dy/raFix;
-  		ty=cubed->player.py/2 - sin(deg)*158*32/dy/raFix;
-  		int mp=mapF[(int)(ty/32.0)*mapX+(int)(tx/32.0)]*32*32;
-  		float c=All_Textures[((int)(ty)&31)*32 + ((int)(tx)&31)+mp]*0.7;
-	
-
-		unsigned int color;
-		color = 0x000000FF;
-		for (x=0; x <= 8; x++)
-		{
-			c = All_Textures[(int)ty * 32 + (int)(tx)];
-			if (c == 1)
-				color = 0xFFFFFFFF;
-			//color = color_arr[y];
-			mlx_put_pixel(cubed->mlx.image, ray.r*8+530 + y, y, color);
-		}
-		ty+=ty_step;
+	ray.ra=FixAng(ray.ra-1);                                                            //go to next ray, 60 total
 	}
-	*/
-	/*
- //---draw ceiling---
-  	ray.mp=mapC[(int)(ty/32.0)*mapX+(int)(tx/32.0)]*32*32;
-	c=All_Textures[((int)(ty)&31)*32 + ((int)(tx)&31)+mp]*0.7;
-	int yc;
-	int xc;
-	unsigned int color;
-	for (yc = 0; yc < lineH; yc++)
-	{
-		color = 0x000000FF;
-		for (xc=0; xc <= 8; xc++)
-		{
-			float c = All_Textures[(int)ty * 32 + (int)(tx)];
-			if (c == 1)
-				color = 0xFFFFFFFF;
-			//color = color_arr[y];
-			mlx_put_pixel(cubed->mlx.image, ray.r*8+530+y, y, color);
-		}
-		ty+=ty_step;
-	}
-  
-  glColor3f(c/2.0,c/1.2,c/2.0);glPointSize(8);glBegin(GL_POINTS);glVertex2i(r*8+530,320-y);glEnd();
- }*/
- 
-ray.ra=FixAng(ray.ra-1);                                                            //go to next ray, 60 total
- }
-}//-----------------------------------------------------------------------------                                                          //go to next ray
+}
 
 void	draw_player(t_cubed *cubed)
 {
@@ -1141,7 +1114,10 @@ void	cub3d(t_cubed *cubed)
 		exit(69);
 	}
 	cubed->xpm = load_image(cubed);
-	cubed->wall = mlx_load_png("textures/wall.png");
+	cubed->north = mlx_load_png("textures/tile_dirt.png");
+	cubed->south = mlx_load_png("textures/tile_water.png");
+	cubed->east = mlx_load_png("textures/tile_red.png");
+	cubed->west = mlx_load_png("textures/tile_flower.png");
 	draw(cubed);
 	mlx_key_hook(cubed->mlx.mlx, &my_keyhook, cubed);
 	mlx_loop(cubed->mlx.mlx);

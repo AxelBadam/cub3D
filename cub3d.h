@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/21 16:52:03 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/22 11:36:38 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ typedef struct s_ray
 	float	disV;
 	float	disH;
 	float	Tan;
+	float	len;
 }	t_ray;
 
 typedef struct s_mlx
@@ -102,10 +103,11 @@ typedef struct s_cubed
 	struct s_mlx mlx;
 	struct s_player player;
 	struct s_bres bres;
-	struct s_text north;
-	struct s_text south;
 	xpm_t	*xpm;
-	mlx_texture_t *wall;
+	mlx_texture_t *north;
+	mlx_texture_t *south;
+	mlx_texture_t *east;
+	mlx_texture_t *west;
 }	t_cubed;
 
 char	**append_2d(char **twod, char *str_to_add);

@@ -1,2 +1,3 @@
 - A and D to move
+- better movement (flag change)
 - 4 different textures for walls

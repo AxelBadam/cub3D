@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/22 15:48:53 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/22 16:28:15 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -952,16 +952,34 @@ void	rotate_player(t_cubed *cubed, int key)
 
 void	move_player(t_cubed *cubed, int key)
 {
+	float perpendicular_dx;
+	float perpendicular_dy;
+	
 	if (key == 'W')
 	{
-		cubed->player.px += cubed->player.dx * 5;
-		cubed->player.py += cubed->player.dy * 5;
+		cubed->player.px += cubed->player.dx * mapS / 4;
+		cubed->player.py += cubed->player.dy * mapS / 4;
 	}
-	else
+	else if (key == 'S')
 	{
-		cubed->player.px -= cubed->player.dx * 5;
-		cubed->player.py -= cubed->player.dy * 5;
+		cubed->player.px -= cubed->player.dx * mapS / 4;
+		cubed->player.py -= cubed->player.dy * mapS / 4;
 	}
+	else if (key == 'A') 
+	{
+		perpendicular_dx = -cubed->player.dy;
+    	perpendicular_dy = cubed->player.dx;
+    	cubed->player.px += perpendicular_dx * mapS / 4;
+    	cubed->player.py += perpendicular_dy * mapS / 4;
+	} 
+	else if (key == 'D') 
+	{
+   		perpendicular_dx = cubed->player.dy;
+   		perpendicular_dy = -cubed->player.dx;
+   		cubed->player.px += perpendicular_dx * mapS / 4;
+		cubed->player.py += perpendicular_dy * mapS / 4;
+	}
+	
 }
 
 void my_keyhook(mlx_key_data_t keydata, void *param)
@@ -969,35 +987,14 @@ void my_keyhook(mlx_key_data_t keydata, void *param)
 	t_cubed *cubed;
 
 	cubed = (t_cubed *)param;
-	/*
- 	int xo=0; if(cubed->player.dx<0){ xo=-100;} else{ xo=100;}                                    //x offset to check map
- 	int yo=0; if(cubed->player.dy<0){ yo=-100;} else{ yo=100;}                           //y offset to check map
- 	int ipx= cubed->player.px/64.0;
-	int ipx_add_xo = (cubed->player.px+xo)/64.0;
-	int ipx_sub_xo = (cubed->player.px-xo)/64.0;             //x position and offset
- 	int ipy=cubed->player.py/64.0;
-	int ipy_add_yo= (cubed->player.py+yo)/64.0;
-	int ipy_sub_yo= (cubed->player.py-yo)/64.0;  */          //y position and offset
-
-
 	if (keydata.key == MLX_KEY_W && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		{
-			move_player(cubed, 'W');
-			/*
-			if(map[ipy*mapX        + ipx_add_xo]==0)
-				move_player(cubed, 'W');
-			if(map[ipy_add_yo*mapX + ipx]==0)
-				move_player(cubed, 'W');*/
-		}
+		move_player(cubed, 'W');
 	if (keydata.key == MLX_KEY_S && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-	{
 		move_player(cubed, 'S');
-		/*if(map[ipy*mapX        + ipx_sub_xo]==0)
-			{ move_player(cubed, 'S');}
-  		if(map[ipy_sub_yo*mapX + ipx       ]==0)
-				{ move_player(cubed, 'S');}*/
-	}
-		
+	if (keydata.key == MLX_KEY_A && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
+		move_player(cubed, 'A');
+	if (keydata.key == MLX_KEY_D && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
+		move_player(cubed, 'D');
 	if (keydata.key ==  MLX_KEY_RIGHT && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
 		rotate_player(cubed, MLX_KEY_RIGHT);
 	if (keydata.key == MLX_KEY_LEFT && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
@@ -1048,46 +1045,12 @@ void	draw_map(t_cubed *cubed)
 	}
 }
 
-
-xpm_t	*load_image(t_cubed *cubed)
+void load_text(t_cubed *cubed)
 {
-	int			y;
-	int			x;
-	xpm_t	*xpm;
-	mlx_image_t *img;
-	t_text	text;
-
-	
-	y = 0;
-	x = 0;
-	cubed->map.path_to_north = "textures/stone.xpm42";
-	xpm = mlx_load_xpm42(cubed->map.path_to_north);
-	img = mlx_texture_to_image(cubed->mlx.mlx, &xpm->texture);
-	mlx_image_to_window(cubed->mlx.mlx, img, 0, 0);
-	
-	text.array = malloc(sizeof(int *) * (img->height * img->width));
-
-	while (y < (int)img->height)
-	{
-		x = 0;
-		while (x < (int)img->width)
-		{
-			text.array[img->width * y + x] = img->pixels[img->width * y + x];
-			x++;
-		}
-		y++;
-	}
-	text.width = img->width;
-	text.height = img->height;
-	mlx_delete_image(cubed->mlx.mlx, img);
-	return (xpm);
-}
-
-
-void init_map(t_cubed *cubed)
-{
-	cubed->map.path_to_north = "textures/stone.xpm";
-	cubed->map.path_to_south = "textures/satan.xpm";
+	cubed->north = mlx_load_png("textures/ball.png");
+	cubed->south = mlx_load_png("textures/ball_neg.png");
+	cubed->east = mlx_load_png("textures/ball_sepia.png");
+	cubed->west = mlx_load_png("textures/ball_mono.png");
 }
 
 void	cub3d(t_cubed *cubed)
@@ -1099,8 +1062,6 @@ void	cub3d(t_cubed *cubed)
 	cubed->player.dy = sin(cubed->player.pa) * 5;
 	cubed->mlx.image = NULL;
 	cubed->mlx.mlx = mlx_init(WIDTH, HEIGHT, "cub3d", false);
-
-	//init_map(cubed);
 	if (!(cubed->mlx.mlx))
 	{
 		puts(mlx_strerror(mlx_errno));
@@ -1113,11 +1074,7 @@ void	cub3d(t_cubed *cubed)
 		puts(mlx_strerror(mlx_errno));
 		exit(69);
 	}
-	cubed->xpm = load_image(cubed);
-	cubed->north = mlx_load_png("textures/ball.png");
-	cubed->south = mlx_load_png("textures/ball_neg.png");
-	cubed->east = mlx_load_png("textures/ball_sepia.png");
-	cubed->west = mlx_load_png("textures/ball_mono.png");
+	load_text(cubed);
 	draw(cubed);
 	mlx_key_hook(cubed->mlx.mlx, &my_keyhook, cubed);
 	mlx_loop(cubed->mlx.mlx);

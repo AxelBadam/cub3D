@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/22 18:15:00 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/22 19:20:06 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -570,6 +570,35 @@ int get_rgba(int r, int g, int b, int a)
     return (r << 24 | g << 16 | b << 8 | a);
 }
 
+void	ray_plotline(t_cubed *cubed, t_vec v1, t_vec v2)
+{
+	cubed->bres.dx = abs(v2.x - v1.x);
+	cubed->bres.dy = -abs(v2.y - v1.y);
+	cubed->bres.sx = -1;
+	if (v1.x < v2.x)
+		cubed->bres.sx = 1;
+	cubed->bres.sy = -1;
+	if (v1.y < v2.y)
+		cubed->bres.sy = 1;
+	cubed->bres.error[0] = cubed->bres.dx + cubed->bres.dy;
+	while (v1.x != v2.x || v1.y != v2.y)
+	{
+		if (v1.x > 3 && v1.x < 153 && v1.y > 3 && v1.y < 154)
+			my_pixel_put(cubed->mlx.image, v1.x, v1.y, v1.color);
+		cubed->bres.error[1] = 2 * cubed->bres.error[0];
+		if (cubed->bres.error[1] >= cubed->bres.dy)
+		{
+			cubed->bres.error[0] += cubed->bres.dy;
+			v1.x += cubed->bres.sx;
+		}
+		if (cubed->bres.error[1] <= cubed->bres.dx)
+		{
+			cubed->bres.error[0] += cubed->bres.dx;
+			v1.y += cubed->bres.sy;
+		}
+	}
+}
+
 void	plotline(t_cubed *cubed, t_vec v1, t_vec v2)
 {
 	cubed->bres.dx = abs(v2.x - v1.x);
@@ -705,24 +734,16 @@ void drawRays2D(t_cubed *cubed)
 	}                  //horizontal hit first
 	float	dist_traveledX = cubed->player.px - cubed->player.og_x;
 	float	dist_traveledY = cubed->player.py - cubed->player.og_y;
-	ray.rx = (ray.rx - dist_traveledX) - (cubed->player.og_x - 75);
-	ray.ry = (ray.ry - dist_traveledY) - (cubed->player.og_y - 75);
-	if (ray.rx > 152)
-		ray.rx = 152;
-	else if (ray.rx < 4)
-		ray.rx = 4;
-	if (ray.ry > 152)
-		ray.ry = 152;
-	else if (ray.ry < 4)
-		ray.ry = 4;
-	plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
+	ray.rx = (ray.rx - dist_traveledX) - (cubed->player.og_x - (float)75);
+	ray.ry = (ray.ry - dist_traveledY) - (cubed->player.og_y - (float)75);
+	ray_plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
 	int ca = FixAng(cubed->player.pa - ray.ra);
 	ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
 	int lineH = (cubed->map.mapS * 320) / (ray.disH);
-	if (lineH > 320)
-		lineH = 320;                     //line height and limit
-	int lineOff = 160 - (lineH>>1);                                               //line offset
-	plotline(cubed, (t_vec){ray.r*8+530, lineOff, 0, 0xFF0000FF}, (t_vec){ray.r*8+530, lineOff+lineH, 0, 0xFF0000FF});
+	if (lineH > 500)
+		lineH = 500;                     //line height and limit
+	int lineOff = 500 - (lineH>>1);                                               //line offset
+	plotline(cubed, (t_vec){ray.r*20, lineOff, 0, 0xFF0000FF}, (t_vec){ray.r*20, lineOff+lineH, 0, 0xFF0000FF});
 	ray.ra = FixAng(ray.ra - 1);                                                              //go to next ray
  }
 }
@@ -812,19 +833,19 @@ void	move_player(t_cubed *cubed, int key)
 	int yo = 0;
 	if(cubed->player.dx < 0)
 	{
-		xo = -(cubed->map.mapS / 2);
+		xo = -(cubed->map.mapS / 4);
 	}
 	else
 	{
-		xo = cubed->map.mapS / 2;
+		xo = cubed->map.mapS / 4;
 	}                                    //x offset to check map
 	if (cubed->player.dy < 0)
 	{
-		yo = -(cubed->map.mapS / 2);
+		yo = -(cubed->map.mapS / 4);
 	}
 	else
 	{
-		yo = cubed->map.mapS / 2;
+		yo = cubed->map.mapS / 4;
 	}
 	int ipx=cubed->player.px/cubed->map.mapS; int ipx_add_xo=(cubed->player.px+xo)/cubed->map.mapS; int ipx_sub_xo=(cubed->player.px-xo)/cubed->map.mapS;             //x position and offset
  	int ipy=cubed->player.py/cubed->map.mapS; int ipy_add_yo=(cubed->player.py+yo)/cubed->map.mapS; int ipy_sub_yo=(cubed->player.py-yo)/cubed->map.mapS; 
@@ -832,26 +853,26 @@ void	move_player(t_cubed *cubed, int key)
 	{
 		if(cubed->map.map[ipy * cubed->map.mapX + ipx_add_xo]==0)
 		{
-			cubed->player.px += cubed->player.dx * (cubed->map.mapS / 2);
-			cubed->map.map_postionX -= cubed->player.dx * (cubed->map.mapS / 2);
+			cubed->player.px += cubed->player.dx * (cubed->map.mapS / 4);
+			cubed->map.map_postionX -= cubed->player.dx * (cubed->map.mapS / 4);
 		}
   		if(cubed->map.map[ipy_add_yo * cubed->map.mapX + ipx]==0)
 		{
-			cubed->player.py += cubed->player.dy * (cubed->map.mapS / 2);
-			cubed->map.map_postionY -= cubed->player.dy * (cubed->map.mapS / 2);
+			cubed->player.py += cubed->player.dy * (cubed->map.mapS / 4);
+			cubed->map.map_postionY -= cubed->player.dy * (cubed->map.mapS / 4);
 		}
 	}
 	else
 	{
 		if(cubed->map.map[ipy * cubed->map.mapX + ipx_sub_xo]==0)
 		{
-			cubed->player.px -= cubed->player.dx * (cubed->map.mapS / 2);
-			cubed->map.map_postionX += cubed->player.dx * (cubed->map.mapS / 2);
+			cubed->player.px -= cubed->player.dx * (cubed->map.mapS / 4);
+			cubed->map.map_postionX += cubed->player.dx * (cubed->map.mapS / 4);
 		}
   		if(cubed->map.map[ipy_sub_yo * cubed->map.mapX + ipx] == 0)
 		{
-			cubed->player.py -= cubed->player.dy * (cubed->map.mapS / 2);
-			cubed->map.map_postionY +=cubed->player.dy * (cubed->map.mapS / 2);
+			cubed->player.py -= cubed->player.dy * (cubed->map.mapS / 4);
+			cubed->map.map_postionY +=cubed->player.dy * (cubed->map.mapS / 4);
 		}
 	}
 }

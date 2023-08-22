@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/22 18:15:29 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/22 19:15:10 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 #include <fcntl.h>
 #include <math.h>
 #define PI 3.141592653
-#define WIDTH 1024
-#define HEIGHT 512
+#define WIDTH 1000
+#define HEIGHT 1000
 #define P2 PI/2
 #define P3 3*PI/2
 #define DR 0.0174533

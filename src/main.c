@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/21 17:26:11 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/22 18:05:34 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,7 +365,6 @@ void	convert_map_to_int(t_cubed *cubed, char **map)
 		fill_int_array(cubed, map[row++]);
 	for (int i = 0; i < cubed->map.mapS; i++)
 		printf("%i", cubed->map.map[i]);
-	find_player_position(cubed);   //mieti viela paikkaa
 }
 
 char	**get_map(t_cubed *cubed, char **file)
@@ -706,7 +705,17 @@ void drawRays2D(t_cubed *cubed)
 	}                  //horizontal hit first
 	float	dist_traveledX = cubed->player.px - cubed->player.og_x;
 	float	dist_traveledY = cubed->player.py - cubed->player.og_y;
-	plotline(cubed, (t_vec){cubed->player.px - dist_traveledX, cubed->player.py - dist_traveledY, 0, 0xFF0000FF}, (t_vec){ray.rx - dist_traveledX, ray.ry - dist_traveledY, 0, 0xFF0000FF});
+	ray.rx = (ray.rx - dist_traveledX) - (cubed->player.og_x - 75);
+	ray.ry = (ray.ry - dist_traveledY) - (cubed->player.og_y - 75);
+	if (ray.rx > 152)
+		ray.rx = 152;
+	else if (ray.rx < 4)
+		ray.rx = 4;
+	if (ray.ry > 152)
+		ray.ry = 152;
+	else if (ray.ry < 4)
+		ray.ry = 4;
+	plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
 	int ca = FixAng(cubed->player.pa - ray.ra);
 	ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
 	int lineH = (cubed->map.mapS * 320) / (ray.disH);
@@ -723,16 +732,16 @@ void	draw_player(t_cubed *cubed)
 	int	x;
 	int	y;
 
-	x = cubed->player.og_x;
-	y = cubed->player.og_y;
-	while(x < (cubed->player.og_x + 8))
+	x = 75;
+	y = 75;
+	while(x < (75 + 4))
 	{
-		while (y < (cubed->player.og_y + 8))
+		while (y < (75 + 4))
 		{
 			my_pixel_put(cubed->mlx.image, x, y, 0xFF00FFFF);
 			y++;
 		}
-		y = cubed->player.og_y;
+		y = 75;
 		x++;
 	}
 }
@@ -803,19 +812,19 @@ void	move_player(t_cubed *cubed, int key)
 	int yo = 0;
 	if(cubed->player.dx < 0)
 	{
-		xo = -15;
+		xo = -(cubed->map.mapS / 2);
 	}
 	else
 	{
-		xo = 15;
+		xo = cubed->map.mapS / 2;
 	}                                    //x offset to check map
 	if (cubed->player.dy < 0)
 	{
-		yo = -15;
+		yo = -(cubed->map.mapS / 2);
 	}
 	else
 	{
-		yo = 15;
+		yo = cubed->map.mapS / 2;
 	}
 	int ipx=cubed->player.px/cubed->map.mapS; int ipx_add_xo=(cubed->player.px+xo)/cubed->map.mapS; int ipx_sub_xo=(cubed->player.px-xo)/cubed->map.mapS;             //x position and offset
  	int ipy=cubed->player.py/cubed->map.mapS; int ipy_add_yo=(cubed->player.py+yo)/cubed->map.mapS; int ipy_sub_yo=(cubed->player.py-yo)/cubed->map.mapS; 
@@ -823,26 +832,26 @@ void	move_player(t_cubed *cubed, int key)
 	{
 		if(cubed->map.map[ipy * cubed->map.mapX + ipx_add_xo]==0)
 		{
-			cubed->player.px += cubed->player.dx * 5;
-			cubed->map.map_postionX -= cubed->player.dx * 5;
+			cubed->player.px += cubed->player.dx * (cubed->map.mapS / 2);
+			cubed->map.map_postionX -= cubed->player.dx * (cubed->map.mapS / 2);
 		}
   		if(cubed->map.map[ipy_add_yo * cubed->map.mapX + ipx]==0)
 		{
-			cubed->player.py += cubed->player.dy * 5;
-			cubed->map.map_postionY -= cubed->player.dy * 5;
+			cubed->player.py += cubed->player.dy * (cubed->map.mapS / 2);
+			cubed->map.map_postionY -= cubed->player.dy * (cubed->map.mapS / 2);
 		}
 	}
 	else
 	{
 		if(cubed->map.map[ipy * cubed->map.mapX + ipx_sub_xo]==0)
 		{
-			cubed->player.px -= cubed->player.dx * 5;
-			cubed->map.map_postionX += cubed->player.dx * 5;
+			cubed->player.px -= cubed->player.dx * (cubed->map.mapS / 2);
+			cubed->map.map_postionX += cubed->player.dx * (cubed->map.mapS / 2);
 		}
   		if(cubed->map.map[ipy_sub_yo * cubed->map.mapX + ipx] == 0)
 		{
-			cubed->player.py -= cubed->player.dy * 5;
-			cubed->map.map_postionY +=cubed->player.dy * 5;
+			cubed->player.py -= cubed->player.dy * (cubed->map.mapS / 2);
+			cubed->map.map_postionY +=cubed->player.dy * (cubed->map.mapS / 2);
 		}
 	}
 }
@@ -868,11 +877,15 @@ void	draw_rectangle(t_cubed *cubed, int ry, int rx, int color)
 	int	x = 0;
 	int y = ry;
 
-	while (y < ry + cubed->map.mapS - 1)
+	while (y < ry + cubed->map.mapS)
 	{
 		x = rx;
-		while (x < rx + cubed->map.mapS - 1)
-			my_pixel_put(cubed->mlx.image, x++, y, color);
+		while (x < rx + cubed->map.mapS)
+		{
+			if (y > 3 && y < 153 && x > 3 && x < 153)
+				my_pixel_put(cubed->mlx.image, x, y, color);
+			x++;
+		}
 		y++;
 	}
 }
@@ -894,18 +907,23 @@ void	draw_map(t_cubed *cubed)
 				color = 0x000000FF;
 			xo = x * cubed->map.mapS + cubed->map.map_postionX;
 			yo = y * cubed->map.mapS + cubed->map.map_postionY;
-			draw_rectangle(cubed, yo, xo, color);
+			draw_rectangle(cubed, yo - (cubed->player.og_y - 75), xo - (cubed->player.og_x - 75), color);
 			x++;
 			i++;
 		}
 		x = 0;
 		y++;
 	}
+	plotline(cubed, (t_vec){3, 3, 0, 0xFF00FFFF}, (t_vec){3, 153, 0, 0xFF00FFFF});
+	plotline(cubed, (t_vec){3, 153, 0, 0xFF00FFFF}, (t_vec){153, 153, 0, 0xFF00FFFF});
+	plotline(cubed, (t_vec){153, 153, 0, 0xFF00FFFF}, (t_vec){153, 3, 0, 0xFF00FFFF});
+	plotline(cubed, (t_vec){153, 3, 0, 0xFF00FFFF}, (t_vec){3, 3, 0, 0xFF00FFFF});
 }
 
 void	cub3d(t_cubed *cubed)
 {
-	cubed->map.mapS = cubed->map.mapS;
+	cubed->map.mapS = 24;
+	find_player_position(cubed);
 	cubed->player.dx = cos(degToRad(cubed->player.pa));
 	cubed->player.dy = -sin(degToRad(cubed->player.pa));
 	cubed->mlx.image = NULL;

@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/21 15:50:06 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/22 13:58:20 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,10 @@ typedef struct s_map
 	char		*path_to_east;
 	long int	floor_color;
 	long int	cealing_color;
-	int			map_postionX;
-	int			map_postionY;
 } t_map;
 
 typedef struct s_player
 {
-	int		og_y;
-	int		og_x;
 	float	py;
 	float	px;
 	float	dx;

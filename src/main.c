@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/22 12:30:20 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/22 15:48:53 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1114,10 +1114,10 @@ void	cub3d(t_cubed *cubed)
 		exit(69);
 	}
 	cubed->xpm = load_image(cubed);
-	cubed->north = mlx_load_png("textures/tile_dirt.png");
-	cubed->south = mlx_load_png("textures/tile_water.png");
-	cubed->east = mlx_load_png("textures/tile_red.png");
-	cubed->west = mlx_load_png("textures/tile_flower.png");
+	cubed->north = mlx_load_png("textures/ball.png");
+	cubed->south = mlx_load_png("textures/ball_neg.png");
+	cubed->east = mlx_load_png("textures/ball_sepia.png");
+	cubed->west = mlx_load_png("textures/ball_mono.png");
 	draw(cubed);
 	mlx_key_hook(cubed->mlx.mlx, &my_keyhook, cubed);
 	mlx_loop(cubed->mlx.mlx);

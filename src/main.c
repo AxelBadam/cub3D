@@ -6,11 +6,15 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/23 15:04:26 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/23 15:22:54 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+int mapX = 8;
+int mapY = 8;
+int	mapS = 64;
 
 void	my_pixel_put(mlx_image_t *image, int x, int y, int color)
 {
@@ -564,7 +568,6 @@ void	map_parsing(t_cubed *cubed, char *filename)
 	get_map_attributes(cubed, file);
 	free_string_array(file);
 }
-
 
 void	plotline(t_cubed *cubed, t_vec v1, t_vec v2)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/23 16:06:47 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/23 16:12:09 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	error_exit(t_cubed *cubed, char *error_msg)
 {
 	(void)cubed;
 	ft_putstr_fd("Error\n", 2);
+	ft_putstr_fd("Error\n", 2);
 	ft_putstr_fd(error_msg, 2);
 	exit(1);
 }
@@ -110,6 +111,17 @@ char	*texture_path(t_cubed *cubed, char *row)
 	return (path);
 }
 
+int	iterate_over_white_spaces(char *row)
+{
+	int	ctr;
+
+	ctr = 0;
+	while (row[ctr] && ft_is_white_space(row[ctr]))
+		ctr++;
+	return (ctr);
+}
+
+void	check_if_east_or_west(t_cubed *cubed, char *row)
 int	iterate_over_white_spaces(char *row)
 {
 	int	ctr;
@@ -194,11 +206,16 @@ void	get_colors(t_cubed *cubed, char *row)
 
 	ctr = iterate_over_white_spaces(row);
 	if (row[ctr] == 'F' && ft_is_white_space(row[ctr + 1]))
+	int	ctr;
+
+	ctr = iterate_over_white_spaces(row);
+	if (row[ctr] == 'F' && ft_is_white_space(row[ctr + 1]))
 	{
 		if (cubed->map.floor_color != -1)
 			error_exit(cubed, "TOO MANY COLORS\n");
 		cubed->map.floor_color = get_color(row);
 	}
+	else if (row[ctr] == 'C' && ft_is_white_space(row[ctr + 1]))
 	else if (row[ctr] == 'C' && ft_is_white_space(row[ctr + 1]))
 	{
 		if (cubed->map.cealing_color != -1)
@@ -286,8 +303,94 @@ int	iterate_to_newline(char *row)
 }
 
 void	get_int_map_size(t_cubed *cubed, char **map)
+void	get_int_map_size(t_cubed *cubed, char **map)
 {
 	int	size;
+	int	row;
+
+	size = 0;
+	row = 0;
+	while (map[row])
+	{
+		if (size < ft_strlen(map[row]))
+			size = ft_strlen(map[row]);
+		row++;
+	}
+	cubed->map.mapS = size * row;
+	cubed->map.mapY = row;
+	cubed->map.mapX = size;
+}
+
+void	get_player_angle(t_cubed *cubed, char direction)
+{
+	if (direction == 'W')
+		cubed->player.pa = 180;
+	else if (direction == 'E')
+		cubed->player.pa = 0;
+	else if (direction == 'S')
+		cubed->player.pa = 270;
+	else if (direction == 'N')
+		cubed->player.pa = 90;
+}
+
+void	fill_int_array(t_cubed *cubed, char *row)
+{
+	static int	index;
+	int			column;
+	int			tmp;
+
+	tmp = 0;
+	column = 0;
+	while (row[column])
+	{
+		if (ft_is_white_space(row[column]))
+			cubed->map.map[index] = 2;
+		else if (row[column] == 'W' || row[column] == 'S' || row[column] == 'E' || row[column] == 'N')
+		{
+			get_player_angle(cubed, row[column]);
+			cubed->map.map[index] = 3;
+		}
+		else
+			cubed->map.map[index] = row[column] - 48;
+		index++;
+		column++;
+		if (!row[column] && cubed->map.mapX > column)
+		{
+			tmp = column;
+			while (tmp < cubed->map.mapX)
+			{
+				cubed->map.map[index++] = 2;
+				tmp++;
+			}
+		}
+	}
+}
+
+void	convert_map_to_int(t_cubed *cubed, char **map)
+{
+	int	row;
+	int	index;
+	int	column;
+
+	column = 0;
+	row = 0;
+	index = 0;
+	get_int_map_size(cubed, map);
+	cubed->map.map = (int *)malloc(sizeof(int) * cubed->map.mapS);
+	if (!cubed->map.map)
+		error_exit(cubed, "MALLOC ERROR\n");
+	while (map[row])
+		fill_int_array(cubed, map[row++]);
+	for (int i = 0; i < cubed->map.mapS; i++)
+		printf("%i", cubed->map.map[i]);
+}
+
+char	**get_map(t_cubed *cubed, char **file)
+{
+	int		row;
+	char	**map;
+	int		map_row;
+	int		size;
 	int	row;
 
 	size = 0;
@@ -381,14 +484,21 @@ char	**get_map(t_cubed *cubed, char **file)
 	map_row = 0;
 	map = (char **)malloc(sizeof(char *) * size + 1);
 	if (!map)
+	map = (char **)malloc(sizeof(char *) * size + 1);
+	if (!map)
 		error_exit(cubed, "MALLOC ERROR\n");
 	while (file[row] && !check_for_empty_row(file[row]))
 	{
 		map[map_row++] = ft_substr(file[row], 0, iterate_to_newline(file[row]));
 		if (!map[map_row - 1])
 			error_exit(cubed, "MALLOC ERROR\n");
+		map[map_row++] = ft_substr(file[row], 0, iterate_to_newline(file[row]));
+		if (!map[map_row - 1])
+			error_exit(cubed, "MALLOC ERROR\n");
 		row++;
 	}
+	map[map_row] = 0;
+	return (map);
 	map[map_row] = 0;
 	return (map);
 }
@@ -463,6 +573,46 @@ int	check_if_walls_connect(char *row, char *next_row)
 	return (0);
 }
 
+int	check_wall(char *row, char *next_row, int *wall)
+{
+	int	ctr;
+
+	ctr = 0;
+	while (row[ctr] && (row[ctr] == '1' || ft_is_white_space(row[ctr]) || check_direction(row[ctr])))
+	{
+		if (next_row[ctr] && row[ctr] == '1' && next_row[ctr] == '1')
+			*wall = 1;
+		if (next_row[ctr] == '0')
+			break ;
+		ctr++;
+	}
+	return (ctr);
+}
+
+int	check_if_walls_connect(char *row, char *next_row)
+{
+	int	ctr;
+	int	first_wall;
+	int	second_wall;
+
+	ctr = 0;
+	first_wall = 0;
+	second_wall = 0;
+	ctr = check_wall(row, next_row, &first_wall);
+	while ((row[ctr] && (row[ctr] == '0' || row[ctr] == '1' || ft_is_white_space(row[ctr]) || check_direction(row[ctr]))))
+	{
+		if (row[ctr] == '1' && !ft_strchr(&row[ctr], '0') && !ft_strchr(&next_row[ctr], '0'))
+		{
+			check_wall(&row[ctr], &next_row[ctr], &second_wall);
+			break ;
+		}
+		ctr++;
+	}
+	if (second_wall && first_wall)
+		return (1);
+	return (0);
+}
+
 void	check_row(t_cubed *cubed, char *row, int *spawn)
 {
 	int	index;
@@ -476,6 +626,7 @@ void	check_row(t_cubed *cubed, char *row, int *spawn)
 }
 
 void check_map(t_cubed *cubed, char **map)
+void check_map(t_cubed *cubed, char **map)
 {
 	int	row;
 	int	spawn;
@@ -483,7 +634,16 @@ void check_map(t_cubed *cubed, char **map)
 	spawn = 0;
 	row = 0;
 	while (map[row])
+	while (map[row])
 	{
+		if (row == 0 || map[row + 1] == NULL)
+			check_top_and_bottom(cubed, map[row]);
+		check_row(cubed, map[row], &spawn);
+		if (map[row + 1])
+		{
+			if (!check_if_walls_connect(map[row], map[row + 1]))
+				error_exit(cubed, "INVALID MAP\n");
+		}
 		if (row == 0 || map[row + 1] == NULL)
 			check_top_and_bottom(cubed, map[row]);
 		check_row(cubed, map[row], &spawn);
@@ -499,12 +659,14 @@ void check_map(t_cubed *cubed, char **map)
 }
 
 void	check_for_invalid_attributes(t_cubed *cubed, char **map)
+void	check_for_invalid_attributes(t_cubed *cubed, char **map)
 {
 	if (!cubed->map.path_to_east || !cubed->map.path_to_west
 		|| !cubed->map.path_to_north || !cubed->map.path_to_south)
 		error_exit(cubed, "PATH ERROR\n");
 	if (cubed->map.cealing_color == -1 || cubed->map.floor_color == -1)
 		error_exit(cubed, "COLOR ERROR\n");
+	check_map(cubed, map);
 	check_map(cubed, map);
 }
 
@@ -525,9 +687,12 @@ void	get_map_attributes(t_cubed *cubed, char **file)
 {
 	int		row;
 	char	**map;
+	int		row;
+	char	**map;
 
 	row = 0;
 	nullify_map(cubed);
+	map = get_map(cubed, file);
 	map = get_map(cubed, file);
 	while (file[row])
 	{
@@ -537,6 +702,9 @@ void	get_map_attributes(t_cubed *cubed, char **file)
 	}
 	row = 0;
 	printf("cealing %li\nfloor %li\n", cubed->map.cealing_color, cubed->map.floor_color);
+	check_for_invalid_attributes(cubed, map);
+	convert_map_to_int(cubed, map);
+	free_string_array(map);
 	check_for_invalid_attributes(cubed, map);
 	convert_map_to_int(cubed, map);
 	free_string_array(map);
@@ -604,6 +772,14 @@ float FixAng(float a)
  		a += 360;
  	return a;
 }
+float FixAng(float a)
+{
+	if(a > 359)
+		a -= 360;
+ 	if(a < 0)
+ 		a += 360;
+ 	return a;
+}
 float distance(ax,ay,bx,by,ang){ return cos(degToRad(ang))*(bx-ax)-sin(degToRad(ang))*(by-ay);}
 
 static uint32_t	*get_text_color(mlx_texture_t *texture)
@@ -631,6 +807,47 @@ static uint32_t	*get_text_color(mlx_texture_t *texture)
 	}
 	return (colors);
 }
+
+void	ray_plotline(t_cubed *cubed, t_vec v1, t_vec v2)
+{
+	cubed->bres.dx = abs(v2.x - v1.x);
+	cubed->bres.dy = -abs(v2.y - v1.y);
+	cubed->bres.sx = -1;
+	if (v1.x < v2.x)
+		cubed->bres.sx = 1;
+	cubed->bres.sy = -1;
+	if (v1.y < v2.y)
+		cubed->bres.sy = 1;
+	cubed->bres.error[0] = cubed->bres.dx + cubed->bres.dy;
+	while (v1.x != v2.x || v1.y != v2.y)
+	{
+		if (v1.x > 3 && v1.x < 153 && v1.y > 3 && v1.y < 154)
+			my_pixel_put(cubed->mlx.image, v1.x, v1.y, v1.color);
+		cubed->bres.error[1] = 2 * cubed->bres.error[0];
+		if (cubed->bres.error[1] >= cubed->bres.dy)
+		{
+			cubed->bres.error[0] += cubed->bres.dy;
+			v1.x += cubed->bres.sx;
+		}
+		if (cubed->bres.error[1] <= cubed->bres.dx)
+		{
+			cubed->bres.error[0] += cubed->bres.dx;
+			v1.y += cubed->bres.sy;
+		}
+	}
+}
+
+int	mapW[] =
+{
+	1,1,1,1,1,1,1,1,
+	1,0,0,0,0,0,0,1,
+	1,0,0,0,1,0,0,1,
+	1,0,0,0,0,0,0,1,
+	1,0,1,0,0,0,0,1,
+	1,0,1,0,0,0,0,1,
+	1,0,1,0,0,0,0,1,
+	1,1,1,1,1,1,1,1,
+};
 
 void	ray_plotline(t_cubed *cubed, t_vec v1, t_vec v2)
 {
@@ -781,28 +998,22 @@ void drawRays2D(t_cubed *cubed)
 			text = cubed->south;
 		
 	}
-	float	dist_traveledX = cubed->player.px - cubed->player.og_x;
-	float	dist_traveledY = cubed->player.py - cubed->player.og_y;
-	//ray.rx = (ray.rx - dist_traveledX) - (cubed->player.og_x - (float)75);
-	//ray.ry = (ray.ry - dist_traveledY) - (cubed->player.og_y - (float)75);
-	ray_plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
-	
+	plotline(cubed, (t_vec){cubed->player.px + 2, cubed->player.py + 2, 0, 0xFF00FFFF}, (t_vec){ray.rx, ray.ry, 0, 0xFF00FFFF}); // draw 2d ray
 	int ca = FixAng(cubed->player.pa-ray.ra);
-    ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
-    int lineH = (cubed->map.mapS * HEIGHT) / (ray.disH);
-    float ty_step = 32.0/(float)lineH;
-    float ty_off = 0;
-    if (lineH > HEIGHT)
-    {
-        ty_off = (lineH - HEIGHT)/ 2.0;
-        lineH = HEIGHT;                                                     //line height and limit
-    }
-    int lineOff = HEIGHT / 2 - (lineH>>1);  //line offset
-
-             //DRAW WALLS
-    float ty=ty_off*ty_step;
-    float tx;
-
+	ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
+	int lineH = (mapS * 320) / (ray.disH);
+	float ty_step = 32.0/(float)lineH;
+	float ty_off = 0;
+	if (lineH > 320)
+	{
+		ty_off = (lineH - 320)/ 2.0;
+		lineH = 320;                    								 //line height and limit
+	}
+	int lineOff = 160 - (lineH>>1);  //line offset
+	       
+		     //DRAW WALLS
+	float ty=ty_off*ty_step+ray.hmt * 32;	
+	float tx;
 	
 	if (shade == 1) // flip textures in walls
 	{
@@ -825,18 +1036,14 @@ void drawRays2D(t_cubed *cubed)
 
 	for (y = 0; y < lineH; y++)
 	{
-		for (int yy = 0; yy <= 8; yy++)
-		{
 		for (x=0; x <= 8; x++)
 		{
 			pixel = (int)ty * 32 + (int)tx;
-			//plotline(cubed, (t_vec){ray.r*20, lineOff, 0, 0xFF0000FF}, (t_vec){ray.r*20, lineOff+lineH, 0, col[pixel]});			
-			my_pixel_put(cubed->mlx.image, ray.r*8+x, y+lineOff + yy, col[pixel]);
-		}
+			mlx_put_pixel(cubed->mlx.image, ray.r*8+530+x, lineOff+y, col[pixel]);
 		}
 		ty+=ty_step;
 	}
-	ray.ra=FixAng(ray.ra - 0.5);                                                        //go to next ray, 60 total
+	ray.ra=FixAng(ray.ra-1);                                                            //go to next ray, 60 total
 	}
 }
 
@@ -858,36 +1065,7 @@ void	draw_player(t_cubed *cubed)
 		x++;
 	}
 }
-void	find_player_position(t_cubed *cubed)
-{
-	int	i = 0;
-	int	x = 0;
-	int y = 0;
-	int xo = 0;
-	int yo = 0;
-	
-	while (y < cubed->map.mapY)
-	{
-		while (x < cubed->map.mapX)
-		{
-			xo = x * cubed->map.mapS;
-			yo = y * cubed->map.mapS;
-			if (cubed->map.map[y * cubed->map.mapX + x] == 3)
-			{
-				cubed->player.px = xo + cubed->map.mapS / 2;
-				cubed->player.py = yo + cubed->map.mapS / 2;
-				cubed->player.og_x = xo + cubed->map.mapS / 2;
-				cubed->player.og_y = yo + cubed->map.mapS / 2;
-				cubed->map.map[y * cubed->map.mapX + x] = 0;
-			}
-			x++;
-			i++;
-		}
-		x = 0;
-		y++;
-	}
-}
-
+/*
 void	draw_background(mlx_image_t *img)
 {
 	int	x;

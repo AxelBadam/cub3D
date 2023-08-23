@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/23 15:55:06 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/23 16:12:57 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 #include <fcntl.h>
 #include <math.h>
 #define PI 3.141592653
-#define WIDTH 1000
-#define HEIGHT 1000
+#define WIDTH 1024
+#define HEIGHT 510
 #define P2 PI/2
 #define P3 3*PI/2
 #define DR 0.0174533

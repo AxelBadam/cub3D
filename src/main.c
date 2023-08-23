@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/23 16:06:47 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/23 17:31:46 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	my_pixel_put(mlx_image_t *image, int x, int y, int color)
 {
-	if (y < HEIGHT && y > 0 && x < WIDTH && x > 0)
+	if (y < HEIGHT && y >= 0 && x < WIDTH && x >= 0)
 		mlx_put_pixel(image, x, y, color);
 }
 
@@ -102,7 +102,7 @@ char	*texture_path(t_cubed *cubed, char *row)
 	char	*path;
 
 	index = 0;
-	while (row[index] && row[index] != '.')
+	while (row[index] && row[index] != '.' && row[index] != '/')
 		index++;
 	path = ft_substr(row, index, ft_strlen(&row[index]) - 1);
 	if (!path)
@@ -168,6 +168,11 @@ int	get_2d_array_size(char **array)
 	return (size);
 }
 
+int get_rgba(int r, int g, int b, int a)
+{
+    return (r << 24 | g << 16 | b << 8 | a);
+}
+
 long int	get_color(char *row)
 {
 	int			index;
@@ -183,7 +188,7 @@ long int	get_color(char *row)
 		free_string_array(array);
 		return (-1);
 	}
-	color = ft_atoi(array[0]) * pow(256, 2) + ft_atoi(array[1]) * 256 + ft_atoi(array[2]);
+	color = get_rgba(ft_atoi(array[0]), ft_atoi(array[1]), ft_atoi(array[2]), 255);
 	free_string_array(array);
 	return (color);
 }
@@ -781,11 +786,11 @@ void drawRays2D(t_cubed *cubed)
 			text = cubed->south;
 		
 	}
-	float	dist_traveledX = cubed->player.px - cubed->player.og_x;
-	float	dist_traveledY = cubed->player.py - cubed->player.og_y;
+	//float	dist_traveledX = cubed->player.px - cubed->player.og_x;
+	//float	dist_traveledY = cubed->player.py - cubed->player.og_y;
 	//ray.rx = (ray.rx - dist_traveledX) - (cubed->player.og_x - (float)75);
 	//ray.ry = (ray.ry - dist_traveledY) - (cubed->player.og_y - (float)75);
-	ray_plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
+	//ray_plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
 	
 	int ca = FixAng(cubed->player.pa-ray.ra);
     ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
@@ -888,7 +893,7 @@ void	find_player_position(t_cubed *cubed)
 	}
 }
 
-void	draw_background(mlx_image_t *img)
+void	draw_background(t_cubed *cubed)
 {
 	int	x;
 	int	y;
@@ -900,9 +905,9 @@ void	draw_background(mlx_image_t *img)
 		while (x < WIDTH)
 		{
 			if (y < HEIGHT / 2)
-				mlx_put_pixel(img, x, y, 0xFF0080FF);
+				mlx_put_pixel(cubed->mlx.image, x, y, cubed->map.cealing_color);
 			else
-				mlx_put_pixel(img, x, y, 0xFF0800FF);
+				mlx_put_pixel(cubed->mlx.image, x, y, cubed->map.floor_color);
 			x++;
 		}
 		x = 0;
@@ -918,9 +923,9 @@ void	draw(t_cubed *cubed)
 		cubed->mlx.image = NULL;
 	}
 	cubed->mlx.image = mlx_new_image(cubed->mlx.mlx, WIDTH, HEIGHT);
-	draw_background(cubed->mlx.image);
-	draw_map(cubed);
+	draw_background(cubed);
 	drawRays2D(cubed);
+	draw_map(cubed);
 	draw_player(cubed);
 	if (mlx_image_to_window(cubed->mlx.mlx, cubed->mlx.image, 0, 0) == -1)
 	{
@@ -993,7 +998,7 @@ void	move_player(t_cubed *cubed, int key)
 			cubed->map.map_postionY +=cubed->player.dy * (cubed->map.mapS / 4);
 		}
 	}
-	else if (key == 'A') 
+	else if (key == 'D') 
 	{
 		perpendicular_dx = -cubed->player.dy;
     	perpendicular_dy = cubed->player.dx;
@@ -1002,7 +1007,7 @@ void	move_player(t_cubed *cubed, int key)
 		cubed->map.map_postionX -= perpendicular_dx * cubed->map.mapS / 4;
 		cubed->map.map_postionY -= perpendicular_dy * cubed->map.mapS / 4;
 	} 
-	else if (key == 'D') 
+	else if (key == 'A') 
 	{
    		perpendicular_dx = cubed->player.dy;
    		perpendicular_dy = -cubed->player.dx;

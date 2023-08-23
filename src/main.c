@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/23 15:32:55 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/23 16:06:47 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -632,18 +632,6 @@ static uint32_t	*get_text_color(mlx_texture_t *texture)
 	return (colors);
 }
 
-int	mapW[] =
-{
-	1,1,1,1,1,1,1,1,
-	1,0,0,0,0,0,0,1,
-	1,0,0,0,1,0,0,1,
-	1,0,0,0,0,0,0,1,
-	1,0,1,0,0,0,0,1,
-	1,0,1,0,0,0,0,1,
-	1,0,1,0,0,0,0,1,
-	1,1,1,1,1,1,1,1,
-};
-
 void	ray_plotline(t_cubed *cubed, t_vec v1, t_vec v2)
 {
 	cubed->bres.dx = abs(v2.x - v1.x);
@@ -679,7 +667,7 @@ void drawRays2D(t_cubed *cubed)
 	
 	ray.ra=FixAng(cubed->player.pa+30);                                                      //ray set back 30 degrees
 	ray.r = -1;
-	while(++ray.r < 60)
+	while(++ray.r < 120)
 	{
 				//---Vertical--- 
 		ray.dof = 0;
@@ -795,29 +783,25 @@ void drawRays2D(t_cubed *cubed)
 	}
 	float	dist_traveledX = cubed->player.px - cubed->player.og_x;
 	float	dist_traveledY = cubed->player.py - cubed->player.og_y;
-	ray.rx = (ray.rx - dist_traveledX) - (cubed->player.og_x - (float)75);
-	ray.ry = (ray.ry - dist_traveledY) - (cubed->player.og_y - (float)75);
+	//ray.rx = (ray.rx - dist_traveledX) - (cubed->player.og_x - (float)75);
+	//ray.ry = (ray.ry - dist_traveledY) - (cubed->player.og_y - (float)75);
 	ray_plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
 	
 	int ca = FixAng(cubed->player.pa-ray.ra);
-	ray.disH = ray.disH * cos(degToRad(ca));                      //fix fisheye 
+    ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
+    int lineH = (cubed->map.mapS * HEIGHT) / (ray.disH);
+    float ty_step = 32.0/(float)lineH;
+    float ty_off = 0;
+    if (lineH > HEIGHT)
+    {
+        ty_off = (lineH - HEIGHT)/ 2.0;
+        lineH = HEIGHT;                                                     //line height and limit
+    }
+    int lineOff = HEIGHT / 2 - (lineH>>1);  //line offset
 
-	float ty_off = 0;
-	int lineH = (cubed->map.mapS * HEIGHT) / (ray.disH);
-	float ty_step = 32.0/(float)lineH;
-	if (lineH > HEIGHT)
-		{
-			ty_off = (lineH - HEIGHT)/2.0;
-			lineH = HEIGHT;
-		}
-	
-	int lineOff = HEIGHT / 2 - (lineH>>1);  
-
-	
-	
-		     //DRAW WALLS
-	float ty=ty_off*ty_step;	
-	float tx;
+             //DRAW WALLS
+    float ty=ty_off*ty_step;
+    float tx;
 
 	
 	if (shade == 1) // flip textures in walls
@@ -841,15 +825,18 @@ void drawRays2D(t_cubed *cubed)
 
 	for (y = 0; y < lineH; y++)
 	{
+		for (int yy = 0; yy <= 8; yy++)
+		{
 		for (x=0; x <= 8; x++)
 		{
 			pixel = (int)ty * 32 + (int)tx;
 			//plotline(cubed, (t_vec){ray.r*20, lineOff, 0, 0xFF0000FF}, (t_vec){ray.r*20, lineOff+lineH, 0, col[pixel]});			
-			my_pixel_put(cubed->mlx.image, ray.r*8+x, y+lineOff, col[pixel]);
+			my_pixel_put(cubed->mlx.image, ray.r*8+x, y+lineOff + yy, col[pixel]);
+		}
 		}
 		ty+=ty_step;
 	}
-	ray.ra=FixAng(ray.ra - 1);                                                         //go to next ray, 60 total
+	ray.ra=FixAng(ray.ra - 0.5);                                                        //go to next ray, 60 total
 	}
 }
 
@@ -901,7 +888,6 @@ void	find_player_position(t_cubed *cubed)
 	}
 }
 
-/*
 void	draw_background(mlx_image_t *img)
 {
 	int	x;
@@ -922,7 +908,7 @@ void	draw_background(mlx_image_t *img)
 		x = 0;
 		y++;
 	}
-}*/
+}
 
 void	draw(t_cubed *cubed)
 {
@@ -932,7 +918,7 @@ void	draw(t_cubed *cubed)
 		cubed->mlx.image = NULL;
 	}
 	cubed->mlx.image = mlx_new_image(cubed->mlx.mlx, WIDTH, HEIGHT);
-	//draw_background(cubed->mlx.image);
+	draw_background(cubed->mlx.image);
 	draw_map(cubed);
 	drawRays2D(cubed);
 	draw_player(cubed);

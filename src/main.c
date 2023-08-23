@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/23 16:06:47 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/23 17:26:19 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	my_pixel_put(mlx_image_t *image, int x, int y, int color)
 {
-	if (y < HEIGHT && y > 0 && x < WIDTH && x > 0)
+	if (y < HEIGHT && y >= 0 && x < WIDTH && x >= 0)
 		mlx_put_pixel(image, x, y, color);
 }
 
@@ -102,7 +102,7 @@ char	*texture_path(t_cubed *cubed, char *row)
 	char	*path;
 
 	index = 0;
-	while (row[index] && row[index] != '.')
+	while (row[index] && row[index] != '.' && row[index] != '/')
 		index++;
 	path = ft_substr(row, index, ft_strlen(&row[index]) - 1);
 	if (!path)
@@ -758,37 +758,35 @@ void drawRays2D(t_cubed *cubed)
 	}
 	
 	float shade = 1;
-
-	mlx_texture_t *text = cubed->north;
-	
-	if(ray.disV < ray.disH)  //horizontal hit first
+	mlx_texture_t *text = NULL;
+	if (ray.disV >= ray.disH)
+	{
+		if (ray.ra < 360 && ray.ra > 180)
+			text = cubed->south;
+		else if (ray.ra > 0 && ray.ra < 180)
+			text = cubed->north;
+	}
+	if(!text && ray.disV <= ray.disH)  //horizontal hit first
 	{ 
-		ray.hmt = ray.vmt;
 		shade = 0.5;
 		ray.rx = ray.vx; 
 		ray.ry = ray.vy; 
 		ray.disH = ray.disV;
 		if (ray.ra < 270 && ray.ra > 90)
-			text = cubed->east;
-		else
 			text = cubed->west;
+		else if (ray.ra > 270 || ray.ra < 90)
+			text = cubed->east;
 	}
-	if(ray.disV > ray.disH)
-	{
-		if (ray.ra < 360 && ray.ra > 180)
-			text = cubed->north;
-		else
-			text = cubed->south;
-		
-	}
-	float	dist_traveledX = cubed->player.px - cubed->player.og_x;
-	float	dist_traveledY = cubed->player.py - cubed->player.og_y;
+
+	//float	dist_traveledX = cubed->player.px - cubed->player.og_x;
+	//float	dist_traveledY = cubed->player.py - cubed->player.og_y;
+
 	//ray.rx = (ray.rx - dist_traveledX) - (cubed->player.og_x - (float)75);
 	//ray.ry = (ray.ry - dist_traveledY) - (cubed->player.og_y - (float)75);
-	ray_plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
+	//ray_plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
 	
 	int ca = FixAng(cubed->player.pa-ray.ra);
-    ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
+    ray.disH = ray.disH * cos(degToRad(ca));                           //fix fisheye 
     int lineH = (cubed->map.mapS * HEIGHT) / (ray.disH);
     float ty_step = 32.0/(float)lineH;
     float ty_off = 0;
@@ -817,9 +815,9 @@ void drawRays2D(t_cubed *cubed)
 			tx = 31 - tx;
 	}
 
-      
 	int y;
 	int x;
+	
 	u_int32_t *col = get_text_color(text);
 	int pixel = (int)ty * 32 + (int)tx;
 
@@ -993,7 +991,7 @@ void	move_player(t_cubed *cubed, int key)
 			cubed->map.map_postionY +=cubed->player.dy * (cubed->map.mapS / 4);
 		}
 	}
-	else if (key == 'A') 
+	else if (key == 'D') 
 	{
 		perpendicular_dx = -cubed->player.dy;
     	perpendicular_dy = cubed->player.dx;
@@ -1002,7 +1000,7 @@ void	move_player(t_cubed *cubed, int key)
 		cubed->map.map_postionX -= perpendicular_dx * cubed->map.mapS / 4;
 		cubed->map.map_postionY -= perpendicular_dy * cubed->map.mapS / 4;
 	} 
-	else if (key == 'D') 
+	else if (key == 'A') 
 	{
    		perpendicular_dx = cubed->player.dy;
    		perpendicular_dy = -cubed->player.dx;
@@ -1086,10 +1084,10 @@ void	draw_map(t_cubed *cubed)
 
 void load_text(t_cubed *cubed)
 {
-	cubed->north = mlx_load_png("textures/ball.png");
-	cubed->south = mlx_load_png("textures/ball_neg.png");
-	cubed->east = mlx_load_png("textures/ball_sepia.png");
-	cubed->west = mlx_load_png("textures/ball_mono.png");
+	cubed->north = mlx_load_png(cubed->map.path_to_north);
+	cubed->south = mlx_load_png(cubed->map.path_to_south);
+	cubed->east = mlx_load_png(cubed->map.path_to_east);
+	cubed->west = mlx_load_png(cubed->map.path_to_west);
 }
 
 void	cub3d(t_cubed *cubed)

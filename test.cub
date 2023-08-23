@@ -1,8 +1,8 @@
 
-NO ./path_to_the_north_texture
-SO ./path_to_the_south_texture
-WE ./path_to_the_west_texture
-EA ./path_to_the_east_texture
+NO /Users/atuliara/Desktop/cub3d/textures/ball.png
+SO ./textures/ball_sepia.png
+WE ./textures/ball_mono.png
+EA ./textures/ball_neg.png
 
 F       220,     100,    0
 C 225,30,0

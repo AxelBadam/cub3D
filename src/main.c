@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/23 15:21:10 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/23 15:32:55 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -841,14 +841,11 @@ void drawRays2D(t_cubed *cubed)
 
 	for (y = 0; y < lineH; y++)
 	{
-		for (int yy = 0; yy <= 8; yy++)
+		for (x=0; x <= 8; x++)
 		{
-			for (x=0; x <= 8; x++)
-			{
-				pixel = (int)ty * 32 + (int)tx;
-				//plotline(cubed, (t_vec){ray.r*20, lineOff, 0, 0xFF0000FF}, (t_vec){ray.r*20, lineOff+lineH, 0, col[pixel]});			
-				my_pixel_put(cubed->mlx.image, ray.r*8+x, y+lineOff + yy, col[pixel]);
-			}
+			pixel = (int)ty * 32 + (int)tx;
+			//plotline(cubed, (t_vec){ray.r*20, lineOff, 0, 0xFF0000FF}, (t_vec){ray.r*20, lineOff+lineH, 0, col[pixel]});			
+			my_pixel_put(cubed->mlx.image, ray.r*8+x, y+lineOff, col[pixel]);
 		}
 		ty+=ty_step;
 	}

@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/22 16:28:15 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/23 11:39:01 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -801,7 +801,6 @@ void drawRays2D(t_cubed *cubed)
 		
 	}
 	plotline(cubed, (t_vec){cubed->player.px + 2, cubed->player.py + 2, 0, 0xFF00FFFF}, (t_vec){ray.rx, ray.ry, 0, 0xFF00FFFF}); // draw 2d ray
-	
 	int ca = FixAng(cubed->player.pa-ray.ra);
 	ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
 	int lineH = (mapS * 320) / (ray.disH);
@@ -830,36 +829,7 @@ void drawRays2D(t_cubed *cubed)
 		if ( (ray.ra > 90 && ray.ra < 270))
 			tx = 31 - tx;
 	}
-
 	ray.len = 0;
-/*
-	if (ray.disH < ray.disV)
-	{
-		ray.side = 0;
-		ray.len = ray.disH;
-		ray.ry = (int)dda->ray_y_h;
-		ray.rx = (int)dda->ray_x_h;
-		ray.og_ray_x = dda->ray_x_h;
-		ray->og_ray_y = dda->ray_y_h;
-	}
-	else
-	{
-		if (cubed->player.px < ray.rx)
-			text = cubed->east;
-		else
-			text = cubed->west;
-	}
-	
-	ray.side = 1;
-	ray->ray_len = dda->ray_len_vert;
-	ray->ray_y = (int)dda->ray_y_v;
-	ray->ray_x = (int)dda->ray_x_v;
-	ray->og_ray_x = dda->ray_x_v;
-	ray->og_ray_y = dda->ray_y_v;*/
-
-
-
-
 	int y;
 	int x;
 	u_int32_t *col = get_text_color(text);

@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/22 16:21:15 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/23 15:08:53 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,32 @@
 #include <fcntl.h>
 #include <math.h>
 #define PI 3.141592653
-#define WIDTH 1024
-#define HEIGHT 510
+#define WIDTH 960
+#define HEIGHT 640
 #define P2 PI/2
 #define P3 3*PI/2
 #define DR 0.0174533
 
-struct t_text;
-
 typedef struct s_map
 {
-	char		**map;
+	int			mapS;
+	int			mapX;
+	int			mapY;
+	int			*map;
 	char		*path_to_north;
 	char		*path_to_south;
 	char		*path_to_west;
 	char		*path_to_east;
 	long int	floor_color;
 	long int	cealing_color;
+	float		map_postionX;
+	float		map_postionY;
 } t_map;
 
 typedef struct s_player
 {
+	int		og_y;
+	int		og_x;
 	float	py;
 	float	px;
 	float	dx;
@@ -90,20 +95,12 @@ typedef struct s_bres
 	int	error[2];
 }	t_bres;
 
-typedef struct s_text
-{
-	int	*array;
-	int	width;
-	int	height;
-} t_text;
-
 typedef struct s_cubed
 {
 	struct s_map map;
 	struct s_mlx mlx;
 	struct s_player player;
 	struct s_bres bres;
-	xpm_t	*xpm;
 	mlx_texture_t *north;
 	mlx_texture_t *south;
 	mlx_texture_t *east;

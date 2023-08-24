@@ -3,8 +3,7 @@
 -texutre extension check?
 -free stuff on exit?
 
--better movement
--norm
+-norm (function names?)
 
 
 -doors (bonus)

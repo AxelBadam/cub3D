@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/23 17:11:03 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/24 14:41:56 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <fcntl.h>
 #include <math.h>
 #define PI 3.141592653
-#define WIDTH 960
+#define WIDTH 1440
 #define HEIGHT 960
 #define P2 PI/2
 #define P3 3*PI/2
@@ -95,12 +95,23 @@ typedef struct s_bres
 	int	error[2];
 }	t_bres;
 
+typedef struct s_keyflag
+{
+	int	w;
+	int	a;
+	int	s;
+	int	d;
+	int	left;
+	int	right;
+}				t_keyflag;
+
 typedef struct s_cubed
 {
 	struct s_map map;
 	struct s_mlx mlx;
 	struct s_player player;
 	struct s_bres bres;
+	struct s_keyflag key;
 	mlx_texture_t *north;
 	mlx_texture_t *south;
 	mlx_texture_t *east;

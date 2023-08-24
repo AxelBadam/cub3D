@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/23 17:26:19 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/24 14:48:15 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -595,7 +595,8 @@ void	plotline(t_cubed *cubed, t_vec v1, t_vec v2)
 	my_pixel_put(cubed->mlx.image, v1.x, v1.y, v1.color);
 }
 
-float degToRad(int a) { return a*M_PI/180.0;}
+float degToRad(float a) { return a*M_PI/180.0;}
+
 float FixAng(float a)
 {
 	if(a > 359)
@@ -667,7 +668,7 @@ void drawRays2D(t_cubed *cubed)
 	
 	ray.ra=FixAng(cubed->player.pa+30);                                                      //ray set back 30 degrees
 	ray.r = -1;
-	while(++ray.r < 120)
+	while(++ray.r < 480)
 	{
 				//---Vertical--- 
 		ray.dof = 0;
@@ -757,7 +758,7 @@ void drawRays2D(t_cubed *cubed)
 		}                                               //check next horizontal
 	}
 	
-	float shade = 1;
+	float flag = 1;
 	mlx_texture_t *text = NULL;
 	if (ray.disV >= ray.disH)
 	{
@@ -768,7 +769,7 @@ void drawRays2D(t_cubed *cubed)
 	}
 	if(!text && ray.disV <= ray.disH)  //horizontal hit first
 	{ 
-		shade = 0.5;
+		flag = 0.5;
 		ray.rx = ray.vx; 
 		ray.ry = ray.vy; 
 		ray.disH = ray.disV;
@@ -785,24 +786,25 @@ void drawRays2D(t_cubed *cubed)
 	//ray.ry = (ray.ry - dist_traveledY) - (cubed->player.og_y - (float)75);
 	//ray_plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
 	
-	int ca = FixAng(cubed->player.pa-ray.ra);
+	float ca = FixAng(cubed->player.pa - ray.ra);
     ray.disH = ray.disH * cos(degToRad(ca));                           //fix fisheye 
-    int lineH = (cubed->map.mapS * HEIGHT) / (ray.disH);
-    float ty_step = 32.0/(float)lineH;
+   	int lineH = (cubed->map.mapS * HEIGHT) / (ray.disH);
+   	float ty_step = 32/(float)lineH;
     float ty_off = 0;
+
     if (lineH > HEIGHT)
     {
-        ty_off = (lineH - HEIGHT)/ 2.0;
+        ty_off = (lineH - HEIGHT)/ 2;
         lineH = HEIGHT;                                                     //line height and limit
     }
-    int lineOff = HEIGHT / 2 - (lineH>>1);  //line offset
+    int lineOff = HEIGHT / 2 - (lineH / 2);  //line offset
 
              //DRAW WALLS
     float ty=ty_off*ty_step;
     float tx;
 
 	
-	if (shade == 1) // flip textures in walls
+	if (flag == 1) // flip textures in walls
 	{
 		tx = (int)(ray.rx/2.0) % 32;
 		if (ray.ra > 180)
@@ -817,25 +819,21 @@ void drawRays2D(t_cubed *cubed)
 
 	int y;
 	int x;
-	
+	//int smooth = 2;
 	u_int32_t *col = get_text_color(text);
 	int pixel = (int)ty * 32 + (int)tx;
-
 	for (y = 0; y < lineH; y++)
 	{
-		for (int yy = 0; yy <= 8; yy++)
-		{
-		for (x=0; x <= 8; x++)
-		{
-			pixel = (int)ty * 32 + (int)tx;
-			//plotline(cubed, (t_vec){ray.r*20, lineOff, 0, 0xFF0000FF}, (t_vec){ray.r*20, lineOff+lineH, 0, col[pixel]});			
-			my_pixel_put(cubed->mlx.image, ray.r*8+x, y+lineOff + yy, col[pixel]);
-		}
-		}
+			for (x = 0; x < 3; x++)
+			{
+			pixel = (int)ty * 32 + (int)tx;	
+			my_pixel_put(cubed->mlx.image, ray.r*3+x, y+lineOff, col[pixel]);
+			}
 		ty+=ty_step;
 	}
-	ray.ra=FixAng(ray.ra - 0.5);                                                        //go to next ray, 60 total
-	}
+
+	ray.ra = FixAng(ray.ra - 0.125);      	
+}
 }
 
 void	draw_player(t_cubed *cubed)
@@ -964,7 +962,8 @@ void	move_player(t_cubed *cubed, int key)
 	}
 
 	int ipx=cubed->player.px/cubed->map.mapS; int ipx_add_xo=(cubed->player.px+xo)/cubed->map.mapS; int ipx_sub_xo=(cubed->player.px-xo)/cubed->map.mapS;             //x position and offset
- 	int ipy=cubed->player.py/cubed->map.mapS; int ipy_add_yo=(cubed->player.py+yo)/cubed->map.mapS; int ipy_sub_yo=(cubed->player.py-yo)/cubed->map.mapS; 
+ 	int ipy=cubed->player.py/cubed->map.mapS; int ipy_add_yo=(cubed->player.py+yo)/cubed->map.mapS; int ipy_sub_yo=(cubed->player.py-yo)/cubed->map.mapS;
+	
 	if (key == 'W')
 	{
 		if(cubed->map.map[ipy * cubed->map.mapX + ipx_add_xo]==0)
@@ -1008,29 +1007,47 @@ void	move_player(t_cubed *cubed, int key)
 		cubed->player.py += perpendicular_dy * cubed->map.mapS / 4;
 		cubed->map.map_postionX -= perpendicular_dx * cubed->map.mapS / 4;
 		cubed->map.map_postionY -= perpendicular_dy * cubed->map.mapS / 4;
-	}
-	
+	}	
 }
 
-void my_keyhook(mlx_key_data_t keydata, void *param)
+/*
+static void	mouse_rotate(t_cubed *cubed)
+{
+	int	x;
+	int	y;
+
+	mlx_get_mouse_pos(cubed->mlx.mlx, &x, &y);
+	x -= WIDTH / 2;
+	cubed->player.pa += (float)x / 4000 * 10;
+	mlx_set_mouse_pos(cubed->mlx.mlx, WIDTH / 2, HEIGHT / 2);
+}*/
+
+
+static void	check_keys(t_cubed *cubed)
+{
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_W))
+		move_player(cubed, 'W');
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_A))
+		move_player(cubed, 'A');
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_S))
+		move_player(cubed, 'S');
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_D))
+		move_player(cubed, 'D');
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_LEFT))
+		rotate_player(cubed, MLX_KEY_LEFT);
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_RIGHT))
+		rotate_player(cubed, MLX_KEY_RIGHT);
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_ESCAPE))
+		exit (0);
+}
+
+void	update(void *param)
 {
 	t_cubed *cubed;
 
-	cubed = (t_cubed *)param;
-	if (keydata.key == MLX_KEY_W && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		move_player(cubed, 'W');
-	if (keydata.key == MLX_KEY_S && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		move_player(cubed, 'S');
-	if (keydata.key == MLX_KEY_A && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		move_player(cubed, 'A');
-	if (keydata.key == MLX_KEY_D && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		move_player(cubed, 'D');
-	if (keydata.key ==  MLX_KEY_RIGHT && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		rotate_player(cubed, MLX_KEY_RIGHT);
-	if (keydata.key == MLX_KEY_LEFT && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		rotate_player(cubed, MLX_KEY_LEFT);
-	if (keydata.key == MLX_KEY_ESCAPE && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		exit (0);
+	cubed = param;
+	check_keys(cubed);
+	//mouse_rotate(cubed);
 	draw(cubed);
 }
 
@@ -1112,7 +1129,13 @@ void	cub3d(t_cubed *cubed)
 	}
 	load_text(cubed);
 	draw(cubed);
-	mlx_key_hook(cubed->mlx.mlx, &my_keyhook, cubed);
+	cubed->key.a = 0;
+	cubed->key.w = 0;
+	cubed->key.s = 0;
+	cubed->key.d = 0;
+	cubed->key.right = 0;
+	cubed->key.left = 0;
+	mlx_loop_hook(cubed->mlx.mlx, &update, cubed);
 	mlx_loop(cubed->mlx.mlx);
 	mlx_terminate(cubed->mlx.mlx);
 }

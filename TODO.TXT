@@ -1,1 +1,11 @@
--SIDE COLLISION
+
+
+-texutre extension check?
+-free stuff on exit?
+
+-better movement
+-norm
+
+
+-doors (bonus)
+-animated sprite (bonus)

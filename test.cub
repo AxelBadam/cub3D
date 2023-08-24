@@ -1,11 +1,11 @@
 
-NO ./path_to_the_north_texture
-SO ./path_to_the_south_texture
-WE ./path_to_the_west_texture
-EA ./path_to_the_east_texture
+NO /Users/ekoljone/Desktop/cub3d/textures/ball.png
+SO /Users/ekoljone/Desktop/cub3d/textures/ball.png
+WE /Users/ekoljone/Desktop/cub3d/textures/ball.png
+EA /Users/ekoljone/Desktop/cub3d/textures/ball.png
 
 F       220,     100,    0
-C 225,30,0
+C 255,255,255
 
 11111111
 10100001

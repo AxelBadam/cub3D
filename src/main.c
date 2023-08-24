@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/23 17:31:46 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/08/24 15:32:05 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,11 +168,6 @@ int	get_2d_array_size(char **array)
 	return (size);
 }
 
-int get_rgba(int r, int g, int b, int a)
-{
-    return (r << 24 | g << 16 | b << 8 | a);
-}
-
 long int	get_color(char *row)
 {
 	int			index;
@@ -188,7 +183,7 @@ long int	get_color(char *row)
 		free_string_array(array);
 		return (-1);
 	}
-	color = get_rgba(ft_atoi(array[0]), ft_atoi(array[1]), ft_atoi(array[2]), 255);
+	color = ft_atoi(array[0]) * pow(256, 2) + ft_atoi(array[1]) * 256 + ft_atoi(array[2]);
 	free_string_array(array);
 	return (color);
 }
@@ -600,7 +595,8 @@ void	plotline(t_cubed *cubed, t_vec v1, t_vec v2)
 	my_pixel_put(cubed->mlx.image, v1.x, v1.y, v1.color);
 }
 
-float degToRad(int a) { return a*M_PI/180.0;}
+float degToRad(float a) { return a*M_PI/180.0;}
+
 float FixAng(float a)
 {
 	if(a > 359)
@@ -666,60 +662,65 @@ void	ray_plotline(t_cubed *cubed, t_vec v1, t_vec v2)
 	}
 }
 
+void	cast_vertical_rays(t_cubed *cubed, t_ray *ray)
+{
+	ray->dof = 0;
+	ray->side = 0;
+	ray->disV = 100000;
+	ray->Tan = tan(degToRad(ray->ra));
+
+	if(cos(degToRad(ray->ra)) > 0.001)
+	{
+		ray->rx = (((int)cubed->player.px / cubed->map.mapS) * cubed->map.mapS) + cubed->map.mapS;
+		ray->ry = (cubed->player.px-ray->rx) * ray->Tan + cubed->player.py;
+		ray->xo = cubed->map.mapS;
+		ray->yo = -ray->xo * ray->Tan;
+	}//looking left
+	else if (cos(degToRad(ray->ra)) < -0.001)
+	{
+		ray->rx = (((int)cubed->player.px / cubed->map.mapS) * cubed->map.mapS) -0.0001;
+		ray->ry = (cubed->player.px-ray->rx) * ray->Tan+cubed->player.py;
+		ray->xo = -cubed->map.mapS;
+		ray->yo = -ray->xo * ray->Tan;
+	}//looking right
+	else
+	{
+		ray->rx = cubed->player.px;
+		ray->ry = cubed->player.py;
+		ray->dof = cubed->map.mapX;
+	}                                                  //looking up or down. no hit  
+
+	while(ray->dof < cubed->map.mapX) 
+	{ 
+		ray->mx = (int)(ray->rx) / cubed->map.mapS;
+		ray->my = (int)(ray->ry) / cubed->map.mapS;
+		ray->mp = ray->my * cubed->map.mapX + ray->mx;
+		if(ray->mp > 0 && ray->mp < cubed->map.mapX * cubed->map.mapY && cubed->map.map[ray->mp] == 1)
+		{
+			ray->dof = cubed->map.mapX;
+			ray->disV = cos(degToRad(ray->ra)) * (ray->rx-cubed->player.px) - sin(degToRad(ray->ra)) * (ray->ry-cubed->player.py);
+		}//hit      
+		else
+		{
+			ray->rx += ray->xo;
+			ray->ry += ray->yo;
+			ray->dof += 1;
+		}                                               //check next horizontal
+	} 
+	ray->vx = ray->rx; 
+	ray->vy = ray->ry;
+}
+
 void drawRays2D(t_cubed *cubed)
 {
 	t_ray ray;
 	
 	ray.ra=FixAng(cubed->player.pa+30);                                                      //ray set back 30 degrees
 	ray.r = -1;
-	while(++ray.r < 120)
+	while(++ray.r < 480)
 	{
 				//---Vertical--- 
-		ray.dof = 0;
-		ray.side = 0;
-		ray.disV = 100000;
-		ray.Tan = tan(degToRad(ray.ra));
-		
-		if(cos(degToRad(ray.ra)) > 0.001)
-		{
-			ray.rx = (((int)cubed->player.px / cubed->map.mapS) * cubed->map.mapS) + cubed->map.mapS;
-			ray.ry = (cubed->player.px-ray.rx) * ray.Tan + cubed->player.py;
-			ray.xo = cubed->map.mapS;
-			ray.yo = -ray.xo * ray.Tan;
-		}//looking left
-		else if (cos(degToRad(ray.ra)) < -0.001)
-		{
-			ray.rx = (((int)cubed->player.px / cubed->map.mapS) * cubed->map.mapS) -0.0001;
-			ray.ry = (cubed->player.px-ray.rx) * ray.Tan+cubed->player.py;
-			ray.xo = -cubed->map.mapS;
-			ray.yo = -ray.xo * ray.Tan;
-		}//looking right
-		else
-		{
-			ray.rx = cubed->player.px;
-			ray.ry = cubed->player.py;
-			ray.dof = cubed->map.mapX;
-		}                                                  //looking up or down. no hit  
-		
-	while(ray.dof < cubed->map.mapX) 
-	{ 
-		ray.mx = (int)(ray.rx) / cubed->map.mapS;
-		ray.my = (int)(ray.ry) / cubed->map.mapS;
-		ray.mp = ray.my * cubed->map.mapX + ray.mx;
-		if(ray.mp > 0 && ray.mp < cubed->map.mapX * cubed->map.mapY && cubed->map.map[ray.mp] == 1)
-		{
-			ray.dof = cubed->map.mapX;
-			ray.disV = cos(degToRad(ray.ra)) * (ray.rx-cubed->player.px) - sin(degToRad(ray.ra)) * (ray.ry-cubed->player.py);
-		}//hit      
-		else
-		{
-			ray.rx += ray.xo;
-			ray.ry += ray.yo;
-			ray.dof += 1;
-		}                                               //check next horizontal
-	} 
-	ray.vx=ray.rx; 
-	ray.vy=ray.ry;
+	cast_vertical_rays(cubed, &ray);
 	//---Horizontal---
 	ray.dof = 0;
 	ray.disH = 100000;
@@ -762,54 +763,53 @@ void drawRays2D(t_cubed *cubed)
 		}                                               //check next horizontal
 	}
 	
-	float shade = 1;
-
-	mlx_texture_t *text = cubed->north;
-	
-	if(ray.disV < ray.disH)  //horizontal hit first
+	float flag = 1;
+	mlx_texture_t *text = NULL;
+	if (ray.disV >= ray.disH)
+	{
+		if (ray.ra < 360 && ray.ra > 180)
+			text = cubed->south;
+		else if (ray.ra > 0 && ray.ra < 180)
+			text = cubed->north;
+	}
+	if(!text && ray.disV <= ray.disH)  //horizontal hit first
 	{ 
-		ray.hmt = ray.vmt;
-		shade = 0.5;
+		flag = 0.5;
 		ray.rx = ray.vx; 
 		ray.ry = ray.vy; 
 		ray.disH = ray.disV;
 		if (ray.ra < 270 && ray.ra > 90)
-			text = cubed->east;
-		else
 			text = cubed->west;
+		else if (ray.ra > 270 || ray.ra < 90)
+			text = cubed->east;
 	}
-	if(ray.disV > ray.disH)
-	{
-		if (ray.ra < 360 && ray.ra > 180)
-			text = cubed->north;
-		else
-			text = cubed->south;
-		
-	}
+
 	//float	dist_traveledX = cubed->player.px - cubed->player.og_x;
 	//float	dist_traveledY = cubed->player.py - cubed->player.og_y;
+
 	//ray.rx = (ray.rx - dist_traveledX) - (cubed->player.og_x - (float)75);
 	//ray.ry = (ray.ry - dist_traveledY) - (cubed->player.og_y - (float)75);
 	//ray_plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
 	
-	int ca = FixAng(cubed->player.pa-ray.ra);
-    ray.disH = ray.disH * cos(degToRad(ca));                            //fix fisheye 
-    int lineH = (cubed->map.mapS * HEIGHT) / (ray.disH);
-    float ty_step = 32.0/(float)lineH;
+	float ca = FixAng(cubed->player.pa - ray.ra);
+    ray.disH = ray.disH * cos(degToRad(ca));                           //fix fisheye 
+   	int lineH = (cubed->map.mapS * HEIGHT) / (ray.disH);
+   	float ty_step = 32/(float)lineH;
     float ty_off = 0;
+
     if (lineH > HEIGHT)
     {
-        ty_off = (lineH - HEIGHT)/ 2.0;
+        ty_off = (lineH - HEIGHT)/ 2;
         lineH = HEIGHT;                                                     //line height and limit
     }
-    int lineOff = HEIGHT / 2 - (lineH>>1);  //line offset
+    int lineOff = HEIGHT / 2 - (lineH / 2);  //line offset
 
              //DRAW WALLS
     float ty=ty_off*ty_step;
     float tx;
 
 	
-	if (shade == 1) // flip textures in walls
+	if (flag == 1) // flip textures in walls
 	{
 		tx = (int)(ray.rx/2.0) % 32;
 		if (ray.ra > 180)
@@ -822,27 +822,23 @@ void drawRays2D(t_cubed *cubed)
 			tx = 31 - tx;
 	}
 
-      
 	int y;
 	int x;
+	//int smooth = 2;
 	u_int32_t *col = get_text_color(text);
 	int pixel = (int)ty * 32 + (int)tx;
-
 	for (y = 0; y < lineH; y++)
 	{
-		for (int yy = 0; yy <= 8; yy++)
-		{
-		for (x=0; x <= 8; x++)
-		{
-			pixel = (int)ty * 32 + (int)tx;
-			//plotline(cubed, (t_vec){ray.r*20, lineOff, 0, 0xFF0000FF}, (t_vec){ray.r*20, lineOff+lineH, 0, col[pixel]});			
-			my_pixel_put(cubed->mlx.image, ray.r*8+x, y+lineOff + yy, col[pixel]);
-		}
-		}
+			for (x = 0; x < 3; x++)
+			{
+			pixel = (int)ty * 32 + (int)tx;	
+			my_pixel_put(cubed->mlx.image, ray.r*3+x, y+lineOff, col[pixel]);
+			}
 		ty+=ty_step;
 	}
-	ray.ra=FixAng(ray.ra - 0.5);                                                        //go to next ray, 60 total
-	}
+
+	ray.ra = FixAng(ray.ra - 0.125);      	
+}
 }
 
 void	draw_player(t_cubed *cubed)
@@ -905,9 +901,9 @@ void	draw_background(t_cubed *cubed)
 		while (x < WIDTH)
 		{
 			if (y < HEIGHT / 2)
-				mlx_put_pixel(cubed->mlx.image, x, y, cubed->map.cealing_color);
-			else
 				mlx_put_pixel(cubed->mlx.image, x, y, cubed->map.floor_color);
+			else
+				mlx_put_pixel(cubed->mlx.image, x, y, cubed->map.cealing_color);
 			x++;
 		}
 		x = 0;
@@ -971,7 +967,8 @@ void	move_player(t_cubed *cubed, int key)
 	}
 
 	int ipx=cubed->player.px/cubed->map.mapS; int ipx_add_xo=(cubed->player.px+xo)/cubed->map.mapS; int ipx_sub_xo=(cubed->player.px-xo)/cubed->map.mapS;             //x position and offset
- 	int ipy=cubed->player.py/cubed->map.mapS; int ipy_add_yo=(cubed->player.py+yo)/cubed->map.mapS; int ipy_sub_yo=(cubed->player.py-yo)/cubed->map.mapS; 
+ 	int ipy=cubed->player.py/cubed->map.mapS; int ipy_add_yo=(cubed->player.py+yo)/cubed->map.mapS; int ipy_sub_yo=(cubed->player.py-yo)/cubed->map.mapS;
+	
 	if (key == 'W')
 	{
 		if(cubed->map.map[ipy * cubed->map.mapX + ipx_add_xo]==0)
@@ -998,46 +995,74 @@ void	move_player(t_cubed *cubed, int key)
 			cubed->map.map_postionY +=cubed->player.dy * (cubed->map.mapS / 4);
 		}
 	}
-	else if (key == 'D') 
-	{
-		perpendicular_dx = -cubed->player.dy;
-    	perpendicular_dy = cubed->player.dx;
-    	cubed->player.px += perpendicular_dx * cubed->map.mapS / 4;
-    	cubed->player.py += perpendicular_dy * cubed->map.mapS / 4;
-		cubed->map.map_postionX -= perpendicular_dx * cubed->map.mapS / 4;
-		cubed->map.map_postionY -= perpendicular_dy * cubed->map.mapS / 4;
-	} 
-	else if (key == 'A') 
-	{
-   		perpendicular_dx = cubed->player.dy;
-   		perpendicular_dy = -cubed->player.dx;
-   		cubed->player.px += perpendicular_dx * cubed->map.mapS / 4;
-		cubed->player.py += perpendicular_dy * cubed->map.mapS / 4;
-		cubed->map.map_postionX -= perpendicular_dx * cubed->map.mapS / 4;
-		cubed->map.map_postionY -= perpendicular_dy * cubed->map.mapS / 4;
-	}
-	
+	else if (key == 'D')
+    {
+        perpendicular_dx = -cubed->player.dy;
+        perpendicular_dy = cubed->player.dx;
+        int new_ipx = (cubed->player.px + perpendicular_dx * (cubed->map.mapS / 4)) / cubed->map.mapS;
+        int new_ipy = (cubed->player.py + perpendicular_dy * (cubed->map.mapS / 4)) / cubed->map.mapS;
+        if (cubed->map.map[new_ipy * cubed->map.mapX + new_ipx] == 0)
+        {
+            cubed->player.px += perpendicular_dx * (cubed->map.mapS / 4);
+            cubed->map.map_postionX -= perpendicular_dx * (cubed->map.mapS / 4);
+            cubed->player.py += perpendicular_dy * (cubed->map.mapS / 4);
+            cubed->map.map_postionY -= perpendicular_dy * (cubed->map.mapS / 4);
+        }
+    }
+    else if (key == 'A')
+    {
+        perpendicular_dx = cubed->player.dy;
+        perpendicular_dy = -cubed->player.dx;
+        int new_ipx = (cubed->player.px + perpendicular_dx * (cubed->map.mapS / 4)) / cubed->map.mapS;
+        int new_ipy = (cubed->player.py + perpendicular_dy * (cubed->map.mapS / 4)) / cubed->map.mapS;
+        if (cubed->map.map[new_ipy * cubed->map.mapX + new_ipx] == 0)
+        {
+            cubed->player.px += perpendicular_dx * (cubed->map.mapS / 4);
+            cubed->map.map_postionX -= perpendicular_dx * (cubed->map.mapS / 4);
+            cubed->player.py += perpendicular_dy * (cubed->map.mapS / 4);
+            cubed->map.map_postionY -= perpendicular_dy * (cubed->map.mapS / 4);
+        }
+    }	
 }
 
-void my_keyhook(mlx_key_data_t keydata, void *param)
+/*
+static void	mouse_rotate(t_cubed *cubed)
+{
+	int	x;
+	int	y;
+
+	mlx_get_mouse_pos(cubed->mlx.mlx, &x, &y);
+	x -= WIDTH / 2;
+	cubed->player.pa += (float)x / 4000 * 10;
+	mlx_set_mouse_pos(cubed->mlx.mlx, WIDTH / 2, HEIGHT / 2);
+}*/
+
+
+static void	check_keys(t_cubed *cubed)
+{
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_W))
+		move_player(cubed, 'W');
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_A))
+		move_player(cubed, 'A');
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_S))
+		move_player(cubed, 'S');
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_D))
+		move_player(cubed, 'D');
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_LEFT))
+		rotate_player(cubed, MLX_KEY_LEFT);
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_RIGHT))
+		rotate_player(cubed, MLX_KEY_RIGHT);
+	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_ESCAPE))
+		exit (0);
+}
+
+void	update(void *param)
 {
 	t_cubed *cubed;
 
-	cubed = (t_cubed *)param;
-	if (keydata.key == MLX_KEY_W && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		move_player(cubed, 'W');
-	if (keydata.key == MLX_KEY_S && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		move_player(cubed, 'S');
-	if (keydata.key == MLX_KEY_A && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		move_player(cubed, 'A');
-	if (keydata.key == MLX_KEY_D && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		move_player(cubed, 'D');
-	if (keydata.key ==  MLX_KEY_RIGHT && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		rotate_player(cubed, MLX_KEY_RIGHT);
-	if (keydata.key == MLX_KEY_LEFT && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		rotate_player(cubed, MLX_KEY_LEFT);
-	if (keydata.key == MLX_KEY_ESCAPE && (keydata.action == MLX_REPEAT || keydata.action == MLX_RELEASE))
-		exit (0);
+	cubed = param;
+	check_keys(cubed);
+	//mouse_rotate(cubed);
 	draw(cubed);
 }
 
@@ -1083,18 +1108,18 @@ void	draw_map(t_cubed *cubed)
 		x = 0;
 		y++;
 	}
-	plotline(cubed, (t_vec){3, 3, 0, 0xFF00FFFF}, (t_vec){3, 153, 0, 0xFF00FFFF});
-	plotline(cubed, (t_vec){3, 153, 0, 0xFF00FFFF}, (t_vec){153, 153, 0, 0xFF00FFFF});
-	plotline(cubed, (t_vec){153, 153, 0, 0xFF00FFFF}, (t_vec){153, 3, 0, 0xFF00FFFF});
-	plotline(cubed, (t_vec){153, 3, 0, 0xFF00FFFF}, (t_vec){3, 3, 0, 0xFF00FFFF});
+	plotline(cubed, (t_vec){3, 3, 0, cubed->map.cealing_color - 2000}, (t_vec){3, 153, 0, cubed->map.cealing_color - 2000});
+	plotline(cubed, (t_vec){3, 153, 0, cubed->map.cealing_color - 2000}, (t_vec){153, 153, 0, cubed->map.cealing_color - 2000});
+	plotline(cubed, (t_vec){153, 153, 0, cubed->map.cealing_color - 2000}, (t_vec){153, 3, 0, cubed->map.cealing_color - 2000});
+	plotline(cubed, (t_vec){153, 3, 0, cubed->map.cealing_color - 2000}, (t_vec){3, 3, 0, cubed->map.cealing_color - 2000});
 }
 
 void load_text(t_cubed *cubed)
 {
-	cubed->north = mlx_load_png("textures/ball.png");
-	cubed->south = mlx_load_png("textures/ball_neg.png");
-	cubed->east = mlx_load_png("textures/ball_sepia.png");
-	cubed->west = mlx_load_png("textures/ball_mono.png");
+	cubed->north = mlx_load_png(cubed->map.path_to_north);
+	cubed->south = mlx_load_png(cubed->map.path_to_south);
+	cubed->east = mlx_load_png(cubed->map.path_to_east);
+	cubed->west = mlx_load_png(cubed->map.path_to_west);
 }
 
 void	cub3d(t_cubed *cubed)
@@ -1119,7 +1144,7 @@ void	cub3d(t_cubed *cubed)
 	}
 	load_text(cubed);
 	draw(cubed);
-	mlx_key_hook(cubed->mlx.mlx, &my_keyhook, cubed);
+	mlx_loop_hook(cubed->mlx.mlx, &update, cubed);
 	mlx_loop(cubed->mlx.mlx);
 	mlx_terminate(cubed->mlx.mlx);
 }

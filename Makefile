@@ -3,7 +3,7 @@ SRC = main.c
 LIBFT = libft
 OBJECT = $(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I. -ffast-math
+CFLAGS = -Wall -Wextra -Werror -I. -ffast-math -g -ffast-math
 RM = rm -f
 OBJDIR = obj
 SRCDIR = src
@@ -18,6 +18,8 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 
 $(NAME): $(OBJECT)
 	@make -s -C $(LIBFT)
+	$(CC) $(OBJECT) -framework Cocoa -framework OpenGL -framework IOKit \
+	MLX42/build/libmlx42.a -Iinclude -lglfw -L"/Users/$(USER)/.brew/opt/glfw/lib/" $(LIBFT)/libft.a -o $(NAME)
 	$(CC) $(OBJECT) -framework Cocoa -framework OpenGL -framework IOKit \
 	MLX42/build/libmlx42.a -Iinclude -lglfw -L"/Users/$(USER)/.brew/opt/glfw/lib/" $(LIBFT)/libft.a -o $(NAME)
 

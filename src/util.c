@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   util.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:31:13 by atuliara          #+#    #+#             */
-/*   Updated: 2023/08/24 16:47:44 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/29 16:24:17 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void	find_player_position(t_cubed *cubed)
 		x = 0;
 		y++;
 	}
+	printf("px = %f -- py = %f\n", cubed->player.px, cubed->player.py);
 }
 
 

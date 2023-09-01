@@ -1,8 +1,8 @@
 
-NO /Users/atuliara/Desktop/cub3d/textures/ball.png
-SO ./textures/ball_sepia.png
-WE ./textures/ball_mono.png
-EA ./textures/ball_neg.png
+NO /Users/atuliara/Desktop/cub3d/textures/PixelTexturePack/Textures/Bricks/CLAYBRICKS.png
+SO /Users/atuliara/Desktop/cub3d/textures/PixelTexturePack/Textures/Bricks/REDBRICKS.png
+WE /Users/atuliara/Desktop/cub3d/textures/PixelTexturePack/Textures/Bricks/ROUNDBRICKS.png
+EA /Users/atuliara/Desktop/cub3d/textures/PixelTexturePack/Textures/Bricks/SLIMBRICKS.png
 
 F       220,     100,    0
 C 225,30,0

@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/24 16:05:33 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/01 15:19:18 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	update(void *param)
 {
-	t_cubed *cubed;
+	t_cubed	*cubed;
 
 	cubed = param;
 	check_keys(cubed);
@@ -38,7 +38,7 @@ void	cub3d(t_cubed *cubed)
 
 int main(int argc, char **argv)
 {
-	t_cubed cubed;
+	t_cubed	cubed;
 
 	if (argc != 2)
 		return (1);

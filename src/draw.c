@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:32:17 by atuliara          #+#    #+#             */
-/*   Updated: 2023/08/24 17:05:25 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/01 11:05:22 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	draw_map(t_cubed *cubed)
 	int xo = 0;
 	int yo = 0;
 	int color;
+	
 	while (y < cubed->map.mapY)
 	{
 		while (x < cubed->map.mapX)

@@ -1,5 +1,5 @@
 
-
+-collision not working 
 -texutre extension check?
 -free stuff on exit?
 

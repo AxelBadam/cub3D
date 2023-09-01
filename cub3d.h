@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/24 17:12:43 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/01 15:03:40 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,8 +126,6 @@ typedef struct s_cubed
 	mlx_texture_t *east;
 	mlx_texture_t *west;
 }	t_cubed;
-
-//MAIN
 
 //PARS
 char		**append_2d(char **twod, char *str_to_add);

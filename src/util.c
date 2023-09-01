@@ -6,14 +6,14 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:31:13 by atuliara          #+#    #+#             */
-/*   Updated: 2023/08/24 16:47:44 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/01 16:18:55 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
 
-void load_text(t_cubed *cubed)
+void	load_text(t_cubed *cubed)
 {
 	cubed->north = mlx_load_png(cubed->map.path_to_north);
 	cubed->south = mlx_load_png(cubed->map.path_to_south);

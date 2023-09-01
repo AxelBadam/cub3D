@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:13:37 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/31 14:15:14 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/01 17:06:53 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	get_int_map_size(t_cubed *cubed, char **map)
 			size = ft_strlen(map[row]);
 		row++;
 	}
-	printf("\nrow = %i -- size = %i\n\n", row, size);
 	cubed->map.mapS = size * row;
 	cubed->map.mapY = row;
 	cubed->map.mapX = size;

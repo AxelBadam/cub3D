@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:31:13 by atuliara          #+#    #+#             */
-/*   Updated: 2023/08/29 16:24:17 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/01 16:23:49 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,35 +65,40 @@ uint32_t	*get_text_color(mlx_texture_t *texture)
 	return (colors);
 }
 
+void	check_for_player(t_cubed *cubed, int y, int x)
+{
+	int	xo;
+	int	yo;
+
+	xo = x * cubed->map.mapS;
+	yo = y * cubed->map.mapS;
+	if (cubed->map.map[y * cubed->map.mapX + x] == 3)
+	{
+		cubed->player.px = xo + cubed->map.mapS / 2;
+		cubed->player.py = yo + cubed->map.mapS / 2;
+		cubed->player.og_x = xo + cubed->map.mapS / 2;
+		cubed->player.og_y = yo + cubed->map.mapS / 2;
+		cubed->map.map[y * cubed->map.mapX + x] = 0;
+	}
+}
+
 void	find_player_position(t_cubed *cubed)
 {
-	int	i = 0;
-	int	x = 0;
-	int y = 0;
-	int xo = 0;
-	int yo = 0;
-	
+	int	x;
+	int	y;
+
+	x = 0;
+	y = 0;
 	while (y < cubed->map.mapY)
 	{
 		while (x < cubed->map.mapX)
 		{
-			xo = x * cubed->map.mapS;
-			yo = y * cubed->map.mapS;
-			if (cubed->map.map[y * cubed->map.mapX + x] == 3)
-			{
-				cubed->player.px = xo + cubed->map.mapS / 2;
-				cubed->player.py = yo + cubed->map.mapS / 2;
-				cubed->player.og_x = xo + cubed->map.mapS / 2;
-				cubed->player.og_y = yo + cubed->map.mapS / 2;
-				cubed->map.map[y * cubed->map.mapX + x] = 0;
-			}
+			check_for_player(cubed, y, x);
 			x++;
-			i++;
 		}
 		x = 0;
 		y++;
 	}
-	printf("px = %f -- py = %f\n", cubed->player.px, cubed->player.py);
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 16:35:27 by atuliara          #+#    #+#             */
-/*   Updated: 2023/08/24 16:36:09 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:08:34 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 void	get_ray_position_H(t_cubed *cubed, t_ray *ray)
 {
-	if (sin(degToRad(ray->ra)) > 0.001)
+	if (sin(deg_to_rad(ray->ra)) > 0.001)
 	{
 		ray->ry = (((int)cubed->player.py / cubed->map.mapS) * cubed->map.mapS) - 0.0001; //testi
 		ray->rx = (cubed->player.py - ray->ry) * ray->Tan + cubed->player.px;
 		ray->yo = -cubed->map.mapS;
 		ray->xo = -ray->yo * ray->Tan;
 	}
-	else if (sin(degToRad(ray->ra)) < -0.001)
+	else if (sin(deg_to_rad(ray->ra)) < -0.001)
 	{
 		ray->ry = (((int)cubed->player.py / cubed->map.mapS) * cubed->map.mapS) + cubed->map.mapS;
 		ray->rx = (cubed->player.py - ray->ry) * ray->Tan+cubed->player.px;
@@ -46,7 +46,7 @@ void	depth_of_field_H(t_cubed *cubed, t_ray *ray)
 		if(ray->mp > 0 && ray->mp < cubed->map.mapX * cubed->map.mapY && cubed->map.map[ray->mp] == 1)
 		{
 			ray->dof = cubed->map.mapY;
-			ray->disH = cos(degToRad(ray->ra)) * (ray->rx - cubed->player.px) - sin(degToRad(ray->ra)) * (ray->ry-cubed->player.py);
+			ray->disH = cos(deg_to_rad(ray->ra)) * (ray->rx - cubed->player.px) - sin(deg_to_rad(ray->ra)) * (ray->ry-cubed->player.py);
 		}
 		else
 		{

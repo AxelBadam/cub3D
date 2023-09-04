@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:31:17 by atuliara          #+#    #+#             */
-/*   Updated: 2023/08/24 16:05:09 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/04 16:15:17 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	init_mlx(t_cubed *cubed)
 {
+	cubed->mouse = 1;
 	cubed->mlx.image = NULL;
 	cubed->mlx.mlx = mlx_init(WIDTH, HEIGHT, "cub3d", false);
 	if (!(cubed->mlx.mlx))

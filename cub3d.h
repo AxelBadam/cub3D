@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/29 15:24:35 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:10:39 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,7 @@ typedef struct s_cubed
 	mlx_texture_t *south;
 	mlx_texture_t *east;
 	mlx_texture_t *west;
+	int		mouse;
 }	t_cubed;
 
 //MAIN
@@ -146,27 +147,29 @@ void	draw_player(t_cubed *cubed);
 void	my_pixel_put(mlx_image_t *image, int x, int y, int color);
 void	ray_plotline(t_cubed *cubed, t_vec v1, t_vec v2);
 void	plotline(t_cubed *cubed, t_vec v1, t_vec v2);
-//RC UTIL
-float degToRad(float a);
-float distance(int ax, int ay, int bx, int by, float ang);
-float FixAng(float a);
-
 //INIT
 void	init_mlx(t_cubed *cubed);
 //MOVE
 void	move_player(t_cubed *cubed, int key);
-void	rotate_player(t_cubed *cubed, int key);
 
+//MOVE_2
+void	rotate_player(t_cubed *cubed, int key);
 //UTIL
-void 		load_text(t_cubed *cubed);
-void		check_keys(t_cubed *cubed);
 uint32_t	*get_text_color(mlx_texture_t *texture);
-void		find_player_position(t_cubed *cubed);
+void	load_text(t_cubed *cubed);
+void	check_keys(t_cubed *cubed);
+void	mouse_rotate(t_cubed *cubed);
+void	check_for_player(t_cubed *cubed, int y, int x);
+//UTIL_2
+float	deg_to_rad(float a);
+float	distance(int ax, int ay, int bx, int by, float ang);
+float	fix_ang(float a);
+void	find_player_position(t_cubed *cubed);
 //RAYCAST
 mlx_texture_t	*check_what_ray_hit_first(t_cubed *cubed, t_ray *ray);
 void	calculate_wall_dimensions(t_cubed *cubed, t_ray *ray, t_wall *wall);
 void	draw_walls(t_cubed *cubed, t_ray *ray, mlx_texture_t *text);
-void	cast_rays2D(t_cubed *cubed);
+void	cast_rays2d(t_cubed *cubed);
 //CAST_VERTICAL
 void	depth_of_field_V(t_cubed *cubed, t_ray *ray);
 void	get_ray_position_V(t_cubed *cubed, t_ray *ray);

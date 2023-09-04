@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 16:37:06 by atuliara          #+#    #+#             */
-/*   Updated: 2023/08/24 17:01:55 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:08:34 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	depth_of_field_V(t_cubed *cubed, t_ray *ray)
 		if(ray->mp > 0 && ray->mp < cubed->map.mapX * cubed->map.mapY && cubed->map.map[ray->mp] == 1)
 		{
 			ray->dof = cubed->map.mapX;
-			ray->disV = cos(degToRad(ray->ra)) * (ray->rx-cubed->player.px) - sin(degToRad(ray->ra)) * (ray->ry-cubed->player.py);
+			ray->disV = cos(deg_to_rad(ray->ra)) * (ray->rx-cubed->player.px) - sin(deg_to_rad(ray->ra)) * (ray->ry-cubed->player.py);
 		}
 		else
 		{
@@ -35,14 +35,14 @@ void	depth_of_field_V(t_cubed *cubed, t_ray *ray)
 
 void	get_ray_position_V(t_cubed *cubed, t_ray *ray)
 {
-	if(cos(degToRad(ray->ra)) > 0.001)
+	if(cos(deg_to_rad(ray->ra)) > 0.001)
 	{
 		ray->rx = (((int)cubed->player.px / cubed->map.mapS) * cubed->map.mapS) + cubed->map.mapS;
 		ray->ry = (cubed->player.px-ray->rx) * ray->Tan + cubed->player.py;
 		ray->xo = cubed->map.mapS;
 		ray->yo = -ray->xo * ray->Tan;
 	}
-	else if (cos(degToRad(ray->ra)) < -0.001)
+	else if (cos(deg_to_rad(ray->ra)) < -0.001)
 	{
 		ray->rx = (((int)cubed->player.px / cubed->map.mapS) * cubed->map.mapS) -0.0001;
 		ray->ry = (cubed->player.px-ray->rx) * ray->Tan+cubed->player.py;
@@ -62,7 +62,7 @@ void	cast_vertical_rays(t_cubed *cubed, t_ray *ray)
 	ray->dof = 0;
 	ray->side = 0;
 	ray->disV = 100000;
-	ray->Tan = tan(degToRad(ray->ra));
+	ray->Tan = tan(deg_to_rad(ray->ra));
 
 	get_ray_position_V(cubed, ray);
 	depth_of_field_V(cubed, ray);

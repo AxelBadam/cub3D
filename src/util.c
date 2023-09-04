@@ -3,22 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   util.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:31:13 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/01 16:23:49 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:00:43 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-
-void load_text(t_cubed *cubed)
+void	load_text(t_cubed *cubed)
 {
+	if (!mlx_load_png(cubed->map.path_to_north))
+		exit (1);
+	if (!mlx_load_png(cubed->map.path_to_south))
+		exit (1);
+	if (!mlx_load_png(cubed->map.path_to_east))
+		exit (1);
+	if (!mlx_load_png(cubed->map.path_to_west))
+		exit (1);
 	cubed->north = mlx_load_png(cubed->map.path_to_north);
 	cubed->south = mlx_load_png(cubed->map.path_to_south);
 	cubed->east = mlx_load_png(cubed->map.path_to_east);
 	cubed->west = mlx_load_png(cubed->map.path_to_west);
+}
+
+void	toggle_mouse(mlx_key_data_t keydata, void *param)
+{
+	t_cubed	*cubed;
+
+	cubed = param;
+	if (keydata.key == MLX_KEY_M && keydata.action == MLX_PRESS)
+	{
+		if (cubed->mouse == 0)
+			cubed->mouse = 1;
+		else if (cubed->mouse == 1)
+			cubed->mouse = 0;
+	}
 }
 
 void	check_keys(t_cubed *cubed)
@@ -37,6 +58,8 @@ void	check_keys(t_cubed *cubed)
 		rotate_player(cubed, MLX_KEY_RIGHT);
 	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_ESCAPE))
 		exit (0);
+	mlx_key_hook(cubed->mlx.mlx, &toggle_mouse, cubed);
+
 }
 
 uint32_t	*get_text_color(mlx_texture_t *texture)
@@ -81,36 +104,3 @@ void	check_for_player(t_cubed *cubed, int y, int x)
 		cubed->map.map[y * cubed->map.mapX + x] = 0;
 	}
 }
-
-void	find_player_position(t_cubed *cubed)
-{
-	int	x;
-	int	y;
-
-	x = 0;
-	y = 0;
-	while (y < cubed->map.mapY)
-	{
-		while (x < cubed->map.mapX)
-		{
-			check_for_player(cubed, y, x);
-			x++;
-		}
-		x = 0;
-		y++;
-	}
-}
-
-
-
-/*
-void	mouse_rotate(t_cubed *cubed)
-{
-	int	x;
-	int	y;
-
-	mlx_get_mouse_pos(cubed->mlx.mlx, &x, &y);
-	x -= WIDTH / 2;
-	cubed->player.pa += (float)x / 4000 * 10;
-	mlx_set_mouse_pos(cubed->mlx.mlx, WIDTH / 2, HEIGHT / 2);
-}*/

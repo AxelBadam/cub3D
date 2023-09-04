@@ -1,32 +1,51 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rc_util.c                                          :+:      :+:    :+:   */
+/*   util_2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:53:24 by atuliara          #+#    #+#             */
-/*   Updated: 2023/08/24 16:47:03 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:08:34 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-float degToRad(float a) 
-{ 
-	return (a*M_PI/180.0);
-}
-
-float distance(int ax,int ay,int bx,int by, float ang)
-{ 
-	return cos(degToRad(ang))*(bx-ax)-sin(degToRad(ang))*(by-ay);
-}
-
-float FixAng(float a)
+float	deg_to_rad(float a)
 {
-	if(a > 359)
+	return (a * M_PI / 180.0);
+}
+
+float	distance(int ax,int ay,int bx,int by, float ang)
+{
+	return cos(deg_to_rad(ang))*(bx-ax)-sin(deg_to_rad(ang))*(by-ay);
+}
+
+float	fix_ang(float a)
+{
+	if (a > 359)
 		a -= 360;
- 	if(a < 0)
- 		a += 360;
- 	return a;
+	if (a < 0)
+		a += 360;
+	return (a);
+}
+
+void	find_player_position(t_cubed *cubed)
+{
+	int	x;
+	int	y;
+
+	x = 0;
+	y = 0;
+	while (y < cubed->map.mapY)
+	{
+		while (x < cubed->map.mapX)
+		{
+			check_for_player(cubed, y, x);
+			x++;
+		}
+		x = 0;
+		y++;
+	}
 }

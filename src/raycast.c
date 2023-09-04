@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:40:11 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/01 13:58:41 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/04 13:06:43 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ mlx_texture_t	*check_what_ray_hit_first(t_cubed *cubed, t_ray *ray)
 	}
 	if(!text && ray->disV <= ray->disH)
 	{ 
-		ray->flag = 0.5;
+		ray->flag = 0;
 		ray->rx = ray->vx; 
 		ray->ry = ray->vy; 
 		ray->disH = ray->disV;
@@ -53,13 +53,13 @@ void	calculate_wall_dimensions(t_cubed *cubed, t_ray *ray, t_wall *wall)
     wall->ty = wall->ty_off * wall->ty_step;
 	if (ray->flag == 1)
 	{
-		wall->tx = (int)(ray->rx/2.0) % 32;
+		wall->tx = (int)(ray->rx) % 32;
 		if (ray->ra > 180)
 			wall->tx = 31 - wall->tx;
 	}
 	else
 	{
-		wall->tx = (int)(ray->ry/2.0) % 32;
+		wall->tx = (int)(ray->ry) % 32;
 		if ( (ray->ra > 90 && ray->ra < 270))
 			wall->tx = 31 - wall->tx;
 	}

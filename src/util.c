@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:31:13 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/01 16:18:55 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/04 13:17:45 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 
 void	load_text(t_cubed *cubed)
 {
+	if (!mlx_load_png(cubed->map.path_to_north))
+		exit (1);
+	if (!mlx_load_png(cubed->map.path_to_south))
+		exit (1);
+	if (!mlx_load_png(cubed->map.path_to_east))
+		exit (1);
+	if (!mlx_load_png(cubed->map.path_to_west))
+		exit (1);
 	cubed->north = mlx_load_png(cubed->map.path_to_north);
 	cubed->south = mlx_load_png(cubed->map.path_to_south);
 	cubed->east = mlx_load_png(cubed->map.path_to_east);

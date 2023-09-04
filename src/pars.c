@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:39:35 by atuliara          #+#    #+#             */
-/*   Updated: 2023/08/24 15:55:48 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/04 13:20:47 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -357,8 +357,8 @@ void	convert_map_to_int(t_cubed *cubed, char **map)
 		error_exit(cubed, "MALLOC ERROR\n");
 	while (map[row])
 		fill_int_array(cubed, map[row++]);
-	for (int i = 0; i < cubed->map.mapS; i++)
-		printf("%i", cubed->map.map[i]);
+	/*for (int i = 0; i < cubed->map.mapS; i++)
+		printf("%i", cubed->map.map[i]);*/
 }
 
 char	**get_map(t_cubed *cubed, char **file)

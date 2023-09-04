@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/04 14:21:25 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/29 15:24:35 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,12 @@ typedef struct s_map
 	char		*path_to_south;
 	char		*path_to_west;
 	char		*path_to_east;
-	long int	floor_color;
-	long int	cealing_color;
+	int			floor_color;
+	int			cealing_color;
 	float		map_postionX;
 	float		map_postionY;
+	int			F_color_check;
+	int			C_color_check;
 } t_map;
 
 typedef struct s_player
@@ -127,21 +129,23 @@ typedef struct s_cubed
 	mlx_texture_t *west;
 }	t_cubed;
 
-//PARS
-char		**append_2d(char **twod, char *str_to_add);
-void		free_string_array(char **array);
-int			get_2d_array_size(char **array);
-void		map_parsing(t_cubed *cubed, char *filename);
+//MAIN
+
+//MAP_PARSING
+char	**get_file_contents(t_cubed *cubed, char *filename);
+int		get_map_size(char **file);
+char	**get_map(t_cubed *cubed, char **file);
+void	map_parsing(t_cubed *cubed, char *filename);
 //DRAW
-void		draw_map(t_cubed *cubed);
-void		draw_background(t_cubed *cubed);
-void		draw_rectangle(t_cubed *cubed, int ry, int rx, int color);
-void		draw(t_cubed *cubed);
-void		draw_player(t_cubed *cubed);
+void	draw_map(t_cubed *cubed);
+void	draw_background(t_cubed *cubed);
+void	draw_rectangle(t_cubed *cubed, int ry, int rx, int color);
+void	draw(t_cubed *cubed);
+void	draw_player(t_cubed *cubed);
 // DRAW_UTIL
-void		my_pixel_put(mlx_image_t *image, int x, int y, int color);
-void		ray_plotline(t_cubed *cubed, t_vec v1, t_vec v2);
-void		plotline(t_cubed *cubed, t_vec v1, t_vec v2);
+void	my_pixel_put(mlx_image_t *image, int x, int y, int color);
+void	ray_plotline(t_cubed *cubed, t_vec v1, t_vec v2);
+void	plotline(t_cubed *cubed, t_vec v1, t_vec v2);
 //RC UTIL
 float degToRad(float a);
 float distance(int ax, int ay, int bx, int by, float ang);
@@ -150,9 +154,8 @@ float FixAng(float a);
 //INIT
 void	init_mlx(t_cubed *cubed);
 //MOVE
-void		move_player(t_cubed *cubed, int key);
-void		rotate_player(t_cubed *cubed, int key);
-void		mouse_rotate(t_cubed *cubed);
+void	move_player(t_cubed *cubed, int key);
+void	rotate_player(t_cubed *cubed, int key);
 
 //UTIL
 void 		load_text(t_cubed *cubed);
@@ -172,3 +175,43 @@ void	cast_vertical_rays(t_cubed *cubed, t_ray *ray);
 void	get_ray_position_H(t_cubed *cubed, t_ray *ray);
 void	depth_of_field_H(t_cubed *cubed, t_ray *ray);
 void	cast_horizontal_rays(t_cubed *cubed, t_ray *ray);
+//PARSE_UTIL
+int		check_for_empty_row(char *row);
+int		iterate_to_newline(char *row);
+void	get_player_angle(t_cubed *cubed, char direction);
+void	check_index_spot(t_cubed *cubed, char index);
+int		check_direction(char index);
+//PARSE_UTIL2
+int		ft_is_white_space(char c);
+int		iterate_over_white_spaces(char *row);
+int		get_rgba(int r, int g, int b, int a);
+int		get_2d_array_size(char **array);
+int		check_if_map_started(char *row);
+//MAP_CHECK
+void	check_for_invalid_attributes(t_cubed *cubed, char **map);
+void	check_map(t_cubed *cubed, char **map);
+void	check_row(t_cubed *cubed, char *row, int *spawn);
+int		check_if_walls_connect(char *row, char *next_row);
+int		check_wall(char *row, char *next_row, int *wall);
+//MAP_CHECK2
+int		iterate_to_map_start(char **file);
+void	nullify_map(t_cubed *cubed);
+int		check_file_name(char *filename);
+void	check_if_east_or_west(t_cubed *cubed, char *row);
+void	check_top_and_bottom(t_cubed *cubed, char *row);
+//GET_INT_MAP
+void	convert_map_to_int(t_cubed *cubed, char **map);
+void	fill_int_array(t_cubed *cubed, char *row);
+void	fill_int(t_cubed *cubed, int *map_index, char map_char);
+void	get_int_map_size(t_cubed *cubed, char **map);
+//GET_MAP_ATTR
+void	get_map_attributes(t_cubed *cubed, char **file);
+void	get_attribute(t_cubed *cubed, char *row);
+int		get_color(t_cubed *cubed, char *row);
+void	get_colors(t_cubed *cubed, char *row);
+void	get_textures(t_cubed *cubed, char *row);
+//PARSE_UTIL3
+char	**append_2d(char **twod, char *str_to_add);
+void	free_string_array(char **array);
+void	error_exit(t_cubed *cubed, char *error_msg);
+char	*texture_path(t_cubed *cubed, char *row);

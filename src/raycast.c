@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:40:11 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/04 13:06:43 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/24 16:48:57 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ mlx_texture_t	*check_what_ray_hit_first(t_cubed *cubed, t_ray *ray)
 	}
 	if(!text && ray->disV <= ray->disH)
 	{ 
-		ray->flag = 0;
+		ray->flag = 0.5;
 		ray->rx = ray->vx; 
 		ray->ry = ray->vy; 
 		ray->disH = ray->disV;
@@ -53,13 +53,13 @@ void	calculate_wall_dimensions(t_cubed *cubed, t_ray *ray, t_wall *wall)
     wall->ty = wall->ty_off * wall->ty_step;
 	if (ray->flag == 1)
 	{
-		wall->tx = (int)(ray->rx) % 32;
+		wall->tx = (int)(ray->rx/2.0) % 32;
 		if (ray->ra > 180)
 			wall->tx = 31 - wall->tx;
 	}
 	else
 	{
-		wall->tx = (int)(ray->ry) % 32;
+		wall->tx = (int)(ray->ry/2.0) % 32;
 		if ( (ray->ra > 90 && ray->ra < 270))
 			wall->tx = 31 - wall->tx;
 	}
@@ -72,7 +72,7 @@ void	draw_walls(t_cubed *cubed, t_ray *ray, mlx_texture_t *text)
 	int			x;
 	u_int32_t	*col;
 	int			pixel;
-
+	
 	y = 0;
 	calculate_wall_dimensions(cubed, ray, &wall);
 	col = get_text_color(text);
@@ -95,10 +95,10 @@ void	cast_rays2D(t_cubed *cubed)
 {
 	t_ray			ray;
 	mlx_texture_t	*text;
-
+	
 	ray.ra = FixAng(cubed->player.pa + 30);
 	ray.r = -1;
-	while (++ray.r < 480)
+	while(++ray.r < 480)
 	{
 		cast_vertical_rays(cubed, &ray);
 		cast_horizontal_rays(cubed, &ray);
@@ -109,6 +109,6 @@ void	cast_rays2D(t_cubed *cubed)
 		//ray.ry = (ray.ry - dist_traveledY) - (cubed->player.og_y - (float)75);
 		//ray_plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
 		draw_walls(cubed, &ray, text);
-		ray.ra = FixAng(ray.ra - 0.125);
+		ray.ra = FixAng(ray.ra - 0.125);      	
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/04 14:52:36 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/04 15:44:11 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 void	update(void *param)
 {
-	t_cubed	*cubed;
+	t_cubed *cubed;
 
 	cubed = param;
 	check_keys(cubed);
-	mouse_rotate(cubed);
+	//mouse_rotate(cubed);
 	draw(cubed);
 }
 
@@ -32,14 +32,13 @@ void	cub3d(t_cubed *cubed)
 	load_text(cubed);
 	draw(cubed);
 	mlx_loop_hook(cubed->mlx.mlx, &update, cubed);
-	//mlx_mouse_hook(cubed->mlx.mlx, &mouse_rotate, cubed);
 	mlx_loop(cubed->mlx.mlx);
 	mlx_terminate(cubed->mlx.mlx);
 }
 
 int main(int argc, char **argv)
 {
-	t_cubed	cubed;
+	t_cubed cubed;
 
 	if (argc != 2)
 		return (1);

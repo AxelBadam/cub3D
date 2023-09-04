@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:32:17 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/01 11:05:22 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/08/29 15:12:59 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void	draw_map(t_cubed *cubed)
 	int xo = 0;
 	int yo = 0;
 	int color;
-	
 	while (y < cubed->map.mapY)
 	{
 		while (x < cubed->map.mapX)
@@ -93,9 +92,9 @@ void	draw_background(t_cubed *cubed)
 		while (x < WIDTH)
 		{
 			if (y < HEIGHT / 2)
-				mlx_put_pixel(cubed->mlx.image, x, y, cubed->map.floor_color);
-			else
 				mlx_put_pixel(cubed->mlx.image, x, y, cubed->map.cealing_color);
+			else
+				mlx_put_pixel(cubed->mlx.image, x, y, cubed->map.floor_color);
 			x++;
 		}
 		x = 0;

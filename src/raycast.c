@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:40:11 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/04 13:06:43 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/04 15:55:59 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,6 @@ void	cast_rays2D(t_cubed *cubed)
 		cast_vertical_rays(cubed, &ray);
 		cast_horizontal_rays(cubed, &ray);
 		text = check_what_ray_hit_first(cubed, &ray);
-		//float	dist_traveledX = cubed->player.px - cubed->player.og_x;
-		//float	dist_traveledY = cubed->player.py - cubed->player.og_y;
-		//ray.rx = (ray.rx - dist_traveledX) - (cubed->player.og_x - (float)75);
-		//ray.ry = (ray.ry - dist_traveledY) - (cubed->player.og_y - (float)75);
-		//ray_plotline(cubed, (t_vec){(cubed->player.px + 3 - dist_traveledX) - (cubed->player.og_x - 75), (cubed->player.py + 3 - dist_traveledY) - (cubed->player.og_y - 75), 0, 0xFF0000FF}, (t_vec){ray.rx, ray.ry, 0, 0xFF0000FF});
 		draw_walls(cubed, &ray, text);
 		ray.ra = FixAng(ray.ra - 0.125);
 	}

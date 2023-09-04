@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/01 15:19:18 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/04 14:52:36 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	update(void *param)
 
 	cubed = param;
 	check_keys(cubed);
-	//mouse_rotate(cubed);
+	mouse_rotate(cubed);
 	draw(cubed);
 }
 
@@ -32,6 +32,7 @@ void	cub3d(t_cubed *cubed)
 	load_text(cubed);
 	draw(cubed);
 	mlx_loop_hook(cubed->mlx.mlx, &update, cubed);
+	//mlx_mouse_hook(cubed->mlx.mlx, &mouse_rotate, cubed);
 	mlx_loop(cubed->mlx.mlx);
 	mlx_terminate(cubed->mlx.mlx);
 }

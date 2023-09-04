@@ -1,9 +1,6 @@
 
--texutre extension check?
--free stuff on exit?
+
 
 -norm (function names?)
 
 
--doors (bonus)
--animated sprite (bonus)

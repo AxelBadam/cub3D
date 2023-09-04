@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:31:13 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/04 13:17:45 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/04 15:39:32 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	find_player_position(t_cubed *cubed)
 	int y = 0;
 	int xo = 0;
 	int yo = 0;
-	
+
 	while (y < cubed->map.mapY)
 	{
 		while (x < cubed->map.mapX)
@@ -103,16 +103,18 @@ void	find_player_position(t_cubed *cubed)
 	}
 }
 
-
-
-/*
 void	mouse_rotate(t_cubed *cubed)
 {
 	int	x;
 	int	y;
 
+	mlx_set_cursor_mode(cubed->mlx.mlx, MLX_MOUSE_HIDDEN);
 	mlx_get_mouse_pos(cubed->mlx.mlx, &x, &y);
 	x -= WIDTH / 2;
-	cubed->player.pa += (float)x / 4000 * 10;
+	cubed->player.pa += (float)x / 40;
+	cubed->player.pa = FixAng(cubed->player.pa);
 	mlx_set_mouse_pos(cubed->mlx.mlx, WIDTH / 2, HEIGHT / 2);
-}*/
+	cubed->player.dx = cos(degToRad(cubed->player.pa));
+	cubed->player.dy = -sin(degToRad(cubed->player.pa));
+}
+

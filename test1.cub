@@ -1,7 +1,7 @@
-NO ./textures/wall.png
-SO ./textures/paladin 1.png
-WE ./textures/paladin2.png
-EA ./textures/paladin4.png
+NO /Users/atuliara/Desktop/cub3d/textures/Tech/BIGSQUARES.png
+SO /Users/atuliara/Desktop/cub3d/textures/Tech/HEXAGONS.png
+WE /Users/atuliara/Desktop/cub3d/textures/Tech/HIGHTECH.png
+EA /Users/atuliara/Desktop/cub3d/textures/Tech/TINYSQUARES.png
 
 F 220,220,100
 C 225,30,0

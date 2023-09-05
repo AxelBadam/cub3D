@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw_util.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:56:35 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/05 11:27:47 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/05 15:55:02 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 void	draw_map_outlines(t_cubed *cubed)
 {
-	plotline(cubed, (t_vec){3, 3, 0, cubed->map.cealing_color - 2000},
-		(t_vec){3, 153, 0, cubed->map.cealing_color - 2000});
-	plotline(cubed, (t_vec){3, 153, 0, cubed->map.cealing_color - 2000},
-		(t_vec){153, 153, 0, cubed->map.cealing_color - 2000});
-	plotline(cubed, (t_vec){153, 153, 0, cubed->map.cealing_color - 2000},
-		(t_vec){153, 3, 0, cubed->map.cealing_color - 2000});
-	plotline(cubed, (t_vec){153, 3, 0, cubed->map.cealing_color - 2000},
-		(t_vec){3, 3, 0, cubed->map.cealing_color - 2000});
+	plotline(cubed, (t_vec){3, 3, cubed->map.cealing_color - 2000},
+		(t_vec){3, 153, cubed->map.cealing_color - 2000});
+	plotline(cubed, (t_vec){3, 153, cubed->map.cealing_color - 2000},
+		(t_vec){153, 153, cubed->map.cealing_color - 2000});
+	plotline(cubed, (t_vec){153, 153, cubed->map.cealing_color - 2000},
+		(t_vec){153, 3, cubed->map.cealing_color - 2000});
+	plotline(cubed, (t_vec){153, 3, cubed->map.cealing_color - 2000},
+		(t_vec){3, 3, cubed->map.cealing_color - 2000});
 }
 
 void	my_pixel_put(mlx_image_t *image, int x, int y, int color)

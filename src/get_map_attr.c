@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_map_attr.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:15:42 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/29 15:19:16 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/05 15:02:11 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,17 +68,17 @@ void	get_colors(t_cubed *cubed, char *row)
 	ctr = iterate_over_white_spaces(row);
 	if (row[ctr] == 'F' && ft_is_white_space(row[ctr + 1]))
 	{
-		if (cubed->map.F_color_check)
+		if (cubed->map.f_color_check)
 			error_exit(cubed, "TOO MANY COLORS\n");
 		cubed->map.floor_color = get_color(cubed, row);
-		cubed->map.F_color_check = 1;
+		cubed->map.f_color_check = 1;
 	}
 	else if (row[ctr] == 'C' && ft_is_white_space(row[ctr + 1]))
 	{
-		if (cubed->map.C_color_check)
+		if (cubed->map.c_color_check)
 			error_exit(cubed, "TOO MANY COLORS\n");
 		cubed->map.cealing_color = get_color(cubed, row);
-		cubed->map.C_color_check = 1;
+		cubed->map.c_color_check = 1;
 	}
 }
 

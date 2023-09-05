@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_check2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:09:19 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/29 15:26:11 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/05 15:02:54 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,10 @@ void	nullify_map(t_cubed *cubed)
 	cubed->map.map = NULL;
 	cubed->map.cealing_color = -1;
 	cubed->map.floor_color = -1;
-	cubed->map.C_color_check = 0;
-	cubed->map.F_color_check = 0;
-	cubed->map.map_postionX = 0;
-	cubed->map.map_postionY = 0;
+	cubed->map.c_color_check = 0;
+	cubed->map.f_color_check = 0;
+	cubed->map.map_postion_x = 0;
+	cubed->map.map_postion_y = 0;
 }
 
 int	iterate_to_map_start(char **file)

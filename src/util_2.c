@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   util_2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:53:24 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/05 11:07:46 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/05 15:01:41 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ void	find_player_position(t_cubed *cubed)
 
 	x = 0;
 	y = 0;
-	while (y < cubed->map.mapY)
+	while (y < cubed->map.map_y)
 	{
-		while (x < cubed->map.mapX)
+		while (x < cubed->map.map_x)
 		{
 			check_for_player(cubed, y, x);
 			x++;

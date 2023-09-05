@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_check.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:06:36 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/01 16:27:16 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/05 15:02:11 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	check_for_invalid_attributes(t_cubed *cubed, char **map)
 	if (!cubed->map.path_to_east || !cubed->map.path_to_west
 		|| !cubed->map.path_to_north || !cubed->map.path_to_south)
 		error_exit(cubed, "PATH ERROR\n");
-	if (!cubed->map.C_color_check || !cubed->map.F_color_check)
+	if (!cubed->map.c_color_check || !cubed->map.f_color_check)
 		error_exit(cubed, "COLOR ERROR\n");
 	check_map(cubed, map);
 }

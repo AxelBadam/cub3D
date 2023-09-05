@@ -1,7 +1,7 @@
 NO ./textures/Bricks/CLAYBRICKS.png
 SO ./textures/Bricks/REDBRICKS.png
 WE ./textures/Bricks/ROUNDBRICKS.png
-EA ./textures/Bricks/PORCE
+EA ./textures/Bricks/PORCELAINBRICKS.png
 
 F       220,     100,    0
 C 300,255,255

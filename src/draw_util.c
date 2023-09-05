@@ -3,14 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   draw_util.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:56:35 by atuliara          #+#    #+#             */
-/*   Updated: 2023/08/24 15:57:59 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/05 11:27:47 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+void	draw_map_outlines(t_cubed *cubed)
+{
+	plotline(cubed, (t_vec){3, 3, 0, cubed->map.cealing_color - 2000},
+		(t_vec){3, 153, 0, cubed->map.cealing_color - 2000});
+	plotline(cubed, (t_vec){3, 153, 0, cubed->map.cealing_color - 2000},
+		(t_vec){153, 153, 0, cubed->map.cealing_color - 2000});
+	plotline(cubed, (t_vec){153, 153, 0, cubed->map.cealing_color - 2000},
+		(t_vec){153, 3, 0, cubed->map.cealing_color - 2000});
+	plotline(cubed, (t_vec){153, 3, 0, cubed->map.cealing_color - 2000},
+		(t_vec){3, 3, 0, cubed->map.cealing_color - 2000});
+}
 
 void	my_pixel_put(mlx_image_t *image, int x, int y, int color)
 {
@@ -75,4 +87,3 @@ void	ray_plotline(t_cubed *cubed, t_vec v1, t_vec v2)
 		}
 	}
 }
-

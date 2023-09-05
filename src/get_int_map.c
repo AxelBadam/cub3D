@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:13:37 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/05 10:48:28 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/05 15:56:41 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	get_int_map_size(t_cubed *cubed, char **map)
 void	fill_int(t_cubed *cubed, int *map_index, char map_char)
 {
 	if (ft_is_white_space(map_char))
-		*map_index = 2;
+		*map_index = 0;
 	else if (map_char == 'W' || map_char == 'S'
 		|| map_char == 'E' || map_char == 'N')
 	{

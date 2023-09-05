@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:31:17 by atuliara          #+#    #+#             */
-/*   Updated: 2023/08/24 16:05:09 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/05 13:16:21 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	init_mlx(t_cubed *cubed)
 {
-	cubed->mlx.image = NULL;
+	cubed->mouse = 1;
 	cubed->mlx.mlx = mlx_init(WIDTH, HEIGHT, "cub3d", false);
 	if (!(cubed->mlx.mlx))
 	{

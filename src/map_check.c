@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:06:36 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/01 16:27:16 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/05 15:51:24 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ int	check_if_walls_connect(char *row, char *next_row)
 	while ((row[ctr] && (row[ctr] == '0' || row[ctr] == '1'
 				|| ft_is_white_space(row[ctr]) || check_direction(row[ctr]))))
 	{
-		if (row[ctr] == '1' && !ft_strchr(&row[ctr], '0')
-			&& !ft_strchr(&next_row[ctr], '0'))
+		if (row[ctr] == '1' && !ft_strchr(&row[ctr], '0') && !ft_strchr(&row[ctr], ' ')
+			&& !ft_strchr(&next_row[ctr], '0') && !ft_strchr(&next_row[ctr], ' '))
 		{
 			check_wall(&row[ctr], &next_row[ctr], &second_wall);
 			break ;
@@ -92,9 +92,10 @@ int	check_wall(char *row, char *next_row, int *wall)
 			|| ft_is_white_space(row[ctr]) || check_direction(row[ctr])))
 	{
 		if (next_row[ctr] && row[ctr] == '1' && next_row[ctr] == '1')
+		{
 			*wall = 1;
-		if (next_row[ctr] == '0')
 			break ;
+		}
 		ctr++;
 	}
 	return (ctr);

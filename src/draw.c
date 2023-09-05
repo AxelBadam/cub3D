@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:32:17 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/05 11:27:58 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/05 17:13:32 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	draw_map(t_cubed *cubed)
 		x = 0;
 		y++;
 	}
+	draw_map_outlines(cubed);
 }
 
 void	draw_rectangle(t_cubed *cubed, int ry, int rx, int color)

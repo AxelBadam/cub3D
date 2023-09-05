@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:13:37 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/01 17:06:53 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/05 10:55:02 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,8 @@ void	fill_int_array(t_cubed *cubed, char *row)
 void	convert_map_to_int(t_cubed *cubed, char **map)
 {
 	int	row;
-	int	index;
-	int	column;
 
-	column = 0;
 	row = 0;
-	index = 0;
 	get_int_map_size(cubed, map);
 	cubed->map.map = (int *)malloc(sizeof(int) * cubed->map.mapS);
 	if (!cubed->map.map)

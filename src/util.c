@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   util.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:31:13 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/04 17:00:43 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/05 12:52:42 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,18 @@
 
 void	load_text(t_cubed *cubed)
 {
-	if (!mlx_load_png(cubed->map.path_to_north))
-		exit (1);
-	if (!mlx_load_png(cubed->map.path_to_south))
-		exit (1);
-	if (!mlx_load_png(cubed->map.path_to_east))
-		exit (1);
-	if (!mlx_load_png(cubed->map.path_to_west))
-		exit (1);
 	cubed->north = mlx_load_png(cubed->map.path_to_north);
+	if (!cubed->north)
+		error_exit(cubed, NULL);
 	cubed->south = mlx_load_png(cubed->map.path_to_south);
+	if (!cubed->south)
+		error_exit(cubed, NULL);
 	cubed->east = mlx_load_png(cubed->map.path_to_east);
+	if (!cubed->east)
+		error_exit(cubed, NULL);
 	cubed->west = mlx_load_png(cubed->map.path_to_west);
+	if (!cubed->west)
+		error_exit(cubed, NULL);
 }
 
 void	toggle_mouse(mlx_key_data_t keydata, void *param)
@@ -57,9 +57,11 @@ void	check_keys(t_cubed *cubed)
 	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_RIGHT))
 		rotate_player(cubed, MLX_KEY_RIGHT);
 	if (mlx_is_key_down(cubed->mlx.mlx, MLX_KEY_ESCAPE))
+	{
+		free_all(cubed);
 		exit (0);
+	}
 	mlx_key_hook(cubed->mlx.mlx, &toggle_mouse, cubed);
-
 }
 
 uint32_t	*get_text_color(mlx_texture_t *texture)

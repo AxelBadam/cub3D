@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/04 17:08:34 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/05 12:56:12 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,12 @@ int	main(int argc, char **argv)
 
 	if (argc != 2)
 		return (1);
+	cubed.north = NULL;
+	cubed.south = NULL;
+	cubed.west = NULL;
+	cubed.east = NULL;
+	cubed.mlx.mlx = NULL;
+	cubed.mlx.image = NULL;
 	map_parsing(&cubed, argv[1]);
 	cub3d(&cubed);
 	return (0);

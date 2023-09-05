@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:32:17 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/04 16:03:03 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/05 11:27:58 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	draw_player(t_cubed *cubed)
 
 	x = 75;
 	y = 75;
-	while(x < (75 + 4))
+	while (x < (75 + 4))
 	{
 		while (y < (75 + 4))
 		{
@@ -33,12 +33,12 @@ void	draw_player(t_cubed *cubed)
 
 void	draw_map(t_cubed *cubed)
 {
-	int	i = 0;
-	int	x = 0;
-	int y = 0;
-	int xo = 0;
-	int yo = 0;
-	int color;
+	int	x;
+	int	y;
+	int	color;
+
+	x = 0;
+	y = 0;
 	while (y < cubed->map.mapY)
 	{
 		while (x < cubed->map.mapX)
@@ -47,26 +47,25 @@ void	draw_map(t_cubed *cubed)
 				color = 0xFFFFFFFF;
 			else
 				color = 0x000000FF;
-			xo = x * cubed->map.mapS + cubed->map.map_postionX;
-			yo = y * cubed->map.mapS + cubed->map.map_postionY;
-			draw_rectangle(cubed, yo - (cubed->player.og_y - 75), xo - (cubed->player.og_x - 75), color);
+			draw_rectangle(cubed,
+				(y * cubed->map.mapS + cubed->map.map_postionY)
+				- (cubed->player.og_y - 75), (x * cubed->map.mapS
+					+ cubed->map.map_postionX)
+				- (cubed->player.og_x - 75), color);
 			x++;
-			i++;
 		}
 		x = 0;
 		y++;
 	}
-	plotline(cubed, (t_vec){3, 3, 0, cubed->map.cealing_color - 2000}, (t_vec){3, 153, 0, cubed->map.cealing_color - 2000});
-	plotline(cubed, (t_vec){3, 153, 0, cubed->map.cealing_color - 2000}, (t_vec){153, 153, 0, cubed->map.cealing_color - 2000});
-	plotline(cubed, (t_vec){153, 153, 0, cubed->map.cealing_color - 2000}, (t_vec){153, 3, 0, cubed->map.cealing_color - 2000});
-	plotline(cubed, (t_vec){153, 3, 0, cubed->map.cealing_color - 2000}, (t_vec){3, 3, 0, cubed->map.cealing_color - 2000});
 }
 
 void	draw_rectangle(t_cubed *cubed, int ry, int rx, int color)
 {
-	int	x = 0;
-	int y = ry;
+	int	x;
+	int	y;
 
+	x = 0;
+	y = ry;
 	while (y < ry + cubed->map.mapS)
 	{
 		x = rx;
@@ -121,4 +120,3 @@ void	draw(t_cubed *cubed)
 		exit(69);
 	}
 }
-

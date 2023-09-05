@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   util_2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:53:24 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/04 17:08:34 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/05 11:07:46 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,6 @@
 float	deg_to_rad(float a)
 {
 	return (a * M_PI / 180.0);
-}
-
-float	distance(int ax,int ay,int bx,int by, float ang)
-{
-	return cos(deg_to_rad(ang))*(bx-ax)-sin(deg_to_rad(ang))*(by-ay);
 }
 
 float	fix_ang(float a)

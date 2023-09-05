@@ -1,13 +1,13 @@
 NO ./textures/Bricks/CLAYBRICKS.png
 SO ./textures/Bricks/REDBRICKS.png
 WE ./textures/Bricks/ROUNDBRICKS.png
-EA ./textures/Bricks/PORCELAINBRICKS.png
+EA ./textures/Bricks/PORCE
 
 F       220,     100,    0
 C 300,255,255
 
 11111111
-10100001111
+10100000
 10100001
 10100001
 10010001

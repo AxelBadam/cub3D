@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:21:14 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/08/29 15:23:05 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/05 12:54:46 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,38 @@ char	*texture_path(t_cubed *cubed, char *row)
 	return (path);
 }
 
+void	free_all(t_cubed *cubed)
+{
+	if (cubed->map.path_to_east)
+		free(cubed->map.path_to_east);
+	if (cubed->map.path_to_west)
+		free(cubed->map.path_to_west);
+	if (cubed->map.path_to_south)
+		free(cubed->map.path_to_south);
+	if (cubed->map.path_to_north)
+		free(cubed->map.path_to_north);
+	if (cubed->map.map)
+		free(cubed->map.map);
+	if (cubed->mlx.image)
+		mlx_delete_image(cubed->mlx.mlx, cubed->mlx.image);
+	if (cubed->north)
+		mlx_delete_texture(cubed->north);
+	if (cubed->south)
+		mlx_delete_texture(cubed->south);
+	if (cubed->east)
+		mlx_delete_texture(cubed->east);
+	if (cubed->west)
+		mlx_delete_texture(cubed->west);
+	if (cubed->mlx.mlx)
+		mlx_terminate(cubed->mlx.mlx);
+}
+
 void	error_exit(t_cubed *cubed, char *error_msg)
 {
-	(void)cubed;
 	ft_putstr_fd("Error\n", 2);
 	ft_putstr_fd(error_msg, 2);
+	if (cubed)
+		free_all(cubed);
 	exit(1);
 }
 

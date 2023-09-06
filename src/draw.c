@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:32:17 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/06 12:15:53 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/06 14:53:02 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	draw_map(t_cubed *cubed)
 
 	x = 0;
 	y = 0;
+	draw_map_outlines(cubed);
 	while (y < cubed->map.map_y)
 	{
 		while (x < cubed->map.map_x)
@@ -57,7 +58,6 @@ void	draw_map(t_cubed *cubed)
 		x = 0;
 		y++;
 	}
-	draw_map_outlines(cubed);
 }
 
 void	draw_rectangle(t_cubed *cubed, int ry, int rx, int color)

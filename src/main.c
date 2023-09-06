@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/05 12:56:12 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/06 11:54:07 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	update(void *param)
 
 void	cub3d(t_cubed *cubed)
 {
-	cubed->map.mapS = 24;
+	cubed->map.map_s = 24;
 	find_player_position(cubed);
 	cubed->player.dx = cos(deg_to_rad(cubed->player.pa));
 	cubed->player.dy = -sin(deg_to_rad(cubed->player.pa));

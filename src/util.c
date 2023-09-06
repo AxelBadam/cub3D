@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   util.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:31:13 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/05 12:52:42 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/06 11:54:42 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,14 +95,14 @@ void	check_for_player(t_cubed *cubed, int y, int x)
 	int	xo;
 	int	yo;
 
-	xo = x * cubed->map.mapS;
-	yo = y * cubed->map.mapS;
-	if (cubed->map.map[y * cubed->map.mapX + x] == 3)
+	xo = x * cubed->map.map_s;
+	yo = y * cubed->map.map_s;
+	if (cubed->map.map[y * cubed->map.map_x + x] == 3)
 	{
-		cubed->player.px = xo + cubed->map.mapS / 2;
-		cubed->player.py = yo + cubed->map.mapS / 2;
-		cubed->player.og_x = xo + cubed->map.mapS / 2;
-		cubed->player.og_y = yo + cubed->map.mapS / 2;
-		cubed->map.map[y * cubed->map.mapX + x] = 0;
+		cubed->player.px = xo + cubed->map.map_s / 2;
+		cubed->player.py = yo + cubed->map.map_s / 2;
+		cubed->player.og_x = xo + cubed->map.map_s / 2;
+		cubed->player.og_y = yo + cubed->map.map_s / 2;
+		cubed->map.map[y * cubed->map.map_x + x] = 0;
 	}
 }

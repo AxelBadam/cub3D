@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:13:37 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/05 15:56:41 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/06 12:16:22 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ void	get_int_map_size(t_cubed *cubed, char **map)
 			size = ft_strlen(map[row]);
 		row++;
 	}
-	cubed->map.mapS = size * row;
-	cubed->map.mapY = row;
-	cubed->map.mapX = size;
+	cubed->map.map_s = size * row;
+	cubed->map.map_y = row;
+	cubed->map.map_x = size;
 }
 
 void	fill_int(t_cubed *cubed, int *map_index, char map_char)
@@ -57,10 +57,10 @@ void	fill_int_array(t_cubed *cubed, char *row)
 		fill_int(cubed, &cubed->map.map[index], row[column]);
 		index++;
 		column++;
-		if (!row[column] && cubed->map.mapX > column)
+		if (!row[column] && cubed->map.map_x > column)
 		{
 			tmp = column;
-			while (tmp < cubed->map.mapX)
+			while (tmp < cubed->map.map_x)
 			{
 				cubed->map.map[index++] = 2;
 				tmp++;
@@ -75,7 +75,7 @@ void	convert_map_to_int(t_cubed *cubed, char **map)
 
 	row = 0;
 	get_int_map_size(cubed, map);
-	cubed->map.map = (int *)malloc(sizeof(int) * cubed->map.mapS);
+	cubed->map.map = (int *)malloc(sizeof(int) * cubed->map.map_s);
 	if (!cubed->map.map)
 		error_exit(cubed, "MALLOC ERROR\n");
 	while (map[row])

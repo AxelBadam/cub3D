@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycast.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:40:11 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/05 12:15:13 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/06 12:00:20 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,21 @@ mlx_texture_t	*check_what_ray_hit_first(t_cubed *cubed, t_ray *ray)
 {
 	mlx_texture_t	*text;
 
-	ray->flag = 1;
+	ray->flag_h = 1;
 	text = NULL;
-	if (ray->disV >= ray->disH)
+	if (ray->dis_v >= ray->dis_h)
 	{
 		if (ray->ra < 360 && ray->ra > 180)
 			text = cubed->south;
 		else if (ray->ra > 0 && ray->ra < 180)
 			text = cubed->north;
 	}
-	if (!text && ray->disV <= ray->disH)
+	if (!text && ray->dis_v <= ray->dis_h)
 	{
-		ray->flag = 0.5;
+		ray->flag_h = 0;
 		ray->rx = ray->vx; 
 		ray->ry = ray->vy; 
-		ray->disH = ray->disV;
+		ray->dis_h = ray->dis_v;
 		if (ray->ra < 270 && ray->ra > 90)
 			text = cubed->west;
 		else if (ray->ra > 270 || ray->ra < 90)
@@ -42,18 +42,18 @@ mlx_texture_t	*check_what_ray_hit_first(t_cubed *cubed, t_ray *ray)
 void	calculate_wall_dimensions(t_cubed *cubed, t_ray *ray, t_wall *wall)
 {
 	wall->ca = fix_ang(cubed->player.pa - ray->ra);
-	ray->disH = ray->disH * cos(deg_to_rad(wall->ca));
-	wall->lineH = (cubed->map.mapS * HEIGHT) / (ray->disH);
-	wall->ty_step = 32 / (float)wall->lineH;
+	ray->dis_h = ray->dis_h * cos(deg_to_rad(wall->ca));
+	wall->line_h = (cubed->map.map_s * HEIGHT) / (ray->dis_h);
+	wall->ty_step = 32 / (float)wall->line_h;
 	wall->ty_off = 0;
-	if (wall->lineH > HEIGHT)
+	if (wall->line_h > HEIGHT)
 	{
-		wall->ty_off = (wall->lineH - HEIGHT) / 2;
-		wall->lineH = HEIGHT;
+		wall->ty_off = (wall->line_h - HEIGHT) / 2;
+		wall->line_h = HEIGHT;
 	}
-	wall->lineOff = HEIGHT / 2 - (wall->lineH / 2);
+	wall->line_off = HEIGHT / 2 - (wall->line_h / 2);
 	wall->ty = wall->ty_off * wall->ty_step;
-	if (ray->flag == 1)
+	if (ray->flag_h == 1)
 	{
 		wall->tx = (int)(ray->rx) % 32;
 		if (ray->ra > 180)
@@ -79,14 +79,14 @@ void	draw_walls(t_cubed *cubed, t_ray *ray, mlx_texture_t *text)
 	calculate_wall_dimensions(cubed, ray, &wall);
 	col = get_text_color(text);
 	pixel = (int)wall.ty * 32 + (int)wall.tx;
-	while (y < wall.lineH)
+	while (y < wall.line_h)
 	{
 		x = 0;
 		while (x < 3)
 		{
 			pixel = (int)wall.ty * 32 + (int)wall.tx;
 			my_pixel_put(cubed->mlx.image, ray->r
-				* 3 + x, y + wall.lineOff, col[pixel]);
+				* 3 + x, y + wall.line_off, col[pixel]);
 			x++;
 		}
 		wall.ty += wall.ty_step;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/06 11:54:07 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/06 12:47:16 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ void	cub3d(t_cubed *cubed)
 {
 	cubed->map.map_s = 24;
 	find_player_position(cubed);
+	load_text(cubed);
 	cubed->player.dx = cos(deg_to_rad(cubed->player.pa));
 	cubed->player.dy = -sin(deg_to_rad(cubed->player.pa));
 	init_mlx(cubed);
-	load_text(cubed);
 	draw(cubed);
 	mlx_loop_hook(cubed->mlx.mlx, &update, cubed);
 	mlx_loop(cubed->mlx.mlx);

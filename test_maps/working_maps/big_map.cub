@@ -1,7 +1,7 @@
-NO /Users/atuliara/Desktop/cub3d/textures/Tech/BIGSQUARES.png
-SO /Users/atuliara/Desktop/cub3d/textures/Tech/HEXAGONS.png
-WE /Users/atuliara/Desktop/cub3d/textures/Tech/HIGHTECH.png
-EA /Users/atuliara/Desktop/cub3d/textures/Tech/TINYSQUARES.png
+NO ./textures/Bricks/CLAYBRICKS.png
+SO ./textures/Bricks/PORCELAINBRICKS.png
+WE ./textures/Bricks/REDBRICKS.png
+EA ./textures/Bricks/ROUNDBRICKS.png
 
 F 220,220,100
 C 225,30,0

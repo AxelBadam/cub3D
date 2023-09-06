@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:39:35 by atuliara          #+#    #+#             */
-/*   Updated: 2023/08/29 15:38:30 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/06 13:20:11 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	map_parsing(t_cubed *cubed, char *filename)
 	char	**file;
 
 	if (!check_file_name(filename))
-		error_exit(cubed, "INVALID FILENAME\n");
+		error_exit(NULL, "INVALID FILENAME\n");
 	file = get_file_contents(cubed, filename);
 	get_map_attributes(cubed, file);
 	free_string_array(file);

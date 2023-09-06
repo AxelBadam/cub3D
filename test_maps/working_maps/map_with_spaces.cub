@@ -4,14 +4,12 @@ WE ./textures/Bricks/ROUNDBRICKS.png
 EA ./textures/Bricks/PORCELAINBRICKS.png
 
 F       220,     100,    0
-C 300,255,255
-
+C 255,255,255
 
 11111111
-10100001111
-10100001
-10100001
-10010001
-10000001
-100000N1
+1      1
+1      1
+1      1
+1      1
+1     S1
 11111111

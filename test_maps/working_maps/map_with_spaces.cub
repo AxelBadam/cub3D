@@ -1,0 +1,15 @@
+NO ./textures/Bricks/CLAYBRICKS.png
+SO ./textures/Bricks/REDBRICKS.png
+WE ./textures/Bricks/ROUNDBRICKS.png
+EA ./textures/Bricks/PORCELAINBRICKS.png
+
+F       220,     100,    0
+C 255,255,255
+
+11111111
+1      1
+1      1
+1      1
+1      1
+1     S1
+11111111

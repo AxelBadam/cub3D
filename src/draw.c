@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:32:17 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/05 17:13:32 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/06 12:15:53 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,18 +39,18 @@ void	draw_map(t_cubed *cubed)
 
 	x = 0;
 	y = 0;
-	while (y < cubed->map.mapY)
+	while (y < cubed->map.map_y)
 	{
-		while (x < cubed->map.mapX)
+		while (x < cubed->map.map_x)
 		{
-			if (cubed->map.map[y * cubed->map.mapX + x] == 1)
+			if (cubed->map.map[y * cubed->map.map_x + x] == 1)
 				color = 0xFFFFFFFF;
 			else
 				color = 0x000000FF;
 			draw_rectangle(cubed,
-				(y * cubed->map.mapS + cubed->map.map_postionY)
-				- (cubed->player.og_y - 75), (x * cubed->map.mapS
-					+ cubed->map.map_postionX)
+				(y * cubed->map.map_s + cubed->map.map_postion_y)
+				- (cubed->player.og_y - 75), (x * cubed->map.map_s
+					+ cubed->map.map_postion_x)
 				- (cubed->player.og_x - 75), color);
 			x++;
 		}
@@ -67,10 +67,10 @@ void	draw_rectangle(t_cubed *cubed, int ry, int rx, int color)
 
 	x = 0;
 	y = ry;
-	while (y < ry + cubed->map.mapS)
+	while (y < ry + cubed->map.map_s)
 	{
 		x = rx;
-		while (x < rx + cubed->map.mapS)
+		while (x < rx + cubed->map.map_s)
 		{
 			if (y > 3 && y < 153 && x > 3 && x < 153)
 				my_pixel_put(cubed->mlx.image, x, y, color);

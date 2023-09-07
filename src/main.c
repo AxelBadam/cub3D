@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/06 12:47:16 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/07 16:55:05 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,22 +38,22 @@ void	cub3d(t_cubed *cubed)
 	draw(cubed);
 	mlx_loop_hook(cubed->mlx.mlx, &update, cubed);
 	mlx_loop(cubed->mlx.mlx);
-	mlx_terminate(cubed->mlx.mlx);
 }
 
 int	main(int argc, char **argv)
 {
 	t_cubed	cubed;
 
-	if (argc != 2)
-		return (1);
 	cubed.north = NULL;
 	cubed.south = NULL;
 	cubed.west = NULL;
 	cubed.east = NULL;
 	cubed.mlx.mlx = NULL;
 	cubed.mlx.image = NULL;
+	if (argc != 2)
+		return (1);
 	map_parsing(&cubed, argv[1]);
 	cub3d(&cubed);
+	free_all(&cubed);
 	return (0);
 }

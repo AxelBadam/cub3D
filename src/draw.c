@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:32:17 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/06 12:15:53 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/07 16:53:05 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,6 @@ void	draw(t_cubed *cubed)
 	{
 		mlx_close_window(cubed->mlx.mlx);
 		puts(mlx_strerror(mlx_errno));
-		exit(69);
+		exit(1);
 	}
 }

@@ -19,16 +19,20 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 
 $(NAME): $(OBJECT)
 	@make -s -C $(LIBFT)
+	cmake -B build MLX42
+	cmake --build build -j4
 	$(CC) $(OBJECT) -framework Cocoa -framework OpenGL -framework IOKit \
-	MLX42/build/libmlx42.a -Iinclude -lglfw -L"/Users/$(USER)/.brew/opt/glfw/lib/" $(LIBFT)/libft.a -o $(NAME)
+	build/libmlx42.a -Iinclude -lglfw -L"/Users/$(USER)/.brew/opt/glfw/lib/" $(LIBFT)/libft.a -o $(NAME)
 
 clean:
 	rm -rf $(OBJDIR)
+	rm -rf build
 	@make -s clean -C $(LIBFT)
 	$(RM) $(OBJECT)
 
 fclean: clean
 	@make -s fclean -C $(LIBFT)
+	rm -rf build
 	$(RM) $(NAME)
 
 re: fclean all

@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 16:51:29 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/05 11:38:56 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/12 14:29:59 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 void	rotate_player(t_cubed *cubed, int key)
 {
 	if (key == MLX_KEY_RIGHT)
-		cubed->player.pa -= 5;
+		cubed->player.pa -= 4;
 	else
-		cubed->player.pa += 5;
+		cubed->player.pa += 4;
 	cubed->player.pa = fix_ang(cubed->player.pa);
 	cubed->player.dx = cos(deg_to_rad(cubed->player.pa));
 	cubed->player.dy = -sin(deg_to_rad(cubed->player.pa));

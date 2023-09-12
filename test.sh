@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define an array of error maps
-error_maps=("test_maps/error_maps/invalid_spawn.cub" "test_maps/error_maps/invalid_texture_path.cub" "test_maps/error_maps/map_at_middle.cub" "test_maps/error_maps/map_at_top.cub" "test_maps/error_maps/no_floor_color.cub" "test_maps/error_maps/no_map.cub" "test_maps/error_maps/no_texture.cub" "test_maps/error_maps/no_walls.cub" "test_maps/error_maps/too_many_colors.cub" "test_maps/error_maps/too_many_textures.cub" "test_maps/error_maps/walls_dont_connect.cub" "test_maps/error_maps/wrong_extension.cuub")
+error_maps=("test_maps/error_maps/invalid_spawn.cub" "test_maps/error_maps/invalid_texture_path.cub" "test_maps/error_maps/map_at_middle.cub" "test_maps/error_maps/map_at_top.cub" "test_maps/error_maps/no_floor_color.cub" "test_maps/error_maps/no_map.cub" "test_maps/error_maps/no_texture.cub" "test_maps/error_maps/no_walls.cub" "test_maps/error_maps/too_many_colors.cub" "test_maps/error_maps/too_many_textures.cub" "test_maps/error_maps/walls_dont_connect.cub" "test_maps/error_maps/wrong_extension.cuub" "test_maps/error_maps/splitted_map.cub")
 
 overall_result=0
 

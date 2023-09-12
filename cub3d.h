@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/06 12:04:24 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/12 14:33:17 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,8 +132,6 @@ void			draw(t_cubed *cubed);
 void			draw_player(t_cubed *cubed);
 //DRAW_UTIL
 void			my_pixel_put(mlx_image_t *image, int x, int y, int color);
-void			ray_plotline(t_cubed *cubed, t_vec v1, t_vec v2);
-void			plotline(t_cubed *cubed, t_vec v1, t_vec v2);
 void			draw_map_outlines(t_cubed *cubed);
 //INIT
 void			init_mlx(t_cubed *cubed);

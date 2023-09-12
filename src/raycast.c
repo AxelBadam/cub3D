@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycast.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:40:11 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/06 12:00:20 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/12 15:28:22 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,10 @@ void	calculate_wall_dimensions(t_cubed *cubed, t_ray *ray, t_wall *wall)
 	wall->ty_off = 0;
 	if (wall->line_h > HEIGHT)
 	{
-		wall->ty_off = (wall->line_h - HEIGHT) / 2;
+		wall->ty_off = (wall->line_h - HEIGHT) / 2.0;
 		wall->line_h = HEIGHT;
 	}
-	wall->line_off = HEIGHT / 2 - (wall->line_h / 2);
+	wall->line_off = HEIGHT / 2.0 - (wall->line_h / 2.0);
 	wall->ty = wall->ty_off * wall->ty_step;
 	if (ray->flag_h == 1)
 	{

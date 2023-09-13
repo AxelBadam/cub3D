@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/13 11:49:16 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/13 15:32:42 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	cub3d(t_cubed *cubed)
 	cubed->player.dx = cos(deg_to_rad(cubed->player.pa));
 	cubed->player.dy = -sin(deg_to_rad(cubed->player.pa));
 	init_mlx(cubed);
+	toggle(cubed);
 	draw(cubed);
 	mlx_loop_hook(cubed->mlx.mlx, &update, cubed);
 	mlx_loop(cubed->mlx.mlx);

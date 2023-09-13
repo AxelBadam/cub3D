@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:32:17 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/13 09:59:57 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/13 15:33:33 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,14 +102,28 @@ void	draw_background(t_cubed *cubed)
 	}
 }
 
+void	toggle(t_cubed *cubed)
+{
+	mlx_texture_t	*toggle;
+	mlx_image_t		*image;
+
+	toggle = mlx_load_png("./textures/toggle.png");
+	image = mlx_texture_to_image(cubed->mlx.mlx, toggle);
+	mlx_delete_texture(toggle);
+	mlx_resize_image(image, 200, 20);
+	mlx_image_to_window(cubed->mlx.mlx, image, WIDTH / 2 - 100, 960);
+}
+
 void	draw(t_cubed *cubed)
 {
 	if (cubed->mlx.image)
-	{
 		mlx_delete_image(cubed->mlx.mlx, cubed->mlx.image);
-		cubed->mlx.image = NULL;
-	}
 	cubed->mlx.image = mlx_new_image(cubed->mlx.mlx, WIDTH, HEIGHT);
+	if (!(cubed->mlx.image))
+	{
+		mlx_close_window(cubed->mlx.mlx);
+		error_exit(cubed, "IMAGE ERROR\n");
+	}
 	draw_background(cubed);
 	cast_rays2d(cubed);
 	draw_map(cubed);
@@ -117,7 +131,6 @@ void	draw(t_cubed *cubed)
 	if (mlx_image_to_window(cubed->mlx.mlx, cubed->mlx.image, 0, 0) == -1)
 	{
 		mlx_close_window(cubed->mlx.mlx);
-		puts(mlx_strerror(mlx_errno));
-		exit(1);
+		error_exit(cubed, "IMAGE ERROR\n");
 	}
 }

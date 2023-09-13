@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/13 10:51:13 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/13 14:43:28 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ typedef struct s_cubed
 	int					mouse;
 }	t_cubed;
 
+void	toggle(t_cubed *cubed);
 //MAP_PARSING
 char			**get_file_contents(t_cubed *cubed, char *filename);
 int				get_map_size(char **file);

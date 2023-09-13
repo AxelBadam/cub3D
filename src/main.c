@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/07 16:55:05 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/13 10:03:44 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,14 @@ int	main(int argc, char **argv)
 {
 	t_cubed	cubed;
 
+	if (argc != 2)
+		return (1);
 	cubed.north = NULL;
 	cubed.south = NULL;
 	cubed.west = NULL;
 	cubed.east = NULL;
 	cubed.mlx.mlx = NULL;
 	cubed.mlx.image = NULL;
-	if (argc != 2)
-		return (1);
 	map_parsing(&cubed, argv[1]);
 	cub3d(&cubed);
 	free_all(&cubed);

@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:31:13 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/07 15:53:40 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/13 09:54:25 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	check_keys(t_cubed *cubed)
 	mlx_key_hook(cubed->mlx.mlx, &toggle_mouse, cubed);
 }
 
-uint32_t	*get_text_color(mlx_texture_t *texture)
+uint32_t	*get_text_color(mlx_texture_t *texture, t_cubed *cubed)
 {
 	int				i;
 	unsigned int	pos;
@@ -75,7 +75,7 @@ uint32_t	*get_text_color(mlx_texture_t *texture)
 	colors = malloc(sizeof(uint32_t) * (texture->width + 1)
 			* (texture->height + 1));
 	if (colors == NULL)
-		printf("yo");
+		(error_exit(cubed, "malloc failed\n"));
 	pos = 0;
 	while (pos < texture->width * texture->height * texture->bytes_per_pixel)
 	{

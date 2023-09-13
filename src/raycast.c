@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:40:11 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/06 12:00:20 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/13 10:51:00 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	draw_walls(t_cubed *cubed, t_ray *ray, mlx_texture_t *text)
 
 	y = 0;
 	calculate_wall_dimensions(cubed, ray, &wall);
-	col = get_text_color(text);
+	col = get_text_color(text, cubed);
 	pixel = (int)wall.ty * 32 + (int)wall.tx;
 	while (y < wall.line_h)
 	{

@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/06 12:04:24 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/13 10:51:13 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void			move_player(t_cubed *cubed, int key);
 void			rotate_player(t_cubed *cubed, int key);
 void			mouse_rotate(t_cubed *cubed);
 //UTIL
-uint32_t		*get_text_color(mlx_texture_t *texture);
+uint32_t		*get_text_color(mlx_texture_t *texture, t_cubed *cubed);
 void			load_text(t_cubed *cubed);
 void			check_keys(t_cubed *cubed);
 void			mouse_rotate(t_cubed *cubed);

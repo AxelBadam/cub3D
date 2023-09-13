@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:56:35 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/06 11:58:26 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/13 09:56:51 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,19 @@
 
 void	draw_map_outlines(t_cubed *cubed)
 {
-	plotline(cubed, (t_vec){3, 3, cubed->map.cealing_color - 2000},
-		(t_vec){3, 153, cubed->map.cealing_color - 2000});
-	plotline(cubed, (t_vec){3, 153, cubed->map.cealing_color - 2000},
-		(t_vec){153, 153, cubed->map.cealing_color - 2000});
-	plotline(cubed, (t_vec){153, 153, cubed->map.cealing_color - 2000},
-		(t_vec){153, 3, cubed->map.cealing_color - 2000});
-	plotline(cubed, (t_vec){153, 3, cubed->map.cealing_color - 2000},
-		(t_vec){3, 3, cubed->map.cealing_color - 2000});
+	int	y;
+	int	x;
+
+	y = 4;
+	while (y < 153)
+	{
+		x = 4;
+		while (x < 153)
+		{
+			my_pixel_put(cubed->mlx.image, x++, y, 0x000000FF);
+		}
+		y++;
+	}
 }
 
 void	my_pixel_put(mlx_image_t *image, int x, int y, int color)

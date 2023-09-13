@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/06 12:47:16 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/12 16:00:40 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	cub3d(t_cubed *cubed)
 	draw(cubed);
 	mlx_loop_hook(cubed->mlx.mlx, &update, cubed);
 	mlx_loop(cubed->mlx.mlx);
-	mlx_terminate(cubed->mlx.mlx);
 }
 
 int	main(int argc, char **argv)
@@ -55,5 +54,6 @@ int	main(int argc, char **argv)
 	cubed.mlx.image = NULL;
 	map_parsing(&cubed, argv[1]);
 	cub3d(&cubed);
+	free_all(&cubed);
 	return (0);
 }

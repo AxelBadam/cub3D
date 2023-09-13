@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:21:14 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/05 12:54:46 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/12 16:29:56 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ char	*texture_path(t_cubed *cubed, char *row)
 
 void	free_all(t_cubed *cubed)
 {
+	if (cubed->mlx.image)
+		mlx_delete_image(cubed->mlx.mlx, cubed->mlx.image);
+	if (cubed->mlx.mlx)
+		mlx_terminate(cubed->mlx.mlx);
 	if (cubed->map.path_to_east)
 		free(cubed->map.path_to_east);
 	if (cubed->map.path_to_west)
@@ -38,8 +42,6 @@ void	free_all(t_cubed *cubed)
 		free(cubed->map.path_to_north);
 	if (cubed->map.map)
 		free(cubed->map.map);
-	if (cubed->mlx.image)
-		mlx_delete_image(cubed->mlx.mlx, cubed->mlx.image);
 	if (cubed->north)
 		mlx_delete_texture(cubed->north);
 	if (cubed->south)
@@ -48,8 +50,6 @@ void	free_all(t_cubed *cubed)
 		mlx_delete_texture(cubed->east);
 	if (cubed->west)
 		mlx_delete_texture(cubed->west);
-	if (cubed->mlx.mlx)
-		mlx_terminate(cubed->mlx.mlx);
 }
 
 void	error_exit(t_cubed *cubed, char *error_msg)

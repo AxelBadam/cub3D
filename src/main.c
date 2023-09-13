@@ -6,7 +6,7 @@
 /*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/13 10:03:44 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/13 11:49:16 by atuliara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,5 @@ int	main(int argc, char **argv)
 	map_parsing(&cubed, argv[1]);
 	cub3d(&cubed);
 	free_all(&cubed);
-	return (0);
+	return (0); 
 }

@@ -18,8 +18,6 @@ clone:
 
 ifeq ($(GIT_REPO_EXISTS),0)
 	git clone $(GIT_REPO_URL) $(CLONE_DIR)
-else
-	@echo "Repository already exists in $(CLONE_DIR)"
 endif
 
 obj:

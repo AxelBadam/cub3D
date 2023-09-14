@@ -1,4 +1,4 @@
-NAME = cub3d
+NAME = cub3D
 SRC = main.c init.c util.c util_2.c draw.c draw_util.c map_parsing.c raycast.c move.c cast_horizontal_rays.c cast_vertical_rays.c \
 parse_util.c parse_util2.c map_check.c map_check2.c get_int_map.c get_map_attr.c parse_util3.c move_2.c
 LIBFT = libft

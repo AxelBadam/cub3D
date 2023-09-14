@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 15:39:35 by atuliara          #+#    #+#             */
-/*   Updated: 2023/09/13 12:47:23 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/14 14:01:08 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ char	**get_file_contents(t_cubed *cubed, char *filename)
 	char	*row;
 
 	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+		error_exit(NULL, "INVALID FILENAME\n");
 	array = NULL;
 	while (1)
 	{

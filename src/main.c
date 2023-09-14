@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:05:22 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/14 12:15:55 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/14 14:00:13 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	main(int argc, char **argv)
 	t_cubed	cubed;
 
 	if (argc != 2)
-		return (1);
+		error_exit(NULL, "INVALID ARG COUNT\n");
 	cubed.north = NULL;
 	cubed.south = NULL;
 	cubed.west = NULL;

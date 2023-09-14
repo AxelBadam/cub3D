@@ -6,7 +6,7 @@
 /*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 16:18:08 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/13 14:43:28 by ekoljone         ###   ########.fr       */
+/*   Updated: 2023/09/14 12:07:45 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # define HEIGHT 960
 # include "MLX42/include/MLX42/MLX42.h"
 # include "libft/libft.h"
-# include <stdio.h>
 # include <fcntl.h>
 # include <math.h>
 
@@ -90,28 +89,11 @@ typedef struct s_mlx
 	mlx_image_t	*image;
 }	t_mlx;
 
-typedef struct s_vec
-{
-	int	x;
-	int	y;
-	int	color;
-}	t_vec;
-
-typedef struct s_bres
-{
-	int	dx;
-	int	dy;
-	int	sx;
-	int	sy;
-	int	error[2];
-}	t_bres;
-
 typedef struct s_cubed
 {
 	struct s_map		map;
 	struct s_mlx		mlx;
 	struct s_player		player;
-	struct s_bres		bres;
 	mlx_texture_t		*north;
 	mlx_texture_t		*south;
 	mlx_texture_t		*east;
@@ -119,7 +101,6 @@ typedef struct s_cubed
 	int					mouse;
 }	t_cubed;
 
-void	toggle(t_cubed *cubed);
 //MAP_PARSING
 char			**get_file_contents(t_cubed *cubed, char *filename);
 int				get_map_size(char **file);
@@ -133,8 +114,6 @@ void			draw(t_cubed *cubed);
 void			draw_player(t_cubed *cubed);
 //DRAW_UTIL
 void			my_pixel_put(mlx_image_t *image, int x, int y, int color);
-void			ray_plotline(t_cubed *cubed, t_vec v1, t_vec v2);
-void			plotline(t_cubed *cubed, t_vec v1, t_vec v2);
 void			draw_map_outlines(t_cubed *cubed);
 //INIT
 void			init_mlx(t_cubed *cubed);

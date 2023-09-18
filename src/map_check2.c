@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_check2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atuliara <atuliara@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ekoljone <ekoljone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:09:19 by ekoljone          #+#    #+#             */
-/*   Updated: 2023/09/06 11:59:52 by atuliara         ###   ########.fr       */
+/*   Updated: 2023/09/18 13:36:59 by ekoljone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	check_top_and_bottom(t_cubed *cubed, char *row)
 	index = 0;
 	while (row[index])
 	{
-		if (!ft_is_white_space(row[index]) && row[index] != '1')
+		if (row[index] != '1')
 			error_exit(cubed, "INVALID MAP\n");
 		index++;
 	}

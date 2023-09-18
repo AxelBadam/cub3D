@@ -1,6 +1,6 @@
 # cub3d
 
-cub3D is a school project that emulates the raycasting techniques used in classic first-person shooter games like Wolfenstein 3D. It creates a 3D perspective from a 2D map and allows you to navigate through maze-like environments.
+cub3D is a school project that emulates the raycasting techniques used in classic first-person shooter games like Wolfenstein 3D. It creates a 3D perspective from a 2D map and allows you to navigate through maze-like environments. 
 
 ## Features
 
@@ -16,17 +16,29 @@ cub3D is a school project that emulates the raycasting techniques used in classi
 
 1. Clone the cub3D repository:
 
-```$ git clone https://github.com/AxelBadam/cub3d.git```
+```
+$ git clone https://github.com/AxelBadam/cub3d.git ; cd cub3d
+```
 
+2. Check dependencies for the MLX42 graphics library (depends on your OS)
 
+https://github.com/codam-coding-college/MLX42#installing-the-dependencies
 
-Compile the project:
+3. Run `make`
 
-bash
-Copy code
-$ make
-Run cub3D with a sample map:
+-installs and builds the MLX42 and the program
 
-bash
-Copy code
-$ ./cub3D maps/sample.cub
+## Usage
+   
+```
+$ ./cu3D test_maps/working_maps/simple_map.cub
+```
+
+-use the WASD keys to move forward, backward, and sideways. Right and left arrow to turn.
+
+-press M to toggle mouse turn
+
+-press ESC to exit the game.
+
+-create your own maps or modify the existing ones in the test_maps/working_maps directory with the provided textures.
+

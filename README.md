@@ -16,8 +16,7 @@ cub3D is a school project that emulates the raycasting techniques used in classi
 
 1. Clone the cub3D repository:
 
-   $ git clone https://github.com/atuliara/cub3D.git
-   $ cd cub3D
+   $ git clone https://github.com/AxelBadam/cub3d.git
 
 
 

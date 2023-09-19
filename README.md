@@ -28,7 +28,7 @@ $ git clone https://github.com/AxelBadam/cub3d.git ; cd cub3d
 
 If you have 42 homebrew replace this line in the makefile:
 
-libmlx42.a -Iinclude -lglfw -L"/opt/homebrew/Cellar/glfw/3.3.8/lib/"
+```libmlx42.a -Iinclude -lglfw -L"/opt/homebrew/Cellar/glfw/3.3.8/lib/"```
 
 -installs and builds the MLX42 and the program
 

@@ -31,7 +31,7 @@ $(NAME): $(OBJECT)
 	cmake -B build MLX42
 	cmake --build build -j4
 	$(CC) $(OBJECT) -framework Cocoa -framework OpenGL -framework IOKit \
-	build/libmlx42.a -Iinclude -lglfw -L"/Users/$(USER)/.brew/opt/glfw/lib/" $(LIBFT)/libft.a -o $(NAME)
+	build/libmlx42.a -Iinclude -lglfw -L"/opt/homebrew/Cellar/glfw/3.3.8/lib/" $(LIBFT)/libft.a -o $(NAME)
 
 clean:
 	rm -rf $(OBJDIR)

@@ -12,7 +12,7 @@ cub3D is a school project that emulates the raycasting techniques used in classi
 - Adjustable resolution and textures
 - Mini-map display
 
-## Compilation
+## Installation
 
 1. Check dependencies for the MLX42 graphics library (depends on your OS)
 

@@ -2,6 +2,9 @@
 
 cub3D is a school project that emulates the raycasting techniques used in classic first-person shooter games like Wolfenstein 3D. It creates a 3D perspective from a 2D map and allows you to navigate through maze-like environments. Made with https://github.com/eetukoljonen 
 
+<img width="1439" alt="268909859-08d2a035-1803-48ca-bb31-26a257241ec7" src="https://github.com/AxelBadam/cub3D/assets/110740560/0ebb3af6-86f7-4410-a52a-38c38140245a">
+
+
 ## Features
 
 - Raycasting rendering engine
